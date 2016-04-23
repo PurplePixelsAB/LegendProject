@@ -121,6 +121,19 @@ namespace WindowsClient
             actionKeyMappingSwing.Primary = Keys.D1;
             actionKeyMappingSwing.ActionTriggered += ActionKeyMappingSwing_ActionTriggered;
             Input.Actions.Add(actionKeyMappingSwing);
+            
+            ActionKeyMapping actionKeyMappingToggleFlullscreen = new ActionKeyMapping();
+            actionKeyMappingToggleFlullscreen.Action = 0;
+            actionKeyMappingToggleFlullscreen.Primary = Keys.Enter;
+            actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
+            actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingToggleFlullscreen);
+        }
+
+        private void ActionKeyMappingToggleFlullscreen_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            this.Game.Window.IsBorderless = !this.Game.Window.IsBorderless;
+            this.Game.Window.Position = Point.Zero;
         }
 
         private void PlayerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)

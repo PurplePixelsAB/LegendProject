@@ -19,7 +19,7 @@ namespace WindowsClient
 
         public GameLegend()
         {
-            Window.IsBorderless = true;
+            //Window.IsBorderless = true;
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 1920;
