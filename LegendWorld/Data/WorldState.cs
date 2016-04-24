@@ -52,11 +52,13 @@ namespace Network
 
                 if (isHealTick)
                 {
-                    characters[characterId].Health += 1;
+                    if (characters[characterId].Health < characters[characterId].MaxHealth)
+                        characters[characterId].Health += 1;
                 }
                 if (isEnergyTick)
                 {
-                    characters[characterId].Energy += 1;
+                    if (characters[characterId].Energy < characters[characterId].MaxEnergy)
+                        characters[characterId].Energy += 1;
                 }
             }
         }
