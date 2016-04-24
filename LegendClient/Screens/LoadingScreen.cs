@@ -20,6 +20,7 @@ namespace LegendClient.Screens
         private TimeSpan dotInterval = new TimeSpan(0, 0, 0, 0, 1500);
         private TimeSpan nextDot;
         private Task loadingTask;
+        private bool isLoadCompleated;
 
         public override void Draw(GameTime gameTime)
         {
@@ -45,6 +46,9 @@ namespace LegendClient.Screens
 
         public override void Update(GameTime gameTime)
         {
+            if (isLoadCompleated)
+                return;
+
             if (nextDot <= gameTime.TotalGameTime)
             {
                 dots.Add('.');
@@ -58,6 +62,7 @@ namespace LegendClient.Screens
                 Random rnd = new Random();
                 screenToLoad.SelectCharacter(rnd.Next(1, Int16.MaxValue));
                 screenToLoad.Activate();
+                isLoadCompleated = true;
                 this.Close();
             }
         }
