@@ -67,7 +67,18 @@ namespace UdpServer
             Socket.BeginReceive(this.Buffer, 0, Packet.DefaultBufferSize, 0, new AsyncCallback(OnReceive), this);
 
             this.WriteConsole("Connected. ({0} Online)", NetState.Instances.Count);
+            this.OnDisconnected();
         }
+
+        public EventHandler Disconnected;
+        private void OnDisconnected()
+        {
+            if (this.Disconnected != null)
+            {
+                this.Disconnected(this, new EventArgs());
+            }
+        }
+
         public void BeginReceiveCallback(IAsyncResult ar)
         {
             NetState netState = (NetState)ar.AsyncState;

@@ -33,6 +33,11 @@ namespace UdpServer
             this.UpdateEveryoneOfThisCharacter(serverCharacter);
         }
 
+        internal void CharacterDisconnects(object sender, EventArgs e)
+        {
+            this.RemoveCharacter((ServerCharacter)sender);
+        }
+
         internal void UpdateThisCharacterOfEveryone(ServerCharacter characterToUpdate)
         {
             NetState clientSendTo = characterToUpdate.Owner;
@@ -66,12 +71,9 @@ namespace UdpServer
             this.UpdateEveryoneOfThisCharacter(mobileUpdated);
         }
 
-        public void RemoveCharacter(Character character)
+        public override void RemoveCharacter(Character character)
         {
-            if (!characters.ContainsKey(character.Id))
-                return;
-
-            characters.Remove(character.Id);
+            base.RemoveCharacter(character);
             maptoCharacterRelations[character.CurrentMapId].Remove(character.Id);
         }
 

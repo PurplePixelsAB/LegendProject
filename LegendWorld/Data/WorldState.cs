@@ -34,6 +34,13 @@ namespace Network
             newCharacter.MoveToMapPointValidating += NewCharacter_MoveToMapPointValidating;
             characters.Add(newCharacter.Id, newCharacter);
         }
+        public virtual void RemoveCharacter(Character charToRemove)
+        {
+            if (!characters.ContainsKey(charToRemove.Id))
+                return;
+
+            characters.Remove(charToRemove.Id);
+        }
 
         private void NewCharacter_MoveToMapPointValidating(object sender, Character.MoveToMapPointValidatingEventArgs e)
         {
@@ -81,10 +88,11 @@ namespace Network
                     if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
                     {
                         characters[characterId].Health -= swingDmg;
-                        characters[characterId].Energy -= swingEnergy;
                     }
                 }
             }
+
+            character.Energy -= swingEnergy;
         }
         public virtual void PerformHeal(Character character)
         {

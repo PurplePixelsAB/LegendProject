@@ -20,7 +20,9 @@ namespace UdpServer.Network.Packets
             selectedChar.Id = selectCharacterPacket.CharacterId;
             selectedChar.Owner = netState;
             selectedChar.Owner.WorldId = selectedChar.Id;
+            selectedChar.Owner.Disconnected += worldState.CharacterDisconnects;
             worldState.AddCharacter(selectedChar);
+
             netState.WriteConsole("WorldId: {0} registred.", selectedChar.Id);
         }
     }

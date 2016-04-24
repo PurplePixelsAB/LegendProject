@@ -22,7 +22,7 @@ namespace Engine.ScreenEngine
         {
             screenList.Add(screen);
 
-            if (isInitialized)
+            if (isInitialized && screen.Manager == null)
                 screen.Initialize(this);
 
             if (isLoaded)
