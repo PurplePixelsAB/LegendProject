@@ -42,9 +42,13 @@ namespace WindowsClient.Net
             return clientPacketHandlers[(byte)packetId];
         }
 
+        public void Initialize()
+        {
+            socketClient.Connect();
+        }
+
         public void LoadContent()
         { 
-            socketClient.Connect();
         }
         public void UnloadContent()
         {

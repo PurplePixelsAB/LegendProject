@@ -22,6 +22,7 @@ namespace WindowsClient
 
         //private long lastTick;
         //private long nextTick;
+        public bool IsConnected { get { return this.network.Connected; } }
 
         private SpriteBatch spriteBatch;
         private Texture2D bodyTexture;
@@ -65,6 +66,21 @@ namespace WindowsClient
             worldPump.State = world;
         }
 
+        internal void SelectCharacter(int charId)
+        {
+            world.PlayerCharacter = new ClientCharacter();
+            world.PlayerCharacter.Id = charId;
+            world.PlayerCharacter.HealthChanged += PlayerCharacter_HealthChanged;
+            world.AddCharacter(world.PlayerCharacter);
+            network.SelectCharacter(charId);
+        }
+
+        public override void Initialize(ScreenManager screenManager)
+        {
+            base.Initialize(screenManager);
+
+        }
+
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
             network.LoadContent();
@@ -88,22 +104,17 @@ namespace WindowsClient
             //}
             //Input.Actions.AddRange(generalMappings);
 
-            world.PlayerCharacter = new ClientCharacter();
-            world.PlayerCharacter.Id = rnd.Next(1, Int16.MaxValue);
-            world.PlayerCharacter.HealthChanged += PlayerCharacter_HealthChanged;
-            world.AddCharacter(world.PlayerCharacter);
 
-            DateTime timeOut = DateTime.Now.AddSeconds(20);
-            while (!network.Connected && DateTime.Now < timeOut)
-            {
-                Thread.Sleep(500);
-            }
-            if (!network.Connected)
-            {
-                this.Game.Exit();
-                return;
-            }
-            network.SelectCharacter(world.PlayerCharacter.Id);
+            //DateTime timeOut = DateTime.Now.AddSeconds(20);
+            //while (!network.Connected && DateTime.Now < timeOut)
+            //{
+            //    Thread.Sleep(500);
+            //}
+            //if (!network.Connected)
+            //{
+            //    this.Game.Exit();
+            //    return;
+            //}
 
             ActionButtonMapping actionButtonMappingMoveTo = new ActionButtonMapping();
             actionButtonMappingMoveTo.Action = 1;

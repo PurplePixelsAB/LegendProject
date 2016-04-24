@@ -12,23 +12,53 @@ namespace LegendClient.Screens
 {
     internal class LoadingScreen : Screen
     {
+        private Point centerScreen;
+        private SpriteFont loadingSpriteFont;
+        GameplayScreen screenToLoad;
+        private SpriteBatch spriteBatch;
+        private List<char> dots = new List<char>(20);
+        private TimeSpan dotInterval = new TimeSpan(0, 0, 0, 0, 1500);
+        private TimeSpan nextDot;
+
         public override void Draw(GameTime gameTime)
         {
+            spriteBatch.Begin();
+            spriteBatch.DrawString(loadingSpriteFont, "Loading." + new String(dots.ToArray()), centerScreen.ToVector2(), Color.White);
+            spriteBatch.End();
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
-            GameplayScreen screenToLoad = new GameplayScreen();
+            spriteBatch = new SpriteBatch(graphicsDevice);
+            centerScreen = graphicsDevice.Viewport.Bounds.Center;
+            loadingSpriteFont = Game.Content.Load<SpriteFont>("Damage");
+            screenToLoad = new GameplayScreen();
+            screenToLoad.Initialize(this.Manager);
+            screenToLoad.LoadContent(graphicsDevice);
         }
 
         public override void UnloadContent()
         {
-            throw new NotImplementedException();
+
         }
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            if (nextDot <= gameTime.TotalGameTime)
+            {
+                dots.Add('.');
+                nextDot = gameTime.TotalGameTime.Add(dotInterval);
+                if (dots.Count >= 10)
+                    dots.Clear();
+            }
+
+            if (screenToLoad.IsConnected)
+            {
+                Random rnd = new Random();
+                screenToLoad.SelectCharacter(rnd.Next(1, Int16.MaxValue));
+                screenToLoad.Activate();
+                this.Close();
+            }
         }
     }
 }

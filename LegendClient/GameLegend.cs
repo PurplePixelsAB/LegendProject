@@ -3,6 +3,7 @@ using Engine.InputEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using LegendClient.Screens;
 
 namespace WindowsClient
 {
@@ -15,7 +16,7 @@ namespace WindowsClient
         GraphicsDeviceManager graphics;
         private ScreenManager screenManager;
         private InputManager inputManager;
-        private GameplayScreen firstScreen;
+        private LoadingScreen firstScreen;
 
         public GameLegend()
         {
@@ -28,8 +29,7 @@ namespace WindowsClient
             Content.RootDirectory = "Content";
             inputManager = new InputManager();
             screenManager = new ScreenManager(this, inputManager);
-            firstScreen = new GameplayScreen();
-            screenManager.Add(firstScreen);
+            firstScreen = new LoadingScreen();
         }
 
         /// <summary>
@@ -43,6 +43,8 @@ namespace WindowsClient
             // TODO: Add your initialization logic here
             inputManager.Initialize();
             screenManager.Initialize();
+            firstScreen.Initialize(screenManager);
+            firstScreen.Activate();
 
             base.Initialize();
         }
