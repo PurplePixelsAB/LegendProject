@@ -29,41 +29,41 @@ namespace UdpServer
             base.AddCharacter(character);
             ServerCharacter serverCharacter = (ServerCharacter)character;
             maptoCharacterRelations[character.CurrentMapId].Add(character.Id); 
-            this.UpdateThisCharacterToEveryone(serverCharacter);
+            this.UpdateThisCharacterOfEveryone(serverCharacter);
             this.UpdateEveryoneOfThisCharacter(serverCharacter);
         }
 
-        internal void UpdateEveryoneOfThisCharacter(ServerCharacter character)
+        internal void UpdateThisCharacterOfEveryone(ServerCharacter characterToUpdate)
         {
+            NetState clientSendTo = characterToUpdate.Owner;
+
             foreach (int characterId in characters.Keys)
             {
-                if (character.Id == characterId)
+                if (characterToUpdate.Id == characterId)
                     continue;
 
-                ServerCharacter charToUpdate = ((ServerCharacter)characters[characterId]);
-                NetState clientSendTo = character.Owner;
-
-                clientSendTo.WriteConsole("Sending client updateInfo for {0}.", charToUpdate.Id, character.Id);
-                clientSendTo.Send(new UpdateMobilePacket(character));
+                ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
+                clientSendTo.Send(new UpdateMobilePacket(aboutCharacter));
+                clientSendTo.WriteConsole("Sending client{0} info for client{1}.", characterToUpdate.Id, aboutCharacter.Id);
             }
         }
-        internal void UpdateThisCharacterToEveryone(ServerCharacter character)
+        internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
         {
-            var packet = new UpdateMobilePacket(character);
-            foreach (int mapCharacterId in maptoCharacterRelations[character.CurrentMapId])
+            var packet = new UpdateMobilePacket(aboutCharacter);
+            foreach (int mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
             {
-                ServerCharacter charSendTo = ((ServerCharacter)characters[mapCharacterId]);
-                NetState clientSendTo = charSendTo.Owner;
+                ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
+                NetState clientSendTo = characterToUpdate.Owner;
 
-                clientSendTo.WriteConsole("Sending client updateInfo for {1}.", charSendTo.Id, character.Id);
                 clientSendTo.Send(packet);
+                clientSendTo.WriteConsole("Sending client{0} info for client{1}.", characterToUpdate.Id, aboutCharacter.Id);
             }
         }
 
         private void character_InputUpdated(object sender, EventArgs e)
         {
             ServerCharacter mobileUpdated = (ServerCharacter)sender;
-            this.UpdateThisCharacterToEveryone(mobileUpdated);
+            this.UpdateEveryoneOfThisCharacter(mobileUpdated);
         }
 
         public void RemoveCharacter(Character character)

@@ -11,8 +11,9 @@ namespace Network
         protected byte swingEnergy = 34;
         protected byte healAmount = 11;
 
-        protected TimeSpan baseHealTick = new TimeSpan(0, 0, 1);
-        protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
+        protected TimeSpan baseRegenTick = new TimeSpan(0, 0, 1);
+        //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
+        private long nextRegendTick = 0;
 
         protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
         public virtual Character GetCharacter(int id)
@@ -43,23 +44,23 @@ namespace Network
         public virtual void Update(GameTime gameTime)
         {
             var idList = characters.Keys;
-            bool isHealTick = gameTime.TotalGameTime.Ticks % baseHealTick.Ticks == 0;
-            bool isEnergyTick = gameTime.TotalGameTime.Ticks % baseEnergyTick.Ticks == 0;
+
+            bool isRegenTick = gameTime.TotalGameTime.Ticks >= nextRegendTick;
 
             foreach (int characterId in idList)
             {
                 characters[characterId].UpdateMapPosition(gameTime);
 
-                if (isHealTick)
+                if (isRegenTick)
                 {
                     if (characters[characterId].Health < characters[characterId].MaxHealth)
                         characters[characterId].Health += 1;
-                }
-                if (isEnergyTick)
-                {
+
                     if (characters[characterId].Energy < characters[characterId].MaxEnergy)
                         characters[characterId].Energy += 1;
-                }
+
+                    nextRegendTick = (gameTime.TotalGameTime + baseRegenTick).Ticks;
+                }                
             }
         }
 

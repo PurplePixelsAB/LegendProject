@@ -121,11 +121,11 @@ namespace UdpServer
         //public event EventHandler Activity;
         private void OnActivity()
         {
-            try
-            {
+            //try
+            //{
                 signal.Set();
-            }
-            catch { }
+            //}
+            //catch { }
         }
         private void Enqueue(Socket socket)
         {

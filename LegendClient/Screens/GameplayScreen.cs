@@ -208,7 +208,7 @@ namespace WindowsClient
                 network.MoveTo(worldPosition);
             }
 
-            if (lastMovementClickTicks + doubleClickSpeed.Ticks <= e.GameTime.TotalGameTime.Ticks)
+            if (lastMovementClickTicks + doubleClickSpeed.Ticks >= e.GameTime.TotalGameTime.Ticks)
             {
                 if (world.PlayerCharacter.AimToPosition != worldPosition)
                 {
