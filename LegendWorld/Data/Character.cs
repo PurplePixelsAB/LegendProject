@@ -21,7 +21,7 @@ namespace Data.World
 
         public string Name { get; set; }
 
-        public Point Position { get; set; }
+        public virtual Point Position { get; protected set; }
         public Point MovingToPosition { get; protected set; }
         public Point AimToPosition { get; protected set; }
 

@@ -113,9 +113,9 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LegendWorld\LegendWorld.csproj">
+    <ProjectReference Include="..\LegendWorld\World.csproj">
       <Project>{3a3489ce-3b13-427f-a769-f2ae439f4c2d}</Project>
-      <Name>LegendWorld</Name>
+      <Name>World</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -79,6 +79,7 @@ namespace WindowsClient
             selectionTexture = Game.Content.Load<Texture2D>("Selection");
             damageSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             bigBushSpriteFont = Game.Content.Load<Texture2D>("bigbush");
+            hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
 
             //generalMappings = Game.Content.Load<ActionKeyMapping[]>("DefaultKeys\\General");
             //for (int i = 0; i <= generalMappings.GetUpperBound(0); i++)
@@ -145,8 +146,13 @@ namespace WindowsClient
             }
             else //Healing
             {
-
+                this.AddHealIndicator(clientCharacter, e.PreviousHelth - clientCharacter.Health);
             }
+        }
+
+        private void AddHealIndicator(ClientCharacter clientCharacter, int v)
+        {
+            //throw new NotImplementedException();
         }
 
         private Queue<DamageTextEffect> DamageTextEffectList = new Queue<DamageTextEffect>();
@@ -179,6 +185,8 @@ namespace WindowsClient
 
         private long lastMovementClickTicks;
         private TimeSpan doubleClickSpeed = new TimeSpan(0, 0, 0, 0, 200);
+        private Texture2D hudbarTexture;
+
         private void ActionButtonMappingMoveTo_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
             Point worldPosition = ScreenToWorld(e.MouseState.Position);
@@ -214,7 +222,7 @@ namespace WindowsClient
         public override void Update(GameTime gameTime)
         {
             worldPump.Update(gameTime);
-            //world.ClientUpdate(gameTime);
+            world.ClientUpdate(gameTime);
             network.Update();
         }
 
@@ -243,9 +251,23 @@ namespace WindowsClient
             this.BaseDrawing(spriteBatch);
             this.DrawCharacters(spriteBatch);
             this.DrawDamageEffect(spriteBatch, gameTime);
+            this.DrawHud(spriteBatch);
             spriteBatch.End();
         }
 
+        private void DrawHud(SpriteBatch spriteBatch)
+        {
+            foreach (int id in world.Characters)
+            {
+                ClientCharacter charToDraw = (ClientCharacter)world.GetCharacter(id);
+                Rectangle sourceSize = hudbarTexture.Bounds;
+                int healthBasedWidth = (int)(sourceSize.Width * ((float)charToDraw.Health / (float)charToDraw.MaxHealth));
+                sourceSize.Width = healthBasedWidth;
+                spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, Color.White);
+                spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, sourceSize, Color.DarkGreen);
+            }
+
+        }
         private void DrawDamageEffect(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var queue = DamageTextEffectList;

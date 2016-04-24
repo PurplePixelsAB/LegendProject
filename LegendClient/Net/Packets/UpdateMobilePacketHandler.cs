@@ -25,9 +25,8 @@ namespace WindowsClient.Net.Packets
                 worldState.AddCharacter(mobileToUpdate);
             }
 
-            
-            if (updateMobilePacket.X.HasValue && updateMobilePacket.Y.HasValue)
-                mobileToUpdate.Position = new Point(updateMobilePacket.X.Value, updateMobilePacket.Y.Value);
+
+            mobileToUpdate.CheckServerPosition(0, new Point(updateMobilePacket.X.Value, updateMobilePacket.Y.Value));
 
             if (updateMobilePacket.Health.HasValue)
                 mobileToUpdate.Health = updateMobilePacket.Health.Value;
