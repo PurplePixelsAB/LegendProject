@@ -44,7 +44,15 @@ namespace WindowsClient.Net
 
         public void Initialize()
         {
-            socketClient.Connect();
+            try
+            {
+                socketClient.Connect(LegendClient.Properties.Settings.Default.ServerAddress, LegendClient.Properties.Settings.Default.ServerPort);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public void LoadContent()

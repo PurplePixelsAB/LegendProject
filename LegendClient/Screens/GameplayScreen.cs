@@ -78,7 +78,7 @@ namespace WindowsClient
         public override void Initialize(ScreenManager screenManager)
         {
             base.Initialize(screenManager);
-
+            network.Initialize();
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)

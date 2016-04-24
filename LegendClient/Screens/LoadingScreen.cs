@@ -19,6 +19,7 @@ namespace LegendClient.Screens
         private List<char> dots = new List<char>(20);
         private TimeSpan dotInterval = new TimeSpan(0, 0, 0, 0, 1500);
         private TimeSpan nextDot;
+        private Task loadingTask;
 
         public override void Draw(GameTime gameTime)
         {
@@ -34,7 +35,7 @@ namespace LegendClient.Screens
             loadingSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             screenToLoad = new GameplayScreen();
             screenToLoad.Initialize(this.Manager);
-            screenToLoad.LoadContent(graphicsDevice);
+            loadingTask = Task.Factory.StartNew(() => screenToLoad.LoadContent(graphicsDevice));
         }
 
         public override void UnloadContent()
@@ -52,7 +53,7 @@ namespace LegendClient.Screens
                     dots.Clear();
             }
 
-            if (screenToLoad.IsConnected)
+            if (screenToLoad.IsConnected && loadingTask.IsCompleted)
             {
                 Random rnd = new Random();
                 screenToLoad.SelectCharacter(rnd.Next(1, Int16.MaxValue));

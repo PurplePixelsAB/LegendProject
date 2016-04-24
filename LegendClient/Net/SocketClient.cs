@@ -9,8 +9,8 @@ namespace WindowsClient.Net
 {
     internal class SocketClient
     {
-        public static int Port = 27960;
-        public static string Server = "";
+        //public static int Port = 27960;
+        //public static string Server = "";
         private static Socket socket;
 
         public State State { get; private set; }
@@ -30,12 +30,12 @@ namespace WindowsClient.Net
             State = State.Disconnected;
         }
 
-        public void Connect()
+        public void Connect(string serverAdress, int port)
         {
             State = State.Connecting;
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.NoDelay = true;
-            socket.BeginConnect(SocketClient.Server, SocketClient.Port, new AsyncCallback(BeginConnectCallback), null);
+            socket.BeginConnect(serverAdress, port, new AsyncCallback(BeginConnectCallback), null);
         }
         private void BeginConnectCallback(IAsyncResult ar)
         {
