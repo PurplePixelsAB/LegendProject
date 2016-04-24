@@ -18,7 +18,7 @@ namespace WindowsClient.Net
         public DateTime LastActive { get; private set; }
 
         private byte[] buffer;
-        private uint LastRecivedTick;
+        //private uint LastRecivedTick;
         private ThreadQueue<IPacket> packetQueue;
 
         //public Queue<ServerResponse> ResponseQueue;
@@ -82,7 +82,7 @@ namespace WindowsClient.Net
                 else
                     Disconnect();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Disconnect();
             }
@@ -117,7 +117,7 @@ namespace WindowsClient.Net
                 packet.WriteBuffer();
                 socket.Send(packet.Buffer, packet.Size, SocketFlags.None);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Disconnect();
             }

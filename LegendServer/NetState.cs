@@ -32,7 +32,7 @@ namespace UdpServer
             {
                 Address = ((IPEndPoint)Socket.RemoteEndPoint).Address;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //TraceException(ex);
                 Address = IPAddress.None;
