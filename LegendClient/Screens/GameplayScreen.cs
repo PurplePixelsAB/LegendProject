@@ -268,15 +268,33 @@ namespace WindowsClient
 
         private void DrawHud(SpriteBatch spriteBatch)
         {
-            foreach (int id in world.Characters)
-            {
-                ClientCharacter charToDraw = (ClientCharacter)world.GetCharacter(id);
-                Rectangle sourceSize = hudbarTexture.Bounds;
-                int healthBasedWidth = (int)(sourceSize.Width * ((float)charToDraw.Health / (float)charToDraw.MaxHealth));
-                sourceSize.Width = healthBasedWidth;
-                spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, Color.White);
-                spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, sourceSize, Color.DarkGreen);
-            }
+            Rectangle sourceSize = hudbarTexture.Bounds;
+
+            var healthDrawPosition = new Vector2(CenterScreen.X - sourceSize.Center.X, CenterScreen.Y + (CenterScreen.Y * .7f));
+            spriteBatch.Draw(hudbarTexture, healthDrawPosition, Color.White);
+
+            int healthBasedWidth = (int)(sourceSize.Width * ((float)world.PlayerCharacter.Health / (float)world.PlayerCharacter.MaxHealth));
+            Rectangle healthSize = sourceSize;
+            healthSize.Width = healthBasedWidth;
+            spriteBatch.Draw(hudbarTexture, healthDrawPosition, healthSize, Color.DarkGreen);
+
+            var energyDrawPosition = healthDrawPosition + new Vector2(0f, sourceSize.Size.Y);
+            spriteBatch.Draw(hudbarTexture, energyDrawPosition, Color.White);
+
+            int energyBasedWidth = (int)(sourceSize.Width * ((float)world.PlayerCharacter.Energy / (float)world.PlayerCharacter.MaxEnergy));
+            Rectangle energySize = sourceSize;
+            energySize.Width = energyBasedWidth;
+            spriteBatch.Draw(hudbarTexture, energyDrawPosition, energySize, Color.Orange);
+
+            //foreach (int id in world.Characters)
+            //{
+            //    ClientCharacter charToDraw = (ClientCharacter)world.GetCharacter(id);
+            //    Rectangle sourceSize = hudbarTexture.Bounds;
+            //    int healthBasedWidth = (int)(sourceSize.Width * ((float)charToDraw.Health / (float)charToDraw.MaxHealth));
+            //    sourceSize.Width = healthBasedWidth;
+            //    spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, Color.White);
+            //    spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, sourceSize, Color.DarkGreen);
+            //}
 
         }
         private void DrawDamageEffect(SpriteBatch spriteBatch, GameTime gameTime)

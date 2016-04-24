@@ -15,6 +15,10 @@ namespace Data.World
             Position = new Point(1, 1);
             MovingToPosition = Position;
             AimToPosition = new Point(25, 25);
+            Health = 75;
+            MaxHealth = 100;
+            Energy = 75;
+            MaxEnergy = 100;
         }
         public int Id { get; set; }
         public int CurrentMapId { get; set; }
@@ -62,6 +66,8 @@ namespace Data.World
         private byte health = 100;
         //public byte Health { get; set; }
         public byte MaxHealth { get; set; }
+        public byte MaxEnergy { get; set; }
+        public byte Energy { get; set; }
 
         //protected Vector2 moveForce = new Vector2();
         //protected Vector2 mapPosition = new Vector2();

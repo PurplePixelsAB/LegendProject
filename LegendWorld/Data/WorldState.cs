@@ -8,7 +8,11 @@ namespace Network
     public abstract class WorldState
     {
         protected byte swingDmg = 24;
+        protected byte swingEnergy = 34;
         protected byte healAmount = 11;
+
+        protected TimeSpan baseHealTick = new TimeSpan(0, 0, 1);
+        protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
 
         protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
         public virtual Character GetCharacter(int id)
@@ -39,14 +43,29 @@ namespace Network
         public virtual void Update(GameTime gameTime)
         {
             var idList = characters.Keys;
+            bool isHealTick = gameTime.TotalGameTime.Ticks % baseHealTick.Ticks == 0;
+            bool isEnergyTick = gameTime.TotalGameTime.Ticks % baseEnergyTick.Ticks == 0;
+
             foreach (int characterId in idList)
             {
                 characters[characterId].UpdateMapPosition(gameTime);
+
+                if (isHealTick)
+                {
+                    characters[characterId].Health += 1;
+                }
+                if (isEnergyTick)
+                {
+                    characters[characterId].Energy += 1;
+                }
             }
         }
 
         public virtual void PerformSwing(Character character)
         {
+            if (character.Energy < swingEnergy)
+                return;
+
             double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
             Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
             foreach (int characterId in characters.Keys)
@@ -59,6 +78,7 @@ namespace Network
                     if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
                     {
                         characters[characterId].Health -= swingDmg;
+                        characters[characterId].Energy -= swingEnergy;
                     }
                 }
             }
