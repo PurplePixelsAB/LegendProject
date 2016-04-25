@@ -66,6 +66,18 @@ namespace WindowsClient.Net
         public void Update()
         {
             socketClient.Process();
+            if (moveToPacket != null)
+            {
+                var toSendPacket = moveToPacket;
+                moveToPacket = null;
+                socketClient.Send(toSendPacket);
+            }
+            if (aimToPacket != null)
+            {
+                var toSendPacket = aimToPacket;
+                aimToPacket = null;
+                socketClient.Send(toSendPacket);
+            }
         }
 
         //public void SendInputUpdate(ClientCharacter clientCharacter)
@@ -86,16 +98,19 @@ namespace WindowsClient.Net
             socketClient.Send(packet);
         }
 
+        private MoveToPacket moveToPacket;
+        private AimToPacket aimToPacket;
+
         internal void MoveTo(Point moveToPoint)
         {
-            MoveToPacket packet = new MoveToPacket(moveToPoint);
-            socketClient.Send(packet);
+            moveToPacket = new MoveToPacket(moveToPoint);
+            //socketClient.Send(packet);
         }
 
         internal void AimTo(Point aimToPoint)
         {
-            AimToPacket packet = new AimToPacket(aimToPoint);
-            socketClient.Send(packet);
+            aimToPacket = new AimToPacket(aimToPoint);
+            //socketClient.Send(packet);
         }
 
         internal void PerformSwing(ClientCharacter playerCharacter)
