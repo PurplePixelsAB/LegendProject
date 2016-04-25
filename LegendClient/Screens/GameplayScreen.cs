@@ -132,14 +132,14 @@ namespace WindowsClient
             actionKeyMappingSwing.Action = 3;
             actionKeyMappingSwing.Primary = Keys.D1;
             actionKeyMappingSwing.ActionTriggered += ActionKeyMappingSwing_ActionTriggered;
-            Input.Actions.Add(actionKeyMappingSwing);
+            //Input.Actions.Add(actionKeyMappingSwing);
             
             ActionKeyMapping actionKeyMappingToggleFlullscreen = new ActionKeyMapping();
             actionKeyMappingToggleFlullscreen.Action = 0;
             actionKeyMappingToggleFlullscreen.Primary = Keys.Enter;
             actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
-            Input.Actions.Add(actionKeyMappingToggleFlullscreen);
+            //Input.Actions.Add(actionKeyMappingToggleFlullscreen);
         }
 
         private void ActionKeyMappingToggleFlullscreen_ActionTriggered(object sender, ActionTriggeredEventArgs e)

@@ -36,7 +36,7 @@ namespace LegendClient.Screens
             loadingSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             screenToLoad = new GameplayScreen();
             screenToLoad.Initialize(this.Manager);
-            loadingTask = Task.Factory.StartNew(() => screenToLoad.LoadContent(graphicsDevice));
+            //loadingTask = Task.Factory.StartNew(() => screenToLoad.LoadContent(graphicsDevice)); //Causes double LoadContent event.
         }
 
         public override void UnloadContent()
@@ -57,7 +57,7 @@ namespace LegendClient.Screens
                     dots.Clear();
             }
 
-            if (screenToLoad.IsConnected && loadingTask.IsCompleted)
+            if (screenToLoad.IsConnected) // && loadingTask.IsCompleted)
             {
                 Random rnd = new Random();
                 screenToLoad.SelectCharacter(rnd.Next(1, Int16.MaxValue));
