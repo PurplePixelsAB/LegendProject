@@ -67,7 +67,6 @@ namespace UdpServer
             Socket.BeginReceive(this.Buffer, 0, Packet.DefaultBufferSize, 0, new AsyncCallback(OnReceive), this);
 
             this.WriteConsole("Connected. ({0} Online)", NetState.Instances.Count);
-            this.OnDisconnected();
         }
 
         public EventHandler Disconnected;
@@ -150,7 +149,7 @@ namespace UdpServer
                 return true;
 
             WriteConsole("Disconnecting due to inactivity...");
-            //this.Dispose();
+            this.Dispose();
 
             return false;
         }
@@ -192,6 +191,7 @@ namespace UdpServer
                     buffer = null;
 
                     WriteConsole("Disconnected. ({0} Online)", NetState.Instances.Count);
+                    this.OnDisconnected();
 
                     disposed = true;
                 }

@@ -35,7 +35,9 @@ namespace UdpServer
 
         internal void CharacterDisconnects(object sender, EventArgs e)
         {
-            this.RemoveCharacter((ServerCharacter)sender);
+            NetState dcOwner = (NetState)sender;
+            ServerCharacter character = (ServerCharacter)this.GetCharacter(dcOwner.WorldId);
+            this.RemoveCharacter(character);
         }
 
         internal void UpdateThisCharacterOfEveryone(ServerCharacter characterToUpdate)
