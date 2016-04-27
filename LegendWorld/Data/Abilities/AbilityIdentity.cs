@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Network
+namespace LegendWorld.Data.Abilities
 {
-    public enum AbilityIdentity : int
+    public enum AbilityIdentity : ushort
     {
-        Swing = 1,
-        Heal = 2
+        Swing
     }
 }

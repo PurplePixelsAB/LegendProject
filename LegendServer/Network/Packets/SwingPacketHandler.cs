@@ -16,11 +16,11 @@ namespace UdpServer.Network.Packets
     {
         protected override void OnHandle(IPacket packet, NetState netState, WorldServer worldState)
         {
-            SwingPacket swingPacket = (SwingPacket)packet;
+            PerformAbilityPacket incomingPacket = (PerformAbilityPacket)packet;
             ServerCharacter mobileToUpdate = (ServerCharacter)worldState.GetCharacter(netState.WorldId);
             if (mobileToUpdate != null)
             {
-                worldState.PerformSwing(mobileToUpdate);
+                worldState.PerformAbility(incomingPacket.AbilityUsed, mobileToUpdate);
             }
 
         }

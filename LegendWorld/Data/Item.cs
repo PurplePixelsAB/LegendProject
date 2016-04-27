@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace LegendWorld.Data
 {
     public class Item
     {
-        public int Id { get; set; }
+        public ushort Id { get; set; }
         public string Name { get; set; }
         public ItemType Type { get; set; }
         public ItemLocation Location { get; set; }

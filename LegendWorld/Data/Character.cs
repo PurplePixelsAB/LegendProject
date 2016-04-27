@@ -1,4 +1,5 @@
 ﻿using LegendWorld.Data;
+using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
 using Microsoft.Xna.Framework;
 using Network;
@@ -25,8 +26,8 @@ namespace Data.World
             CollitionArea = new CircleCollitionArea();
             CollitionArea.R = 20;
             CollitionArea.Position = this.Position;
-            Inventory = new BagItem();
-            Inventory.ItemsInBag.Add(new GoldItem() { StackCount = 1000 });
+            //Inventory = new BagItem();
+            //Inventory.ItemsInBag.Add(new GoldItem() { StackCount = 1000 });
             Abilities = new List<AbilityIdentity>();
         }
 
@@ -40,8 +41,8 @@ namespace Data.World
             return true;
         }
 
-        public int Id { get; set; }
-        public int CurrentMapId { get; set; }
+        public ushort Id { get; set; }
+        public ushort CurrentMapId { get; set; }
 
         public string Name { get; set; }
 
@@ -51,7 +52,8 @@ namespace Data.World
 
         public CircleCollitionArea CollitionArea { get; set; }
 
-        public BagItem Inventory { get; set; }
+        //public BagItem Inventory { get; set; }
+        public ushort InventoryBagId { get; set; }
 
         public List<AbilityIdentity> Abilities { get; set; }
 
@@ -96,9 +98,7 @@ namespace Data.World
         public byte MaxHealth { get; set; }
         public byte MaxEnergy { get; set; }
         public byte Energy { get; set; }
-
-        //protected Vector2 moveForce = new Vector2();
-        //protected Vector2 mapPosition = new Vector2();
+        
         public void UpdateMapPosition(GameTime gameTime)
         {
             if (!IsMoving)
@@ -122,52 +122,10 @@ namespace Data.World
 
             this.Position = newPosition.ToPoint();
             this.CollitionArea.Position = this.Position;
-
-            //float accelPixelsPerDelta = (this.Acceleration / 60000f) * gameTime.ElapsedGameTime.Milliseconds;
-            ////Vector2 moveForce = this.MoveForce.ToVector2(); // new Vector2();
-            //if (this.MapPoint.X != this.MovingToPoint.X)
-            //{
-            //    if (this.MapPoint.X < this.MovingToPoint.X && MoveForce.X != this.MaxSpeed)
-            //    {                    
-            //        moveForce.X += accelPixelsPerDelta;
-            //    }
-            //    else if (MoveForce.X != 0 - this.MaxSpeed)
-            //    {
-            //        moveForce.X -= accelPixelsPerDelta;
-            //    }
-            //}
-            //else
-            //{
-            //    moveForce.X = 0f;
-            //}
-            //if (this.MapPoint.Y != this.MovingToPoint.Y)
-            //{
-            //    if (this.MapPoint.Y < this.MovingToPoint.Y && MoveForce.Y != this.MaxSpeed)
-            //    {
-            //        moveForce.Y += accelPixelsPerDelta;
-            //    }
-            //    else if (MoveForce.Y != 0 - this.MaxSpeed)
-            //    {
-            //        moveForce.Y -= accelPixelsPerDelta;
-            //    }
-            //}
-            //else
-            //{
-            //    moveForce.Y = 0f;
-            //}
-
-
-            //mapPosition += moveForce;
-
-            //this.MoveForce = moveForce.ToPoint();
-
-            ////int x = this.MapPoint.X, y = this.MapPoint.Y;
-
-            //this.MapPoint = mapPosition.ToPoint();
         }
 
-        public int Acceleration { get; set; } //PixelsPerSecound
-        public int MaxSpeed { get; set; } //PixelsPerSecound 
+        public ushort Acceleration { get; set; } //PixelsPerSecound
+        public ushort MaxSpeed { get; set; } //PixelsPerSecound 
 
         public byte Health
         {
@@ -203,38 +161,6 @@ namespace Data.World
 
             public byte PreviousHelth { get; set; }
         }
-
-        //public Point MoveForce { get; set; }
-
-        //public void UpdatePosition(int x, int y)
-        //{
-        //    this.X = x;
-        //    this.Y = y;
-        //}
-
-        //public void UpdateVelocity(int velocityX, int velocityY)
-        //{
-        //    this.VelocityY = velocityY;
-        //    this.VelocityX = velocityX;
-        //}
-
-        //public void UpdateInput(bool up, bool down, bool left, bool right)
-        //{
-        //    this.Up = up;
-        //    this.Down = down;
-        //    this.Left = left;
-        //    this.Right = right;
-        //    this.OnInputUpdated();
-        //}
-
-        //public event EventHandler InputUpdated;
-        //private void OnInputUpdated()
-        //{
-        //    if (this.InputUpdated != null)
-        //    {
-        //        this.InputUpdated(this, new EventArgs());
-        //    }
-        //}
 
         public class MoveToMapPointValidatingEventArgs : EventArgs
         {

@@ -23,7 +23,7 @@ namespace LegendWorld.Data
             List<Character> returnList = new List<Character>();
             double coneAngle = world.VectorToRadian(character.AimToPosition.ToVector2() - character.Position.ToVector2());
             Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-            foreach (int characterId in world.Characters)
+            foreach (ushort characterId in world.Characters)
             {
                 if (character.Id == characterId)
                     continue;
@@ -83,7 +83,7 @@ namespace LegendWorld.Data
             if (RectangleArea == null || RectangleArea == Rectangle.Empty)
                 return returnList;
 
-            foreach (int characterId in world.Characters)
+            foreach (ushort characterId in world.Characters)
             {
                 if (performer.Id == characterId)
                     continue;
@@ -117,7 +117,7 @@ namespace LegendWorld.Data
             if (R == 0)
                 return returnList;
 
-            foreach (int characterId in world.Characters)
+            foreach (ushort characterId in world.Characters)
             {
                 if (performer.Id == characterId)
                     continue;

@@ -16,15 +16,15 @@ namespace Network.Packets
         }
         public SelectCharacterPacket(int selectedId) : this()
         {
-            this.CharacterId = selectedId;
+            this.CharacterId = (UInt16)selectedId;
         }
 
-        public Int32 CharacterId { get; set; }
+        public UInt16 CharacterId { get; set; }
 
         public override void OnReadBuffer(PacketReader packetReader)
         {
             base.OnReadBuffer(packetReader);
-            this.CharacterId = packetReader.ReadInt32();
+            this.CharacterId = packetReader.ReadUInt16();
         }
         public override void OnWriteBuffer(PacketWriter packetWriter)
         {

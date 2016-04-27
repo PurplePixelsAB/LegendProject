@@ -55,7 +55,7 @@ namespace LegendClient.Screens
             selectionTexture = Game.Content.Load<Texture2D>("Selection");
 
             ActionKeyMapping actionKeyMappingOpenBags = new ActionKeyMapping();
-            actionKeyMappingOpenBags.Action = 4;
+            actionKeyMappingOpenBags.Id = 4;
             actionKeyMappingOpenBags.Primary = Keys.B;
             actionKeyMappingOpenBags.ActionTriggered += ActionKeyMappingOpenBags_ActionTriggered;
             Input.Actions.Add(actionKeyMappingOpenBags);

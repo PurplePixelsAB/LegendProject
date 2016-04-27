@@ -16,7 +16,7 @@ namespace UdpServer
         {
             int expectedMaxPlayers = 1000; //server.Statistics.PlayerPeak;
             int mapZones = 1; //maps.Count;
-            characters = new Dictionary<int, Character>(expectedMaxPlayers);
+            characters = new Dictionary<ushort, Character>(expectedMaxPlayers);
             maptoCharacterRelations = new List<int>[mapZones];
             for (int i = 0; i < mapZones; i++)
             {
@@ -44,7 +44,7 @@ namespace UdpServer
         {
             NetState clientSendTo = characterToUpdate.Owner;
 
-            foreach (int characterId in characters.Keys)
+            foreach (ushort characterId in characters.Keys)
             {
                 if (characterToUpdate.Id == characterId)
                     continue;
@@ -57,7 +57,7 @@ namespace UdpServer
         internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
         {
             var packet = new UpdateMobilePacket(aboutCharacter);
-            foreach (int mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
+            foreach (ushort mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
             {
                 ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
                 NetState clientSendTo = characterToUpdate.Owner;
@@ -79,7 +79,7 @@ namespace UdpServer
             maptoCharacterRelations[character.CurrentMapId].Remove(character.Id);
         }
 
-        public void ChangeMap(ServerCharacter character, int newMapId)
+        public void ChangeMap(ServerCharacter character, ushort newMapId)
         {
             maptoCharacterRelations[character.CurrentMapId].Remove(character.Id);
             character.CurrentMapId = newMapId;

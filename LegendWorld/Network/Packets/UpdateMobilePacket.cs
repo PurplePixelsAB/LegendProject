@@ -35,13 +35,13 @@ namespace Network.Packets
             //this.Left = character.Left;
             //this.Right = character.Right;
         }
-        public UpdateMobilePacket(int id) : base(PacketIdentity.UpdateMobile, 5)
+        public UpdateMobilePacket(ushort id) : base(PacketIdentity.UpdateMobile, 5)
         {
             this.MobileId = id;
             this.IsVisible = false;
         }
 
-        public Int32 MobileId { get; set; }
+        public UInt16 MobileId { get; set; }
         public bool IsVisible { get; set; }
 
         public Int32? X { get; set; }
@@ -66,7 +66,7 @@ namespace Network.Packets
         public override void OnReadBuffer(PacketReader packetReader)
         {
             base.OnReadBuffer(packetReader);
-            this.MobileId = packetReader.ReadInt32();
+            this.MobileId = packetReader.ReadUInt16();
 
             this.X = packetReader.ReadNullableInt32();
             this.Y = packetReader.ReadNullableInt32();

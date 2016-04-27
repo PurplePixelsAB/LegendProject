@@ -42,8 +42,8 @@ namespace UdpServer
             ServerPacketHandler.Register(PacketIdentity.AimTo, new AimToPacketHandler());
             PacketFactory.Register(PacketIdentity.SelectCharacter, () => new SelectCharacterPacket());
             ServerPacketHandler.Register(PacketIdentity.SelectCharacter, new SelectCharacterPacketHandler());
-            PacketFactory.Register(PacketIdentity.PerformSwing, () => new SwingPacket());
-            ServerPacketHandler.Register(PacketIdentity.PerformSwing, new SwingPacketHandler());
+            PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
+            ServerPacketHandler.Register(PacketIdentity.PerformAbility, new SwingPacketHandler());
 
             acceptedQueue = new Queue<Socket>();
             onAccept = new AsyncCallback(BeginAcceptCallback);

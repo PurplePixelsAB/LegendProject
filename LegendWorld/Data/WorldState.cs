@@ -17,9 +17,43 @@ namespace Network
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
         private long nextRegendTick = 0;
 
-        protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
-        public Dictionary<int, Character>.KeyCollection Characters {  get { return characters.Keys; } }
-        public virtual Character GetCharacter(int id)
+
+        protected Dictionary<ushort, Item> items = new Dictionary<ushort, Item>();
+        public Dictionary<ushort, Item>.KeyCollection Items { get { return items.Keys; } }
+        public virtual Item GetItem(ushort id)
+        {
+            if (items.ContainsKey(id))
+            {
+                return items[id];
+            }
+
+            return null;
+        }
+        public virtual void AddItem(Item item)
+        {
+            if (items.ContainsKey(item.Id))
+                return;
+
+            items.Add(item.Id, item);
+        }
+        public virtual void RemoveItem(Item item)
+        {
+            if (!items.ContainsKey(item.Id))
+                return;
+
+            items.Remove(item.Id);
+        }
+
+
+        protected Dictionary<AbilityIdentity, Ability> abilities = new Dictionary<AbilityIdentity, Ability>();
+        public Ability GetAbility(AbilityIdentity abilityId)
+        {
+            return abilities[abilityId];
+        }
+
+        protected Dictionary<ushort, Character> characters = new Dictionary<ushort, Character>();
+        public Dictionary<ushort, Character>.KeyCollection Characters { get { return characters.Keys; } }
+        public virtual Character GetCharacter(ushort id)
         {
             if (characters.ContainsKey(id))
             {
@@ -34,7 +68,7 @@ namespace Network
             if (characters.ContainsKey(newCharacter.Id))
                 return;
 
-            newCharacter.MoveToMapPointValidating += NewCharacter_MoveToMapPointValidating;
+            newCharacter.MoveToMapPointValidating += Character_MoveToMapPointValidating;
             characters.Add(newCharacter.Id, newCharacter);
         }
         public virtual void RemoveCharacter(Character charToRemove)
@@ -45,7 +79,7 @@ namespace Network
             characters.Remove(charToRemove.Id);
         }
 
-        private void NewCharacter_MoveToMapPointValidating(object sender, Character.MoveToMapPointValidatingEventArgs e)
+        private void Character_MoveToMapPointValidating(object sender, Character.MoveToMapPointValidatingEventArgs e)
         {
             WorldMap map = this.GetCharactersMap((Character)sender);
             e.IsValid = map.Bounds.Contains(e.MoveToMapPoint);
@@ -57,7 +91,7 @@ namespace Network
 
             bool isRegenTick = gameTime.TotalGameTime.Ticks >= nextRegendTick;
 
-            foreach (int characterId in idList)
+            foreach (ushort characterId in idList)
             {
                 characters[characterId].UpdateMapPosition(gameTime);
 
@@ -70,67 +104,79 @@ namespace Network
                         characters[characterId].Energy += 1;
 
                     nextRegendTick = (gameTime.TotalGameTime + baseRegenTick).Ticks;
-                }                
+                }
             }
         }
 
-        public virtual void PerformSwing(Character character)
+        public virtual bool PerformAbility(Ability ability, Character character)
         {
-            if (character.Energy < swingEnergy)
-                return;
+            if (!ability.CanBePerformedBy(character))
+                return false;
 
-            //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
-            //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-            //foreach (int characterId in characters.Keys)
-            //{
-            //    if (character.Id == characterId)
-            //        continue;
-
-            //    if (areaFilter.Contains(characters[characterId].Position))
-            //    {
-            //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
-            //        {
-            //            characters[characterId].Health -= swingDmg;
-            //        }
-            //    }
-            //}
-            
-            var swingAbility = new SwingAbilityEffect();
-            swingAbility.Perform(this, character);
-            
-
-            //foreach (var affectedChar in affectedCharacters)
-            //{
-            //    affectedChar.Health -= swingDmg;
-            //}
-
-            //character.Energy -= swingEnergy;
+            ability.PerformBy(this, character);
+            return true;
         }
-        public virtual void PerformHeal(Character character)
+        public virtual bool PerformAbility(AbilityIdentity abilityId, Character character)
         {
-            if (character.Energy < swingEnergy)
-                return;
 
-            //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
-            //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-            //foreach (int characterId in characters.Keys)
-            //{
-            //    if (character.Id == characterId)
-            //        continue;
-
-            //    if (areaFilter.Contains(characters[characterId].Position))
-            //    {
-            //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
-            //        {
-            //            characters[characterId].Health -= swingDmg;
-            //        }
-            //    }
-            //}
-
-            var collitionArea = new ConeCollitionArea();
-            collitionArea.Range = 20;
-            var affectedCharacters = collitionArea.GetAffected(this, character);
         }
+        //public virtual void PerformSwing(Character character)
+        //{
+        //    if (character.Energy < swingEnergy)
+        //        return;
+
+        //    //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
+        //    //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
+        //    //foreach (int characterId in characters.Keys)
+        //    //{
+        //    //    if (character.Id == characterId)
+        //    //        continue;
+
+        //    //    if (areaFilter.Contains(characters[characterId].Position))
+        //    //    {
+        //    //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
+        //    //        {
+        //    //            characters[characterId].Health -= swingDmg;
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    var swingAbility = new SwingAbilityEffect();
+        //    swingAbility.Perform(this, character);
+
+
+        //    //foreach (var affectedChar in affectedCharacters)
+        //    //{
+        //    //    affectedChar.Health -= swingDmg;
+        //    //}
+
+        //    //character.Energy -= swingEnergy;
+        //}
+        //public virtual void PerformHeal(Character character)
+        //{
+        //    if (character.Energy < swingEnergy)
+        //        return;
+
+        //    //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
+        //    //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
+        //    //foreach (int characterId in characters.Keys)
+        //    //{
+        //    //    if (character.Id == characterId)
+        //    //        continue;
+
+        //    //    if (areaFilter.Contains(characters[characterId].Position))
+        //    //    {
+        //    //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
+        //    //        {
+        //    //            characters[characterId].Health -= swingDmg;
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    var collitionArea = new ConeCollitionArea();
+        //    collitionArea.Range = 20;
+        //    var affectedCharacters = collitionArea.GetAffected(this, character);
+        //}
 
         protected abstract WorldMap GetCharactersMap(Character character);
 

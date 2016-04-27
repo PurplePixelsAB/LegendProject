@@ -60,7 +60,7 @@ namespace LegendClient.Screens
             if (screenToLoad.IsConnected) // && loadingTask.IsCompleted)
             {
                 Random rnd = new Random();
-                screenToLoad.SelectCharacter(rnd.Next(1, Int16.MaxValue));
+                screenToLoad.SelectCharacter((ushort)rnd.Next(1, UInt16.MaxValue));
                 screenToLoad.Activate();
                 isLoadCompleated = true;
                 this.Close();

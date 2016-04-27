@@ -16,8 +16,8 @@ namespace UdpServer
         private static List<NetState> m_Instances = new List<NetState>();
         public static List<NetState> Instances { get { return m_Instances; } }
 
-        public int Id { get; set; }
-        public int WorldId { get; set; }
+        public UInt16 Id { get; set; }
+        public UInt16 WorldId { get; set; }
         public UInt32 LastRecivedTick { get; set; }
 
         public NetState(Socket socket)

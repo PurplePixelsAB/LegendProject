@@ -42,7 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\Abilities\AbilityIdentity.cs" />
-    <Compile Include="Data\Abilities\SwingAbility.cs" />
+    <Compile Include="Data\Abilities\SwingAbilityEffect.cs" />
+    <Compile Include="Data\Ability.cs" />
     <Compile Include="Data\CollitionArea.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\ItemLocation.cs" />
@@ -58,9 +59,10 @@
     <Compile Include="Network\Packets\PacketIdentity.cs" />
     <Compile Include="Network\PacketReader.cs" />
     <Compile Include="Network\PacketStream.cs" />
+    <Compile Include="Network\Packets\UpdateStaticPacket.cs" />
     <Compile Include="Network\PacketWriter.cs" />
     <Compile Include="Network\Packets\SelectCharacterPacket.cs" />
-    <Compile Include="Network\Packets\SwingPacket.cs" />
+    <Compile Include="Network\Packets\PerformAbilityPacket.cs" />
     <Compile Include="Network\Packets\UpdateMobilePacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThreadQueue.cs" />

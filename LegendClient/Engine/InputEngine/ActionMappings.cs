@@ -6,14 +6,14 @@ namespace Engine.InputEngine
 {
     public interface IAction
     {
-        int Action { get; set; }
+        int Id { get; set; }
         //void OnActionTrigger();
         //void OnActionPressed();
     }
 
     public class ActionKeyMapping : IAction
     {
-        public int Action { get; set; }
+        public int Id { get; set; }
         public Keys Primary { get; set; }
         public Keys PrimaryMod { get; set; }
         public Keys Secondary { get; set; }
@@ -42,7 +42,7 @@ namespace Engine.InputEngine
 
     public class ActionButtonMapping : IAction
     {
-        public int Action { get; set; }
+        public int Id { get; set; }
         public MouseButtons Primary { get; set; }
         public Keys PrimaryMod { get; set; }
         public MouseButtons Secondary { get; set; }

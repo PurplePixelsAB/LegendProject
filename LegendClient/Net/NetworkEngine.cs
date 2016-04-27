@@ -8,6 +8,7 @@ using System.Text;
 using WindowsClient.Net.Packets;
 using WindowsClient.World.Mobiles;
 using WindowsClient.World;
+using LegendWorld.Data.Abilities;
 
 namespace WindowsClient.Net
 {
@@ -113,16 +114,16 @@ namespace WindowsClient.Net
             //socketClient.Send(packet);
         }
 
-        internal void PerformSwing(ClientCharacter playerCharacter)
+        internal void PerformAbility(ClientCharacter playerCharacter, AbilityIdentity abilityId)
         {
-            SwingPacket packet = new SwingPacket(playerCharacter.Id, AbilityIdentity.Swing);
+            PerformAbilityPacket packet = new PerformAbilityPacket(playerCharacter.Id, abilityId);
             socketClient.Send(packet);
         }
 
-        internal void PerformHeal(ClientCharacter playerCharacter)
-        {
-            SwingPacket packet = new SwingPacket(playerCharacter.Id, AbilityIdentity.Heal);
-            socketClient.Send(packet);
-        }
+        //internal void PerformHeal(ClientCharacter playerCharacter)
+        //{
+        //    PerformAbilityPacket packet = new PerformAbilityPacket(playerCharacter.Id, AbilityIdentity.Heal);
+        //    socketClient.Send(packet);
+        //}
     }
 }

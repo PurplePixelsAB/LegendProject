@@ -14,6 +14,7 @@ using WindowsClient.World.Mobiles;
 using Network;
 using WindowsClient.World;
 using LegendClient.Screens;
+using LegendWorld.Data.Items;
 
 namespace WindowsClient
 {
@@ -69,7 +70,7 @@ namespace WindowsClient
             inventoryScreen = new InventoryScreen();
         }
 
-        internal void SelectCharacter(int charId)
+        internal void SelectCharacter(ushort charId)
         {
             world.PlayerCharacter = new ClientCharacter();
             world.PlayerCharacter.Id = charId;
@@ -122,31 +123,51 @@ namespace WindowsClient
             //}
 
             ActionButtonMapping actionButtonMappingMoveTo = new ActionButtonMapping();
-            actionButtonMappingMoveTo.Action = 1;
+            actionButtonMappingMoveTo.Id = 1;
             actionButtonMappingMoveTo.Primary = MouseButtons.Right;
             actionButtonMappingMoveTo.ActionTriggered += ActionButtonMappingMoveTo_ActionTriggered;
             Input.Actions.Add(actionButtonMappingMoveTo);
 
             ActionButtonMapping actionButtonMappingAimTo = new ActionButtonMapping();
-            actionButtonMappingAimTo.Action = 2;
+            actionButtonMappingAimTo.Id = 2;
             actionButtonMappingAimTo.Primary = MouseButtons.Left;
             actionButtonMappingAimTo.ActionTriggered += ActionButtonMappingAimTo_ActionTriggered;
             Input.Actions.Add(actionButtonMappingAimTo);
 
-            ActionKeyMapping actionKeyMappingSwing = new ActionKeyMapping();
-            actionKeyMappingSwing.Action = 3;
-            actionKeyMappingSwing.Primary = Keys.D1;
-            actionKeyMappingSwing.ActionTriggered += ActionKeyMappingSwing_ActionTriggered;
-            Input.Actions.Add(actionKeyMappingSwing);
+            ActionKeyMapping actionKeyMappingAbility1 = new ActionKeyMapping();
+            actionKeyMappingAbility1.Id = 11;
+            actionKeyMappingAbility1.Primary = Keys.D1;
+            actionKeyMappingAbility1.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility1);
+            ActionKeyMapping actionKeyMappingAbility2 = new ActionKeyMapping();
+            actionKeyMappingAbility2.Id = 12;
+            actionKeyMappingAbility2.Primary = Keys.D2;
+            actionKeyMappingAbility2.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility2);
+            ActionKeyMapping actionKeyMappingAbility3 = new ActionKeyMapping();
+            actionKeyMappingAbility3.Id = 13;
+            actionKeyMappingAbility3.Primary = Keys.D3;
+            actionKeyMappingAbility3.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility3);
+            ActionKeyMapping actionKeyMappingAbility4 = new ActionKeyMapping();
+            actionKeyMappingAbility4.Id = 14;
+            actionKeyMappingAbility4.Primary = Keys.Q;
+            actionKeyMappingAbility4.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility4);
+            ActionKeyMapping actionKeyMappingAbility5 = new ActionKeyMapping();
+            actionKeyMappingAbility5.Id = 15;
+            actionKeyMappingAbility5.Primary = Keys.E;
+            actionKeyMappingAbility5.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility5);
 
             ActionKeyMapping actionKeyMappingOpenBags = new ActionKeyMapping();
-            actionKeyMappingOpenBags.Action = 4;
+            actionKeyMappingOpenBags.Id = 4;
             actionKeyMappingOpenBags.Primary = Keys.B;
             actionKeyMappingOpenBags.ActionTriggered += ActionKeyMappingOpenBags_ActionTriggered;
             Input.Actions.Add(actionKeyMappingOpenBags);
 
             ActionKeyMapping actionKeyMappingToggleFlullscreen = new ActionKeyMapping();
-            actionKeyMappingToggleFlullscreen.Action = 0;
+            actionKeyMappingToggleFlullscreen.Id = 0;
             actionKeyMappingToggleFlullscreen.Primary = Keys.Enter;
             actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
@@ -155,7 +176,7 @@ namespace WindowsClient
         
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            inventoryScreen.BaseContainer = world.PlayerCharacter.Inventory;
+            inventoryScreen.BaseContainer = (BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId);
             inventoryScreen.Activate();
         }
 
@@ -195,10 +216,18 @@ namespace WindowsClient
             DamageTextEffectList.Enqueue(dmgEfx);
         }
 
-        private void ActionKeyMappingSwing_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        private void actionKeyMappingAbility_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            world.PerformSwing(world.PlayerCharacter);
-            network.PerformSwing(world.PlayerCharacter);
+            var abilityIndex = e.Action.Id - 10;
+            if (world.PlayerCharacter.Abilities.Count > abilityIndex)
+            {
+                var abilityId = world.PlayerCharacter.Abilities[abilityIndex];
+
+                if (world.PerformAbility(abilityId, world.PlayerCharacter))
+                {
+                    network.PerformAbility(world.PlayerCharacter, abilityId);
+                }
+            }
         }
 
         private void ActionButtonMappingAimTo_ActionTriggered(object sender, ActionTriggeredEventArgs e)
@@ -388,7 +417,7 @@ namespace WindowsClient
             Vector2 centerHead = headTexture.Bounds.Center.ToVector2();
             Vector2 centerBody = bodyTexture.Bounds.Center.ToVector2();
 
-            foreach (int id in world.Characters)
+            foreach (ushort id in world.Characters)
             {
                 if (id == world.PlayerCharacter.Id)
                     continue;

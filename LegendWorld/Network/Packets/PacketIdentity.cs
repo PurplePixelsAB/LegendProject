@@ -7,6 +7,7 @@
         AimTo = 2,
         UpdateMobile = 3,
         SelectCharacter = 4,
-        PerformSwing = 5,
+        PerformAbility = 5,
+        UpdateStatic = 6,
     }
 }

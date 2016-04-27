@@ -15,7 +15,7 @@ namespace WindowsClient.World
 
         //private byte swingDmg = 24;
 
-        public IEnumerable<int> Characters { get { return base.characters.Keys; } }
+        public IEnumerable<ushort> Characters { get { return base.characters.Keys; } }
         internal ClientCharacter PlayerCharacter { get; set; }
 
         protected override WorldMap GetCharactersMap(Character character)
@@ -35,7 +35,7 @@ namespace WindowsClient.World
                 PlayerCharacter.DrawPosition = Vector2.Lerp(PlayerCharacter.DrawPosition, realPlayerPosition, lerpAmount);
             }
 
-            foreach (int clientId in Characters)
+            foreach (ushort clientId in Characters)
             {
                 if (PlayerCharacter.Id == clientId)
                     continue;
