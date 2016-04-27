@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using LegendWorld.Data.Items;
+using Microsoft.Xna.Framework;
 
 namespace Network
 {

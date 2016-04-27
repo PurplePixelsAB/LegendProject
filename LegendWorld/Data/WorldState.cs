@@ -1,4 +1,6 @@
 ﻿using Data.World;
+using LegendWorld.Data;
+using LegendWorld.Data.Abilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace Network
         private long nextRegendTick = 0;
 
         protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
+        public Dictionary<int, Character>.KeyCollection Characters {  get { return characters.Keys; } }
         public virtual Character GetCharacter(int id)
         {
             if (characters.ContainsKey(id))
@@ -60,7 +63,7 @@ namespace Network
 
                 if (isRegenTick)
                 {
-                    if (characters[characterId].Health < characters[characterId].MaxHealth)
+                    if (characters[characterId].Health < characters[characterId].MaxHealth - 10 && characters[characterId].Health >= 10)
                         characters[characterId].Health += 1;
 
                     if (characters[characterId].Energy < characters[characterId].MaxEnergy)
@@ -76,80 +79,72 @@ namespace Network
             if (character.Energy < swingEnergy)
                 return;
 
-            double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
-            Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-            foreach (int characterId in characters.Keys)
-            {
-                if (character.Id == characterId)
-                    continue;
+            //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
+            //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
+            //foreach (int characterId in characters.Keys)
+            //{
+            //    if (character.Id == characterId)
+            //        continue;
 
-                if (areaFilter.Contains(characters[characterId].Position))
-                {
-                    if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
-                    {
-                        characters[characterId].Health -= swingDmg;
-                    }
-                }
-            }
+            //    if (areaFilter.Contains(characters[characterId].Position))
+            //    {
+            //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
+            //        {
+            //            characters[characterId].Health -= swingDmg;
+            //        }
+            //    }
+            //}
+            
+            var swingAbility = new SwingAbilityEffect();
+            swingAbility.Perform(this, character);
+            
 
-            character.Energy -= swingEnergy;
+            //foreach (var affectedChar in affectedCharacters)
+            //{
+            //    affectedChar.Health -= swingDmg;
+            //}
+
+            //character.Energy -= swingEnergy;
         }
         public virtual void PerformHeal(Character character)
         {
-            double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
-            Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-            foreach (int characterId in characters.Keys)
-            {
-                if (character.Id == characterId)
-                    continue;
+            if (character.Energy < swingEnergy)
+                return;
 
-                if (areaFilter.Contains(characters[characterId].Position))
-                {
-                    if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
-                    {
-                        characters[characterId].Health -= swingDmg;
-                    }
-                }
-            }
+            //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
+            //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
+            //foreach (int characterId in characters.Keys)
+            //{
+            //    if (character.Id == characterId)
+            //        continue;
+
+            //    if (areaFilter.Contains(characters[characterId].Position))
+            //    {
+            //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
+            //        {
+            //            characters[characterId].Health -= swingDmg;
+            //        }
+            //    }
+            //}
+
+            var collitionArea = new ConeCollitionArea();
+            collitionArea.Range = 20;
+            var affectedCharacters = collitionArea.GetAffected(this, character);
         }
 
         protected abstract WorldMap GetCharactersMap(Character character);
 
-        public double CanonizeAngle(double angle)
+
+        public double VectorToRadian(Vector2 direction)
         {
-            if (angle > Math.PI)
-            {
-                do
-                {
-                    angle -= MathHelper.TwoPi;
-                }
-                while (angle > Math.PI);
-            }
-            else if (angle < -Math.PI)
-            {
-                do
-                {
-                    angle += MathHelper.TwoPi;
-                } while (angle < -Math.PI);
-            }
-
-            return angle;
+            direction.Normalize();
+            return Math.Atan2(direction.X, -direction.Y) + MathHelper.Pi;
         }
-
-        public double VectorToAngle(Vector2 vector)
-        {
-            Vector2 direction = Vector2.Normalize(vector);
-            return Math.Atan2(direction.Y, direction.X);
-        }
-
-        public bool IsPointWithinCone(Vector2 point, Vector2 conePosition, double coneAngle, double coneSize)
-        {
-            double toPoint = VectorToAngle(point - conePosition);
-            double angleDifference = CanonizeAngle(coneAngle - toPoint);
-            double halfConeSize = coneSize * 0.5f;
-
-            return angleDifference >= -halfConeSize && angleDifference <= halfConeSize;
-        }
+        //public double VectorToAngle(Vector2 vector)
+        //{
+        //    Vector2 direction = Vector2.Normalize(vector);
+        //    return Math.Atan2(direction.Y, direction.X);
+        //}
 
     }
 }

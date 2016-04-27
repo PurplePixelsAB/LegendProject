@@ -11,13 +11,14 @@ namespace Network.Packets
 {
     public class UpdateMobilePacket : Packet
     {
-        public UpdateMobilePacket() : base(PacketIdentity.UpdateMobile, 200) //48
+        public UpdateMobilePacket() : base(PacketIdentity.UpdateMobile, 40) //48
         {
 
         }
         public UpdateMobilePacket(Character character) : this()
         {
             this.MobileId = character.Id;
+            this.IsVisible = character.IsVisible;
             this.X = character.Position.X;
             this.Y = character.Position.Y;
             if (character.MovingToPosition != character.Position)
@@ -34,8 +35,14 @@ namespace Network.Packets
             //this.Left = character.Left;
             //this.Right = character.Right;
         }
+        public UpdateMobilePacket(int id) : base(PacketIdentity.UpdateMobile, 5)
+        {
+            this.MobileId = id;
+            this.IsVisible = false;
+        }
 
         public Int32 MobileId { get; set; }
+        public bool IsVisible { get; set; }
 
         public Int32? X { get; set; }
         public Int32? Y { get; set; }

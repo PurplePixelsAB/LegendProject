@@ -34,37 +34,5 @@ namespace Network
         {
             _dict.Add(packetId, ctor);
         }
-
-
-        //Dictionary<PacketIdentity, Type> packetTypeList;
-        //public void Register<TPacket>(PacketIdentity packetID) where TPacket : Packet
-        //{
-
-        //}
-        //public Packet GetPacket(byte[] buffer)
-        //{
-        //    PacketIdentity packetID = (PacketIdentity)buffer[0];
-
-        //    Packet packet = this.CreatePacket<packetTypeList[packetID] >(packetID, buffer);
-        //    packet.Buffer = buffer;
-        //    return packet;
-        //}
-        //private TPacket CreatePacket<TPacket>(PacketIdentity packetID) where TPacket : Packet, new()
-        //{
-        //    return new TPacket();
-        //}
-
-        //private static PacketReciver<IPacket>[] Recivers = new PacketReciver<IPacket>[byte.MaxValue];
-        //public static void Register<TPacket>(PacketIdentity packetID, TPacket packetReciver)
-        //{
-        //    Recivers[(byte)packetID] = packetReciver;
-        //}
-
-        //public static PacketReciver GetHandler(PacketIdentity packetID)
-        //{
-        //    return Recivers[(byte)packetID];
-        //}
-
-        //public abstract IPacket OnRecive(byte[] buffert);
     }
 }

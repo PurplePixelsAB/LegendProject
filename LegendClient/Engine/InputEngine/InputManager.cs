@@ -15,6 +15,8 @@ namespace Engine.InputEngine
 
         }
 
+        public Point MousePosition {  get { return this.CurrentMouseState.Position; } }
+
         private KeyboardState CurrentKeyboardState { get; set; }
         private KeyboardState PreviousKeyboardState { get; set; }
 

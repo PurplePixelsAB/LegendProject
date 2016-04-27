@@ -35,19 +35,19 @@ namespace WindowsClient.World
                 PlayerCharacter.DrawPosition = Vector2.Lerp(PlayerCharacter.DrawPosition, realPlayerPosition, lerpAmount);
             }
 
-            //foreach (int clientId in Characters)
-            //{
-            //    if (PlayerCharacter.Id == clientId)
-            //        continue;
+            foreach (int clientId in Characters)
+            {
+                if (PlayerCharacter.Id == clientId)
+                    continue;
 
-            //    ClientCharacter client = (ClientCharacter)this.GetCharacter(clientId);
+                ClientCharacter client = (ClientCharacter)this.GetCharacter(clientId);
 
-            //    Vector2 realClientPosition = centerVector2 - (this.PlayerCharacter.Position.ToVector2() - client.Position.ToVector2()); //new Vector2(this.PlayerCharacter.Position.X - client.Position.X, this.PlayerCharacter.Position.Y - client.Position.Y);
-            //    if (realClientPosition != client.DrawPosition)
-            //    {
-            //        client.DrawPosition = Vector2.Lerp(client.DrawPosition, realClientPosition, lerpAmount);
-            //    }
-            //}
+                Vector2 realClientPosition = centerVector2 - (this.PlayerCharacter.Position - client.lastKnownServerPosition).ToVector2(); //new Vector2(this.PlayerCharacter.Position.X - client.Position.X, this.PlayerCharacter.Position.Y - client.Position.Y);
+                if (realClientPosition != client.DrawPosition)
+                {
+                    client.DrawPosition = Vector2.Lerp(client.DrawPosition, realClientPosition, lerpAmount);
+                }
+            }
         }
     }
 }

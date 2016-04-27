@@ -13,6 +13,7 @@ using System.Threading;
 using WindowsClient.World.Mobiles;
 using Network;
 using WindowsClient.World;
+using LegendClient.Screens;
 
 namespace WindowsClient
 {
@@ -64,6 +65,8 @@ namespace WindowsClient
             network.WorldState = world;
             worldPump = new WorldPump();
             worldPump.State = world;
+
+            inventoryScreen = new InventoryScreen();
         }
 
         internal void SelectCharacter(int charId)
@@ -78,12 +81,14 @@ namespace WindowsClient
         public override void Initialize(ScreenManager screenManager)
         {
             base.Initialize(screenManager);
+            inventoryScreen.Initialize(screenManager);
             network.Initialize();
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
             network.LoadContent();
+            inventoryScreen.LoadContent(graphicsDevice);   
 
             spriteBatch = new SpriteBatch(graphicsDevice);
             bodyTexture = Game.Content.Load<Texture2D>("Body");
@@ -94,7 +99,7 @@ namespace WindowsClient
             backgroundTexture = Game.Content.Load<Texture2D>("GrassBackground");
             selectionTexture = Game.Content.Load<Texture2D>("Selection");
             damageSpriteFont = Game.Content.Load<SpriteFont>("Damage");
-            bigBushSpriteFont = Game.Content.Load<Texture2D>("bigbush");
+            bigBushTexture = Game.Content.Load<Texture2D>("bigbush");
             hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
 
             //generalMappings = Game.Content.Load<ActionKeyMapping[]>("DefaultKeys\\General");
@@ -132,14 +137,26 @@ namespace WindowsClient
             actionKeyMappingSwing.Action = 3;
             actionKeyMappingSwing.Primary = Keys.D1;
             actionKeyMappingSwing.ActionTriggered += ActionKeyMappingSwing_ActionTriggered;
-            //Input.Actions.Add(actionKeyMappingSwing);
-            
+            Input.Actions.Add(actionKeyMappingSwing);
+
+            ActionKeyMapping actionKeyMappingOpenBags = new ActionKeyMapping();
+            actionKeyMappingOpenBags.Action = 4;
+            actionKeyMappingOpenBags.Primary = Keys.B;
+            actionKeyMappingOpenBags.ActionTriggered += ActionKeyMappingOpenBags_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingOpenBags);
+
             ActionKeyMapping actionKeyMappingToggleFlullscreen = new ActionKeyMapping();
             actionKeyMappingToggleFlullscreen.Action = 0;
             actionKeyMappingToggleFlullscreen.Primary = Keys.Enter;
             actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
-            //Input.Actions.Add(actionKeyMappingToggleFlullscreen);
+            Input.Actions.Add(actionKeyMappingToggleFlullscreen);
+        }
+        
+        private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            inventoryScreen.BaseContainer = world.PlayerCharacter.Inventory;
+            inventoryScreen.Activate();
         }
 
         private void ActionKeyMappingToggleFlullscreen_ActionTriggered(object sender, ActionTriggeredEventArgs e)
@@ -167,7 +184,7 @@ namespace WindowsClient
         }
 
         private Queue<DamageTextEffect> DamageTextEffectList = new Queue<DamageTextEffect>();
-        private Texture2D bigBushSpriteFont;
+        private Texture2D bigBushTexture;
 
         private void AddDamageIndicator(ClientCharacter clientCharacter, int damageAmount)
         {
@@ -235,6 +252,7 @@ namespace WindowsClient
             worldPump.Update(gameTime);
             world.ClientUpdate(gameTime);
             network.Update();
+            movementBodyBobEffect.Update(gameTime);
         }
 
         public void UpdateRandomBodyMovement(GameTime gameTime)
@@ -252,10 +270,11 @@ namespace WindowsClient
             //rndHead.Y = (float)Math.Round(MathHelper.Lerp(rndHeadLast.Y, rndHeadTarget.Y, lerp));
         }
 
-        private float Vector2ToRadian(Vector2 direction)
-        {
-            return (float)Math.Atan2(direction.X, -direction.Y) + MathHelper.Pi;
-        }
+        //private float Vector2ToRadian(Vector2 direction)
+        //{
+        //    return (float)Math.Atan2(direction.X, -direction.Y) + MathHelper.Pi;
+        //}
+
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -296,6 +315,27 @@ namespace WindowsClient
             //    spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, sourceSize, Color.DarkGreen);
             //}
 
+            Vector2 centerSelection = selectionTexture.Bounds.Center.ToVector2();
+            //Point screenCenter = new Point(960, 540);
+            Vector2 drawAimLocation = CenterScreen - (world.PlayerCharacter.Position - world.PlayerCharacter.AimToPosition).ToVector2(); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
+            spriteBatch.Draw(selectionTexture, drawAimLocation, selectionTexture.Bounds, Color.Blue, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
+
+            if (world.PlayerCharacter.Position != world.PlayerCharacter.MovingToPosition)
+            {
+                Vector2 drawMoveToLocation = CenterScreen - (world.PlayerCharacter.Position - world.PlayerCharacter.MovingToPosition).ToVector2(); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
+
+                spriteBatch.Draw(selectionTexture, drawMoveToLocation, selectionTexture.Bounds, Color.Cyan, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
+            }
+
+            //DrawWindow
+            //if (inventory != null)
+            //{
+            //    inventory.Draw
+            //    spriteBatch.Draw(inventory.BackgroundTexture, inventory.Location, inventory.BackgroundTexture.Bounds, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            //}
+
+
+            spriteBatch.Draw(selectionTexture, Mouse.GetState().Position.ToVector2(), selectionTexture.Bounds, Color.Black, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
         }
         private void DrawDamageEffect(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -315,21 +355,38 @@ namespace WindowsClient
             }
         }
 
+
+        public class MovementBodyBobEffect
+        {
+            //float lerp = 0f;
+            float lerpSpeed = .1f;
+
+            public Vector2 PositioinBob { get; set; }
+            public Vector2 BobValue { get; set; }
+
+            public MovementBodyBobEffect()
+            {
+                BobValue = new Vector2(0f, 3f);
+                PositioinBob = new Vector2(0f, 0f);
+            }
+                
+
+            public void Update(GameTime gameTime)
+            {
+                double msElapsed = gameTime.TotalGameTime.Milliseconds;
+                var offset = (float)Math.Sin(msElapsed);
+
+                this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue*-1f, offset * lerpSpeed);
+            }
+        }
+        private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
+        private Texture2D bagTexture;
+        private InventoryScreen inventoryScreen;
+
         private void DrawCharacters(SpriteBatch spriteBatch)
         {
-            //Rectangle screen = new Rectangle(0, 0, 1920, 1080);
-            //Rectangle charBox = new Rectangle(screen.Center.X - 12, screen.Center.Y - 25, 24, 50);
-            //Vector2 centerVector2 = new Vector2(960f, 540f);
-
-            //Vector2 centerBox = screen.Center.ToVector2();
             Vector2 centerHead = headTexture.Bounds.Center.ToVector2();
-            Vector2 centerSelection = selectionTexture.Bounds.Center.ToVector2();
-            //headPosition = centerBox - centerHead + rndHead;
-
-            //Vector2 centerBody = bodyTexture.Bounds.Center.ToVector2();
-            //Vector2 bodyPosition = new Vector2();
-            //bodyPosition.X = centerBox.X - centerBody.X;
-            //bodyPosition.Y = centerBox.Y + (centerBody.Y * .4f);
+            Vector2 centerBody = bodyTexture.Bounds.Center.ToVector2();
 
             foreach (int id in world.Characters)
             {
@@ -338,57 +395,40 @@ namespace WindowsClient
 
                 ClientCharacter charToDraw = (ClientCharacter)world.GetCharacter(id);
                 Vector2 charToDrawDirection = charToDraw.Position.ToVector2() - charToDraw.AimToPosition.ToVector2();
-                //Vector2 charToDrawLocation = centerVector2 - new Vector2(world.PlayerCharacter.Position.X - charToDraw.ServerPosition.X, world.PlayerCharacter.Position.Y - charToDraw.ServerPosition.Y);
-                spriteBatch.Draw(headTexture, charToDraw.DrawPosition, null, Color.White, Vector2ToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
-            }
+                Vector2 bodyMovingBobPosition = Vector2.Zero;
+                if (charToDraw.IsMoving)
+                    bodyMovingBobPosition = movementBodyBobEffect.PositioinBob;
 
-            //#if DEBUG
-            //            Vector2 debugDrawLocation = centerVector2 + new Vector2(world.PlayerCharacter.ServerPosition.X, world.PlayerCharacter.ServerPosition.Y) - new Vector2(world.PlayerCharacter.MapPoint.X, world.PlayerCharacter.MapPoint.Y);
-            //            //spriteBatch.Draw(bodyTexture, bodyPosition, Color.Red);
-            //            spriteBatch.Draw(headTexture, debugDrawLocation, Color.Red);
-            //#endif
+                Vector2 bodyRotationPosition = charToDrawDirection;
+                bodyRotationPosition.Normalize();
+                bodyRotationPosition *= 5f;
+                
+                spriteBatch.Draw(bodyTexture, charToDraw.DrawPosition + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
+                spriteBatch.Draw(headTexture, charToDraw.DrawPosition, null, Color.White, (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
+            }
 
             Vector2 start = world.PlayerCharacter.Position.ToVector2();
             Vector2 end = world.PlayerCharacter.AimToPosition.ToVector2();
             //float distance = Vector2.Distance(start, end);
             Vector2 direction = end - start;
-            //double drawAngle = Math.Atan2(direction.X, direction.Y);
-            //float rotation = (float)(drawAngle + (Math.PI * 0.5D));
-            //spriteBatch.Draw(bodyTexture, bodyPosition, Color.White);
-            spriteBatch.Draw(headTexture, CenterScreen, headTexture.Bounds, Color.White, Vector2ToRadian(direction), centerHead, 1f, SpriteEffects.None, 1f);
 
+            Vector2 plrbodyMovingBobPosition = Vector2.Zero;
+            if (world.PlayerCharacter.IsMoving)
+                plrbodyMovingBobPosition = movementBodyBobEffect.PositioinBob;
 
-            //Point screenCenter = new Point(960, 540);
-            Vector2 drawAimLocation = CenterScreen - (world.PlayerCharacter.Position - world.PlayerCharacter.AimToPosition).ToVector2(); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
-            spriteBatch.Draw(selectionTexture, drawAimLocation, selectionTexture.Bounds, Color.Blue, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
+            Vector2 plrbodyRotationPosition = direction;
+            plrbodyRotationPosition.Normalize();
+            plrbodyRotationPosition *= 5f;
 
-            if (world.PlayerCharacter.Position != world.PlayerCharacter.MovingToPosition)
-            {
-                Vector2 drawMoveToLocation = CenterScreen - (world.PlayerCharacter.Position - world.PlayerCharacter.MovingToPosition).ToVector2(); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
-
-                spriteBatch.Draw(selectionTexture, drawMoveToLocation, selectionTexture.Bounds, Color.Cyan, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
-            }
-            spriteBatch.Draw(selectionTexture, Mouse.GetState().Position.ToVector2(), selectionTexture.Bounds, Color.Black, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(bodyTexture, CenterScreen + plrbodyMovingBobPosition + plrbodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(headTexture, CenterScreen, headTexture.Bounds, Color.White, (float)world.VectorToRadian(direction), centerHead, 1f, SpriteEffects.None, 1f);
         }
         private void BaseDrawing(SpriteBatch spriteBatch)
         {
-            //Vector2 centerVector2 = new Vector2(960f, 540f);
-
-            //Rectangle screen = new Rectangle(0, 0, 1920, 1080);
-            //Vector2 drawLocation = centerVector2 - world.PlayerCharacter.DrawPosition; //.Position.ToVector2(); //new Vector2(world.PlayerCharacter.Position.X, world.PlayerCharacter.Position.Y);
-            //spriteBatch.Draw(backgroundTexture, world.PlayerCharacter.DrawPosition, Color.White);
-
-            //if (Map.Base == null)
-            //    throw new ArgumentNullException("Invalid or no Base Sprite selected.");
-
-            //Vector2 destinationVector = Vector2.Zero;
-
-            //int scaledWidth = (int)(Map.Base.Source.Width);
-            //int scaledHeight = (int)(Map.Base.Source.Height);
-
             Vector2 destinationVector = new Vector2();
             int scaledWidth = backgroundTexture.Width;
             int scaledHeight = backgroundTexture.Height;
+
             for (int X = Viewport.X; X <= Viewport.Width; X += scaledWidth)
             {
                 for (int Y = Viewport.Y; Y <= Viewport.Height; Y += scaledHeight)
@@ -400,9 +440,7 @@ namespace WindowsClient
                 }
             }
 
-            spriteBatch.Draw(bigBushSpriteFont, Vector2.Zero - (world.PlayerCharacter.Position.ToVector2() - CenterScreen) - bigBushSpriteFont.Bounds.Center.ToVector2(), Color.White);
-
+            spriteBatch.Draw(bigBushTexture, Vector2.Zero - (world.PlayerCharacter.Position.ToVector2() - CenterScreen) - bigBushTexture.Bounds.Center.ToVector2(), Color.White);
         }
-
     }
 }

@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LegendWorld.Data;
+using LegendWorld.Data.Items;
+using Microsoft.Xna.Framework;
+using Network;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +22,24 @@ namespace Data.World
             MaxHealth = 100;
             Energy = 75;
             MaxEnergy = 100;
+            CollitionArea = new CircleCollitionArea();
+            CollitionArea.R = 20;
+            CollitionArea.Position = this.Position;
+            Inventory = new BagItem();
+            Inventory.ItemsInBag.Add(new GoldItem() { StackCount = 1000 });
+            Abilities = new List<AbilityIdentity>();
         }
+
+        internal bool Teach(AbilityIdentity ability)
+        {
+            if (this.Abilities.Count >= 6)
+                return false;
+
+            this.Abilities.Add(ability);
+
+            return true;
+        }
+
         public int Id { get; set; }
         public int CurrentMapId { get; set; }
 
@@ -28,6 +48,12 @@ namespace Data.World
         public virtual Point Position { get; protected set; }
         public Point MovingToPosition { get; protected set; }
         public Point AimToPosition { get; protected set; }
+
+        public CircleCollitionArea CollitionArea { get; set; }
+
+        public BagItem Inventory { get; set; }
+
+        public List<AbilityIdentity> Abilities { get; set; }
 
         public virtual void SetMoveToPosition(Point mapPoint)
         {
@@ -63,6 +89,8 @@ namespace Data.World
 
         public bool IsMoving { get { return this.MovingToPosition != this.Position; } }
 
+        public bool IsDead {  get { return this.Health == 0; } }
+
         private byte health = 100;
         //public byte Health { get; set; }
         public byte MaxHealth { get; set; }
@@ -93,6 +121,7 @@ namespace Data.World
             }
 
             this.Position = newPosition.ToPoint();
+            this.CollitionArea.Position = this.Position;
 
             //float accelPixelsPerDelta = (this.Acceleration / 60000f) * gameTime.ElapsedGameTime.Milliseconds;
             ////Vector2 moveForce = this.MoveForce.ToVector2(); // new Vector2();
@@ -154,6 +183,8 @@ namespace Data.World
                 this.OnHealthChange(oldHp);
             }
         }
+
+        public bool IsVisible { get; set; }
 
         public event EventHandler<HealthChangedEventArgs> HealthChanged;
         private void OnHealthChange(byte oldHp)

@@ -42,6 +42,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\Abilities\AbilityIdentity.cs" />
+    <Compile Include="Data\Abilities\SwingAbility.cs" />
+    <Compile Include="Data\CollitionArea.cs" />
+    <Compile Include="Data\Item.cs" />
+    <Compile Include="Data\ItemLocation.cs" />
+    <Compile Include="Data\Items\AbilityScrollItem.cs" />
+    <Compile Include="Data\Items\BagItem.cs" />
+    <Compile Include="Data\Items\GoldItem.cs" />
+    <Compile Include="Data\ItemType.cs" />
     <Compile Include="Network\IPacket.cs" />
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />
