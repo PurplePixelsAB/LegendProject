@@ -6,6 +6,7 @@
         Weapon,
         Armor,
         Consumable,
-        Container
+        Container,
+        Currency
     }
 }

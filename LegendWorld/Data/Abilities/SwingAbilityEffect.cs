@@ -17,7 +17,7 @@ namespace LegendWorld.Data.Abilities
         public SwingAbility() : base(AbilityIdentity.Swing)
         {
             this.Duration = 2000;
-            //this.Prepare = 0;
+            this.Prepare = 0;
             //this.Area = new ConeCollitionArea();
             //this.Area.Range = 20;
         }

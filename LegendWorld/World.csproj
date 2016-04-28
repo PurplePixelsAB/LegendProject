@@ -48,8 +48,15 @@
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\ItemLocation.cs" />
     <Compile Include="Data\Items\AbilityScrollItem.cs" />
+    <Compile Include="Data\Items\ArmorItem.cs" />
     <Compile Include="Data\Items\BagItem.cs" />
+    <Compile Include="Data\Items\BowItem.cs" />
     <Compile Include="Data\Items\GoldItem.cs" />
+    <Compile Include="Data\Items\LeatherArmor.cs" />
+    <Compile Include="Data\Items\PlateArmor.cs" />
+    <Compile Include="Data\Items\StaffItem.cs" />
+    <Compile Include="Data\Items\SwordItem.cs" />
+    <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemType.cs" />
     <Compile Include="Network\IPacket.cs" />
     <Compile Include="Network\Packet.cs" />
