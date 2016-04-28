@@ -5,22 +5,26 @@ using System.Collections.Generic;
 using System;
 using Data;
 using Microsoft.Xna.Framework;
+using LegendWorld.Data;
 
 namespace UdpServer
 {
     internal class WorldServer : WorldState
     {
-        private List<int>[] maptoCharacterRelations;
+        private List<ushort>[] maptoCharacterRelations;
+        private List<ushort>[] mapToGroundItems;
 
         public WorldServer() : base()
         {
             int expectedMaxPlayers = 1000; //server.Statistics.PlayerPeak;
             int mapZones = 1; //maps.Count;
             characters = new Dictionary<ushort, Character>(expectedMaxPlayers);
-            maptoCharacterRelations = new List<int>[mapZones];
+            maptoCharacterRelations = new List<ushort>[mapZones];
+            mapToGroundItems = new List<ushort>[mapZones];
             for (int i = 0; i < mapZones; i++)
             {
-                maptoCharacterRelations[i] = new List<int>(expectedMaxPlayers);
+                maptoCharacterRelations[i] = new List<ushort>(expectedMaxPlayers);
+                mapToGroundItems[i] = new List<ushort>(expectedMaxPlayers);
             }
         }
 
@@ -31,13 +35,32 @@ namespace UdpServer
             maptoCharacterRelations[character.CurrentMapId].Add(character.Id); 
             this.UpdateThisCharacterOfEveryone(serverCharacter);
             this.UpdateEveryoneOfThisCharacter(serverCharacter);
+            this.UpdateCharacterOfEveryGroundItem(serverCharacter);
+        }
+
+        //public override void AddItem(Item item)
+        //{
+        //    base.AddItem(item);
+        //    //ServerCharacter serverCharacter = (ServerCharacter)character;
+        //    maptoCharacterRelations[character.CurrentMapId].Add(character.Id);
+        //}
+        public void AddGroundItem(Item item, ushort mapId, Point position)
+        {
+            this.AddItem(item);
+            GroundItem groundItem = new GroundItem();
+            groundItem.Position = position;
+            groundItem.CurrentMapId = mapId;
+            groundItem.ItemId = item.Id;
+            base.AddGroundItem(groundItem);
+            this.UpdateEveryoneOfGroundItem(groundItem);
         }
 
         internal void CharacterDisconnects(object sender, EventArgs e)
         {
             NetState dcOwner = (NetState)sender;
             ServerCharacter character = (ServerCharacter)this.GetCharacter(dcOwner.WorldId);
-            this.RemoveCharacter(character);
+            if (character != null)
+                this.RemoveCharacter(character);
         }
 
         internal void UpdateThisCharacterOfEveryone(ServerCharacter characterToUpdate)
@@ -51,7 +74,6 @@ namespace UdpServer
 
                 ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
                 clientSendTo.Send(new UpdateMobilePacket(aboutCharacter));
-                clientSendTo.WriteConsole("Sending client{0} info for client{1}.", characterToUpdate.Id, aboutCharacter.Id);
             }
         }
         internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
@@ -63,8 +85,29 @@ namespace UdpServer
                 NetState clientSendTo = characterToUpdate.Owner;
 
                 clientSendTo.Send(packet);
-                clientSendTo.WriteConsole("Sending client{0} info for client{1}.", characterToUpdate.Id, aboutCharacter.Id);
             }
+        }
+        internal void UpdateEveryoneOfGroundItem(GroundItem aboutItem)
+        {
+            var packet = new UpdateStaticPacket(new List<GroundItem>(new GroundItem[] { aboutItem }));
+            foreach (ushort mapCharacterId in maptoCharacterRelations[aboutItem.CurrentMapId])
+            {
+                ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
+                NetState clientSendTo = characterToUpdate.Owner;
+
+                clientSendTo.Send(packet);
+            }
+        }
+        private void UpdateCharacterOfEveryGroundItem(ServerCharacter characterToUpdate)
+        {
+            NetState clientSendTo = characterToUpdate.Owner;
+            var sendList = new List<GroundItem>(this.GroundItems.Count);
+            foreach (ushort groundId in this.GroundItems)
+            {
+                var groundItemToUpdate = this.GetGroundItem(groundId); //((ServerCharacter)characters[characterId]);
+                sendList.Add(groundItemToUpdate);
+            }
+            clientSendTo.Send(new UpdateStaticPacket(sendList));
         }
 
         private void character_InputUpdated(object sender, EventArgs e)

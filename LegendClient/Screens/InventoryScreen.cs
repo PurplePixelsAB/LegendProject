@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Engine.InputEngine;
 using Microsoft.Xna.Framework.Input;
 using LegendWorld.Data.Items;
+using LegendWorld.Data;
 
 namespace LegendClient.Screens
 {
@@ -20,7 +21,7 @@ namespace LegendClient.Screens
         private SpriteFont itemSpriteFont;
         private Texture2D selectionTexture;
 
-        public BagItem BaseContainer { get; set; }
+        public ClientBagItem BaseContainer { get; set; }
 
         public override void Draw(GameTime gameTime)
         {
@@ -28,11 +29,11 @@ namespace LegendClient.Screens
             spriteBatch.Draw(whitePixel, this.Game.GraphicsDevice.Viewport.Bounds, this.Game.GraphicsDevice.Viewport.Bounds, Color.Black * .8f, 0f, Vector2.Zero, SpriteEffects.None, 1f);
             spriteBatch.Draw(bagTexture, this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(), bagTexture.Bounds, Color.White, 0f, bagTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
             Vector2 drawPosition = this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2() - bagTexture.Bounds.Center.ToVector2();
-            if (this.BaseContainer.ItemsInBag.Count > 0)
+            if (this.BaseContainer.Items.Count > 0)
             {
-                foreach (var bagItem in this.BaseContainer.ItemsInBag)
+                foreach (Item bagItem in this.BaseContainer.ItemsInBag)
                 {
-                    spriteBatch.DrawString(itemSpriteFont, bagItem.GetInventoryString(), drawPosition, Color.White);
+                    spriteBatch.DrawString(itemSpriteFont, bagItem.Identity.ToString(), drawPosition, Color.White);
                     drawPosition.Y += itemSpriteFont.LineSpacing;
                 }
             }

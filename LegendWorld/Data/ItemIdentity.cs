@@ -14,6 +14,7 @@ namespace LegendWorld.Data
         PlateArmor,
         Staff,
         Sword,
-        Bow
+        Bow,
+        AbilityScoll
     }
 }

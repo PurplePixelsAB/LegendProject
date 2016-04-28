@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    public class GoldItem : Item
+    public class GoldItem : StackableItem
     {
         public GoldItem()
         {
-            this.Name = "Gold coin(s)";
-            this.IsStackable = true;
+            this.Identity = ItemIdentity.Gold;
             this.StackCount = 1;
-            this.Weight = 1;
         }
     }
 }

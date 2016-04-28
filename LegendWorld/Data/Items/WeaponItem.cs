@@ -8,6 +8,11 @@ namespace LegendWorld.Data.Items
 {
     public abstract class WeaponItem : Item
     {
+        public WeaponItem()
+        {
+            this.Category = ItemCategory.Weapon;
+        }
+
         public byte Damage { get; set; }
         public int Speed { get; set; }
         public bool IsTwoHanded { get; set; }

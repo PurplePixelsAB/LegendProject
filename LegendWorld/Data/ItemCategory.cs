@@ -7,6 +7,6 @@
         Armor,
         Consumable,
         Container,
-        Currency
+        Stackable
     }
 }

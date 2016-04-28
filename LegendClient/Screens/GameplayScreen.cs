@@ -176,7 +176,7 @@ namespace WindowsClient
         
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            inventoryScreen.BaseContainer = (BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId);
+            inventoryScreen.BaseContainer = (ClientBagItem)world.GetItem(world.PlayerCharacter.InventoryBagId);
             inventoryScreen.Activate();
         }
 
@@ -388,14 +388,14 @@ namespace WindowsClient
         public class MovementBodyBobEffect
         {
             //float lerp = 0f;
-            float lerpSpeed = .1f;
+            float lerpSpeed = .01f;
 
             public Vector2 PositioinBob { get; set; }
             public Vector2 BobValue { get; set; }
 
             public MovementBodyBobEffect()
             {
-                BobValue = new Vector2(0f, 3f);
+                BobValue = new Vector2(0f, 2f);
                 PositioinBob = new Vector2(0f, 0f);
             }
                 
@@ -403,9 +403,9 @@ namespace WindowsClient
             public void Update(GameTime gameTime)
             {
                 double msElapsed = gameTime.TotalGameTime.Milliseconds;
-                var offset = (float)Math.Sin(msElapsed);
+                var offset = (float)Math.Sin(msElapsed * lerpSpeed);
 
-                this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue*-1f, offset * lerpSpeed);
+                this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue*-1f, offset);
             }
         }
         private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
@@ -416,6 +416,7 @@ namespace WindowsClient
         {
             Vector2 centerHead = headTexture.Bounds.Center.ToVector2();
             Vector2 centerBody = bodyTexture.Bounds.Center.ToVector2();
+            centerBody.Y = 0f;
 
             foreach (ushort id in world.Characters)
             {
@@ -430,8 +431,10 @@ namespace WindowsClient
 
                 Vector2 bodyRotationPosition = charToDrawDirection;
                 bodyRotationPosition.Normalize();
-                bodyRotationPosition *= 5f;
-                
+                bodyRotationPosition.X *= 2f;
+                if (bodyRotationPosition.Y < 0f)
+                    bodyRotationPosition.Y *= 10f;
+
                 spriteBatch.Draw(bodyTexture, charToDraw.DrawPosition + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
                 spriteBatch.Draw(headTexture, charToDraw.DrawPosition, null, Color.White, (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
             }
@@ -447,7 +450,9 @@ namespace WindowsClient
 
             Vector2 plrbodyRotationPosition = direction;
             plrbodyRotationPosition.Normalize();
-            plrbodyRotationPosition *= 5f;
+            plrbodyRotationPosition.X *= 2f;
+            if (plrbodyRotationPosition.Y < 0f)
+            plrbodyRotationPosition.Y *= 10f;
 
             spriteBatch.Draw(bodyTexture, CenterScreen + plrbodyMovingBobPosition + plrbodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
             spriteBatch.Draw(headTexture, CenterScreen, headTexture.Bounds, Color.White, (float)world.VectorToRadian(direction), centerHead, 1f, SpriteEffects.None, 1f);

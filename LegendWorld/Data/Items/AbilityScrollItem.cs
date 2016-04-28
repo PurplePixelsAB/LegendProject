@@ -9,18 +9,26 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    public class AbilityScrollItem : Item //Consumable
+    public class AbilityScrollItem : ConsumableItem //Consumable
     {
         public AbilityIdentity Ability { get; set; }
+        public bool IsConsumed { get; set; }
         public AbilityScrollItem()
         {
-            this.Name = "Ability Scroll";
+            //this.Name = "Ability Scroll";
+            //this.IsStackable = false;
+            this.Identity = ItemIdentity.AbilityScoll;
+            this.Category = ItemCategory.Consumable;
+            //this.Weight = 100;
         }
-        public void OnUse(Character usedBy)
+        public override void OnUse(Character usedBy)
         {
+            if (this.IsConsumed)
+                return;
+
             if (usedBy.Teach(this.Ability))
             {
-
+                this.IsConsumed = true;
             }
         }
     }

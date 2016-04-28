@@ -52,13 +52,17 @@
     <Compile Include="Data\Items\ArmorItem.cs" />
     <Compile Include="Data\Items\BagItem.cs" />
     <Compile Include="Data\Items\BowItem.cs" />
+    <Compile Include="Data\Items\ContainerItem.cs" />
     <Compile Include="Data\Items\GoldItem.cs" />
     <Compile Include="Data\Items\LeatherArmor.cs" />
+    <Compile Include="Data\Items\ConsumableItemData.cs" />
     <Compile Include="Data\Items\PlateArmor.cs" />
+    <Compile Include="Data\Items\StackableItem.cs" />
     <Compile Include="Data\Items\StaffItem.cs" />
     <Compile Include="Data\Items\SwordItem.cs" />
     <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemCategory.cs" />
+    <Compile Include="Data\ItemType.cs" />
     <Compile Include="Network\IPacket.cs" />
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />

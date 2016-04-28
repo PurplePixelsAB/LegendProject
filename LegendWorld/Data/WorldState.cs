@@ -17,7 +17,6 @@ namespace Network
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
         private long nextRegendTick = 0;
 
-
         protected Dictionary<ushort, Item> items = new Dictionary<ushort, Item>();
         public Dictionary<ushort, Item>.KeyCollection Items { get { return items.Keys; } }
         public virtual Item GetItem(ushort id)
@@ -44,6 +43,18 @@ namespace Network
             items.Remove(item.Id);
         }
 
+        protected Dictionary<ushort, GroundItem> groundItems = new Dictionary<ushort, GroundItem>();
+        public Dictionary<ushort, GroundItem>.KeyCollection GroundItems { get { return groundItems.Keys; } }
+        public virtual GroundItem GetGroundItem(ushort id)
+        {
+            if (groundItems.ContainsKey(id))
+            {
+                return groundItems[id];
+            }
+
+            return null;
+        }
+
 
         protected Dictionary<AbilityIdentity, Ability> abilities = new Dictionary<AbilityIdentity, Ability>();
         public Ability GetAbility(AbilityIdentity abilityId)
@@ -52,6 +63,22 @@ namespace Network
         }
 
         protected Dictionary<ushort, Character> characters = new Dictionary<ushort, Character>();
+
+        public virtual void AddGroundItem(GroundItem groundItem)
+        {
+            if (groundItems.ContainsKey(groundItem.Id))
+                return;
+
+            groundItems.Add(groundItem.Id, groundItem);
+        }
+        public virtual void RemoveGroundItem(GroundItem groundItem)
+        {
+            if (groundItems.ContainsKey(groundItem.Id))
+                return;
+
+            groundItems.Remove(groundItem.Id);
+        }
+
         public Dictionary<ushort, Character>.KeyCollection Characters { get { return characters.Keys; } }
         public virtual Character GetCharacter(ushort id)
         {
