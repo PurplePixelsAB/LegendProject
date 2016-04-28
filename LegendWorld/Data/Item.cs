@@ -10,9 +10,10 @@ namespace LegendWorld.Data
     public class Item
     {
         public ushort Id { get; set; }
+        public ItemIdentity Identity { get; protected set; }
         public string Name { get; set; }
-        public ItemType Type { get; set; }
-        public ItemLocation Location { get; set; }
+        public ItemCategory Category { get; set; }
+        //public ItemLocation Location { get; set; }
         public ushort Weight { get; set; }
         public bool IsStackable { get; set; }
         public ushort StackCount { get; set; }

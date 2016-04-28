@@ -19,13 +19,13 @@ namespace LegendWorld.Data.Items
             this.StackCount = 1;
             this.IsStackable = false;
             this.Weight = 1;
-            this.Type = ItemType.Container;
+            this.Category = ItemCategory.Container;
         }
 
         public void AddItem(Item itemToAdd)
         {
             this.ItemsInBag.Add(itemToAdd);
-            itemToAdd.Location.SetLocation(this);
+            //itemToAdd.Location.SetLocation(this);
         }
         public void RemoveItem(Item itemToRemove)
         {

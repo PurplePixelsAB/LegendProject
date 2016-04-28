@@ -93,7 +93,7 @@ namespace Network
 
             foreach (ushort characterId in idList)
             {
-                characters[characterId].UpdateMapPosition(gameTime);
+                characters[characterId].Update(gameTime);
 
                 if (isRegenTick)
                 {
@@ -118,65 +118,11 @@ namespace Network
         }
         public virtual bool PerformAbility(AbilityIdentity abilityId, Character character)
         {
+            if (!this.abilities.ContainsKey(abilityId))
+                return false;
 
+            return this.PerformAbility(this.GetAbility(abilityId), character);
         }
-        //public virtual void PerformSwing(Character character)
-        //{
-        //    if (character.Energy < swingEnergy)
-        //        return;
-
-        //    //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
-        //    //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-        //    //foreach (int characterId in characters.Keys)
-        //    //{
-        //    //    if (character.Id == characterId)
-        //    //        continue;
-
-        //    //    if (areaFilter.Contains(characters[characterId].Position))
-        //    //    {
-        //    //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
-        //    //        {
-        //    //            characters[characterId].Health -= swingDmg;
-        //    //        }
-        //    //    }
-        //    //}
-
-        //    var swingAbility = new SwingAbilityEffect();
-        //    swingAbility.Perform(this, character);
-
-
-        //    //foreach (var affectedChar in affectedCharacters)
-        //    //{
-        //    //    affectedChar.Health -= swingDmg;
-        //    //}
-
-        //    //character.Energy -= swingEnergy;
-        //}
-        //public virtual void PerformHeal(Character character)
-        //{
-        //    if (character.Energy < swingEnergy)
-        //        return;
-
-        //    //double coneAngle = this.VectorToAngle(character.AimToPosition.ToVector2() - character.Position.ToVector2());
-        //    //Rectangle areaFilter = new Rectangle(character.Position.X - 100, character.Position.Y - 100, 200, 200);
-        //    //foreach (int characterId in characters.Keys)
-        //    //{
-        //    //    if (character.Id == characterId)
-        //    //        continue;
-
-        //    //    if (areaFilter.Contains(characters[characterId].Position))
-        //    //    {
-        //    //        if (IsPointWithinCone(characters[characterId].Position.ToVector2(), character.Position.ToVector2(), coneAngle, 20)) //(affectedArea.Contains(characters[characterId].MapPoint))
-        //    //        {
-        //    //            characters[characterId].Health -= swingDmg;
-        //    //        }
-        //    //    }
-        //    //}
-
-        //    var collitionArea = new ConeCollitionArea();
-        //    collitionArea.Range = 20;
-        //    var affectedCharacters = collitionArea.GetAffected(this, character);
-        //}
 
         protected abstract WorldMap GetCharactersMap(Character character);
 

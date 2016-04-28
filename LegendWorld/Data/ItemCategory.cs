@@ -1,6 +1,6 @@
 ﻿namespace LegendWorld.Data
 {
-    public enum ItemType
+    public enum ItemCategory
     {
         Other,
         Weapon,

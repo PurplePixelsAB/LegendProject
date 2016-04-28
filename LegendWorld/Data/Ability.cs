@@ -21,7 +21,7 @@ namespace LegendWorld.Data
 
         public AbilityIdentity Id { get { return id; } }
 
-        public ushort RequiredItemId { get; set; }
+        public ItemIdentity? RequiredItem { get; set; }
         public byte EnergyCost { get; set; }
 
         public int PrepareTime { get; set; }
@@ -35,11 +35,18 @@ namespace LegendWorld.Data
             if (character.Energy < this.EnergyCost)
                 return false;
 
+            if (this.RequiredItem.HasValue)
+            {
+                if (!character.HasItemEquiped(this.RequiredItem.Value))
+                    return false;
+            }
+
             return true;
         }
 
         internal virtual void PerformBy(WorldState worldState, Character abilityPerformedBy)
         {
+            abilityPerformedBy.Performing = this;
             abilityPerformedBy.Energy -= this.EnergyCost;
             var affectedCharacters = this.GetAbilityEffectArea().GetAffected(worldState, abilityPerformedBy);
             foreach (Character affectedChar in affectedCharacters)

@@ -11,6 +11,6 @@ namespace Data
         Point MovingToPosition { get; }
         void SetMoveToPosition(Point mapPoint);
         event EventHandler<World.Character.MoveToMapPointValidatingEventArgs> MoveToMapPointValidating;
-        void UpdateMapPosition(GameTime gameTime);
+        void Update(GameTime gameTime);
     }
 }

@@ -31,16 +31,6 @@ namespace Data.World
             Abilities = new List<AbilityIdentity>();
         }
 
-        internal bool Teach(AbilityIdentity ability)
-        {
-            if (this.Abilities.Count >= 6)
-                return false;
-
-            this.Abilities.Add(ability);
-
-            return true;
-        }
-
         public ushort Id { get; set; }
         public ushort CurrentMapId { get; set; }
 
@@ -50,12 +40,26 @@ namespace Data.World
         public Point MovingToPosition { get; protected set; }
         public Point AimToPosition { get; protected set; }
 
+        public bool IsMoving { get { return this.MovingToPosition != this.Position && !this.IsDead; } }
+
+        public bool IsDead { get { return this.Health == 0; } }
+
+        private byte health = 100;
+        //public byte Health { get; set; }
+        public byte MaxHealth { get; set; }
+        public byte MaxEnergy { get; set; }
+        public byte Energy { get; set; }
+
         public CircleCollitionArea CollitionArea { get; set; }
 
         //public BagItem Inventory { get; set; }
         public ushort InventoryBagId { get; set; }
 
         public List<AbilityIdentity> Abilities { get; set; }
+        public List<WeaponItem> Weapons { get; set; }
+        public ArmorItem Armor { get; set; }
+
+        public Ability Performing { get; set; }
 
         public virtual void SetMoveToPosition(Point mapPoint)
         {
@@ -68,6 +72,27 @@ namespace Data.World
         public virtual void SetAimToPosition(Point mapPoint)
         {
             this.AimToPosition = mapPoint;
+        }
+
+        internal bool Teach(AbilityIdentity ability)
+        {
+            if (this.Abilities.Count >= 6)
+                return false;
+
+            this.Abilities.Add(ability);
+
+            return true;
+        }
+
+        internal bool HasItemEquiped(ItemIdentity requiredItem)
+        {
+            if (this.Armor.Identity == requiredItem)
+                return true;
+
+            if (this.Weapons.Any(weap => weap.Identity == requiredItem))
+                return true;
+
+            return false;
         }
 
         public event EventHandler<MoveToMapPointValidatingEventArgs> MoveToMapPointValidating;
@@ -89,17 +114,14 @@ namespace Data.World
             return e.IsValid;
         }
 
-        public bool IsMoving { get { return this.MovingToPosition != this.Position; } }
-
-        public bool IsDead {  get { return this.Health == 0; } }
-
-        private byte health = 100;
-        //public byte Health { get; set; }
-        public byte MaxHealth { get; set; }
-        public byte MaxEnergy { get; set; }
-        public byte Energy { get; set; }
-        
-        public void UpdateMapPosition(GameTime gameTime)
+        public void Update(GameTime gameTime)
+        {
+            if (this.IsMoving)
+            {
+                this.UpdateMapPosition(gameTime);
+            }
+        }
+        private void UpdateMapPosition(GameTime gameTime)
         {
             if (!IsMoving)
                 return;
