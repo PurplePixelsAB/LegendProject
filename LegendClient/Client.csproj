@@ -91,6 +91,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Screens\ItemUsedEventArgs.cs" />
     <Compile Include="World\Items\ClientBagItem.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />

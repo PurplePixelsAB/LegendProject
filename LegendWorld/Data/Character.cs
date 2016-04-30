@@ -1,6 +1,7 @@
 ﻿using LegendWorld.Data;
 using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
+using LegendWorld.Data.Modifiers;
 using Microsoft.Xna.Framework;
 using Network;
 using System;
@@ -29,12 +30,50 @@ namespace Data.World
             //Inventory = new BagItem();
             //Inventory.ItemsInBag.Add(new GoldItem() { StackCount = 1000 });
             Abilities = new List<AbilityIdentity>();
+            Abilities.Add(AbilityIdentity.DefaultAttack);
         }
 
         public ushort Id { get; set; }
+
+        internal bool HasModifier(Type modifierType)
+        {
+            foreach (var modifer in this.Modifiers)
+            {
+                if (modifer.GetType() == modifierType)
+                    return true;
+            }
+
+            return false;
+        }
+
         public ushort CurrentMapId { get; set; }
 
         public string Name { get; set; }
+
+        internal byte GetDamageFromPower(int abilityBasePower)
+        {
+            byte returnDamage = 0;
+            int weaponPower = this.GetWeaponPower();
+
+            int totalBasePower = weaponPower + abilityBasePower;
+            int modifiedPower = 0;
+
+            foreach (var modifier in this.Modifiers)
+            {
+                modifiedPower += modifier.ModifyPower(totalBasePower);
+            }
+
+            returnDamage = (byte)MathHelper.Clamp(totalBasePower + modifiedPower, byte.MinValue, byte.MaxValue);
+            return returnDamage;
+        }
+
+        private byte GetWeaponPower()
+        {
+            if (this.WeaponInHand == null)
+                return 0;
+
+            return this.WeaponInHand.Power;
+        }
 
         public virtual Point Position { get; protected set; }
         public Point MovingToPosition { get; protected set; }
@@ -55,11 +94,13 @@ namespace Data.World
         //public BagItem Inventory { get; set; }
         public ushort InventoryBagId { get; set; }
 
+        public List<CharacterModifier> Modifiers { get; set; }
         public List<AbilityIdentity> Abilities { get; set; }
-        public List<WeaponItem> Weapons { get; set; }
+        public List<WeaponItem> Holster { get; set; }
         public ArmorItem Armor { get; set; }
+        public WeaponItem WeaponInHand { get; set; }
 
-        public Ability Performing { get; set; }
+        //public Ability Performing { get; set; }
 
         public virtual void SetMoveToPosition(Point mapPoint)
         {
@@ -89,7 +130,7 @@ namespace Data.World
             if (this.Armor.Identity == requiredItem)
                 return true;
 
-            if (this.Weapons.Any(weap => weap.Identity == requiredItem))
+            if (this.Holster.Any(weap => weap.Identity == requiredItem))
                 return true;
 
             return false;
@@ -114,8 +155,27 @@ namespace Data.World
             return e.IsValid;
         }
 
+        Queue<CharacterModifier> durationRunOutModifiers = new Queue<CharacterModifier>(10);
         public void Update(GameTime gameTime)
         {
+            if (this.BusyDuration > 0)
+            {
+                this.BusyDuration -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+            foreach (var modifier in this.Modifiers)
+            {
+                if (modifier.Duration.HasValue)
+                {
+                    modifier.Duration -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (modifier.Duration < 0)
+                    {
+                        durationRunOutModifiers.Enqueue(modifier);
+                    }
+                }
+            }
+            while (durationRunOutModifiers.Count > 0)
+                this.Modifiers.Remove(durationRunOutModifiers.Dequeue());
+
             if (this.IsMoving)
             {
                 this.UpdateMapPosition(gameTime);
@@ -139,6 +199,12 @@ namespace Data.World
             if (Vector2.Distance(start, newPosition) >= distance)
             {
                 newPosition = end;
+                float modifyMovement = 1f;
+                foreach (var modifier in this.Modifiers)
+                {
+                    modifyMovement = modifier.ModifyMovement(modifyMovement);
+                }
+                newPosition *= modifyMovement;
                 this.MovingToPosition = newPosition.ToPoint();
             }
 
@@ -146,8 +212,8 @@ namespace Data.World
             this.CollitionArea.Position = this.Position;
         }
 
-        public ushort Acceleration { get; set; } //PixelsPerSecound
-        public ushort MaxSpeed { get; set; } //PixelsPerSecound 
+        //public ushort Acceleration { get; set; } //PixelsPerSecound
+        //public ushort MaxSpeed { get; set; } //PixelsPerSecound 
 
         public byte Health
         {
@@ -165,6 +231,8 @@ namespace Data.World
         }
 
         public bool IsVisible { get; set; }
+        public double BusyDuration { get; internal set; }
+        public bool IsBusy { get { return this.BusyDuration > 0D; } }
 
         public event EventHandler<HealthChangedEventArgs> HealthChanged;
         private void OnHealthChange(byte oldHp)

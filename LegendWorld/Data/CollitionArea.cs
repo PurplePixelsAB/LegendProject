@@ -15,9 +15,27 @@ namespace LegendWorld.Data
 
     }
 
+    public class SelfCollitionArea : CollitionArea
+    {
+        public override List<Character> GetAffected(WorldState world, Character performer)
+        {
+            return new List<Character>(new Character[] { performer });
+        }
+    }
+
+    public class NoneColltionArea :  CollitionArea
+    {
+        public override List<Character> GetAffected(WorldState world, Character performer)
+        {
+            return new List<Character>();
+        }
+    }
+
     public class ConeCollitionArea : CollitionArea
     {
         public int Range { get; set; }
+        public int Fov { get; internal set; }
+
         public override List<Character> GetAffected(WorldState world, Character character)
         {
             List<Character> returnList = new List<Character>();

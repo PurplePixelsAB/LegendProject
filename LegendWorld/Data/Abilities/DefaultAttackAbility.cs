@@ -9,40 +9,42 @@ using Microsoft.Xna.Framework;
 
 namespace LegendWorld.Data.Abilities
 {
-    public class SwingAbility : Ability
+    public class DefaultAttackAbility : Ability
     {
-        private byte baseDamage = 5;
-        private byte baseEnergyCost = 40;
+        private byte basePower = 5;
+        //private byte baseEnergyCost = 40;
 
-        public SwingAbility() : base(AbilityIdentity.Swing)
+        public DefaultAttackAbility() : base(AbilityIdentity.DefaultAttack)
         {
             this.Duration = 2000;
             this.PrepareTime = 0;
+            this.EnergyCost = 40;
             //this.Area = new ConeCollitionArea();
             //this.Area.Range = 20;
         }
 
-        public byte BaseDamage
+        public byte Power
         {
             get
             {
-                return baseDamage;
+                return basePower;
             }
 
             set
             {
-                baseDamage = value;
+                basePower = value;
             }
         }
 
         public override CollitionArea GetAbilityEffectArea()
         {
-            return new ConeCollitionArea() { Range = 20 };
+            return new ConeCollitionArea() { Range = 20, Fov = 90 };
         }
 
         protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Health -= BaseDamage;
+            byte damage = abilityPerformedBy.GetDamageFromPower(this.Power);
+            abilityPerformedTo.Health -= damage;
         }
 
         internal override void PerformBy(WorldState worldState, Character character)

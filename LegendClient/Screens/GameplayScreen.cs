@@ -68,6 +68,17 @@ namespace WindowsClient
             worldPump.State = world;
 
             inventoryScreen = new InventoryScreen();
+            inventoryScreen.ItemUsed += InventoryScreen_ItemUsed;
+        }
+
+        private void InventoryScreen_ItemUsed(object sender, ItemUsedEventArgs e)
+        {
+            if (e.ItemUsed.Category == LegendWorld.Data.ItemCategory.Consumable)
+            {
+                ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
+                consumable.Use(world.PlayerCharacter);
+                network.UseItem(consumable);
+            }
         }
 
         internal void SelectCharacter(ushort charId)

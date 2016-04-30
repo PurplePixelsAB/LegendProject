@@ -1,4 +1,5 @@
-﻿using Data.World;
+﻿using System;
+using Data.World;
 
 namespace LegendWorld.Data.Items
 {
@@ -8,6 +9,14 @@ namespace LegendWorld.Data.Items
         {
             this.Category = ItemCategory.Consumable;
         }
-        public abstract void OnUse(Character usedBy);
+        public abstract bool OnUse(Character usedBy);
+
+        public bool Use(Character character)
+        {
+            if (character == null)
+                return false;
+
+            return this.OnUse(character);
+        }
     }
 }

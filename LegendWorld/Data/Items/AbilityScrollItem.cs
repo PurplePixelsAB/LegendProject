@@ -12,7 +12,6 @@ namespace LegendWorld.Data.Items
     public class AbilityScrollItem : ConsumableItem //Consumable
     {
         public AbilityIdentity Ability { get; set; }
-        public bool IsConsumed { get; set; }
         public AbilityScrollItem()
         {
             //this.Name = "Ability Scroll";
@@ -21,15 +20,14 @@ namespace LegendWorld.Data.Items
             this.Category = ItemCategory.Consumable;
             //this.Weight = 100;
         }
-        public override void OnUse(Character usedBy)
+        public override bool OnUse(Character usedBy)
         {
-            if (this.IsConsumed)
-                return;
-
             if (usedBy.Teach(this.Ability))
             {
-                this.IsConsumed = true;
+                return true;
             }
+
+            return false;
         }
     }
 }

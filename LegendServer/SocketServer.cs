@@ -43,7 +43,7 @@ namespace UdpServer
             PacketFactory.Register(PacketIdentity.SelectCharacter, () => new SelectCharacterPacket());
             ServerPacketHandler.Register(PacketIdentity.SelectCharacter, new SelectCharacterPacketHandler());
             PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
-            ServerPacketHandler.Register(PacketIdentity.PerformAbility, new SwingPacketHandler());
+            ServerPacketHandler.Register(PacketIdentity.PerformAbility, new PerformAbilityPacketHandler());
 
             acceptedQueue = new Queue<Socket>();
             onAccept = new AsyncCallback(BeginAcceptCallback);

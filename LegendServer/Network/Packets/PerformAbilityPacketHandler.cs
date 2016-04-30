@@ -9,10 +9,8 @@ using Data;
 using Microsoft.Xna.Framework;
 
 namespace UdpServer.Network.Packets
-{
-
-
-    internal class SwingPacketHandler : ServerPacketHandler
+{    
+    internal class PerformAbilityPacketHandler : ServerPacketHandler
     {
         protected override void OnHandle(IPacket packet, NetState netState, WorldServer worldState)
         {
@@ -22,7 +20,6 @@ namespace UdpServer.Network.Packets
             {
                 worldState.PerformAbility(incomingPacket.AbilityUsed, mobileToUpdate);
             }
-
         }
     }
 }

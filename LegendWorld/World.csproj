@@ -42,7 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\Abilities\AbilityIdentity.cs" />
-    <Compile Include="Data\Abilities\SwingAbilityEffect.cs" />
+    <Compile Include="Data\Abilities\CriticalAttackAbility.cs" />
+    <Compile Include="Data\Abilities\SlowingAttackAbility.cs" />
+    <Compile Include="Data\Abilities\StunAttackAbility.cs" />
+    <Compile Include="Data\Abilities\HardAttackAbility.cs" />
+    <Compile Include="Data\Abilities\DefaultAttackAbility.cs" />
     <Compile Include="Data\Ability.cs" />
     <Compile Include="Data\CollitionArea.cs" />
     <Compile Include="Data\GroundItem.cs" />
@@ -63,6 +67,10 @@
     <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemCategory.cs" />
     <Compile Include="Data\ItemType.cs" />
+    <Compile Include="Data\Modifiers\CharacterModifier.cs" />
+    <Compile Include="Data\Modifiers\SlowedModifier.cs" />
+    <Compile Include="Data\Modifiers\StunnedModifier.cs" />
+    <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
     <Compile Include="Network\IPacket.cs" />
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />
@@ -71,6 +79,7 @@
     <Compile Include="Network\Packets\PacketIdentity.cs" />
     <Compile Include="Network\PacketReader.cs" />
     <Compile Include="Network\PacketStream.cs" />
+    <Compile Include="Network\Packets\UseConsumablePacket.cs" />
     <Compile Include="Network\Packets\UpdateStaticPacket.cs" />
     <Compile Include="Network\PacketWriter.cs" />
     <Compile Include="Network\Packets\SelectCharacterPacket.cs" />

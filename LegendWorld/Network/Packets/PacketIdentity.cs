@@ -9,5 +9,6 @@
         SelectCharacter = 4,
         PerformAbility = 5,
         UpdateStatic = 6,
+        UseConsumable = 7,
     }
 }

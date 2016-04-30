@@ -13,7 +13,7 @@ namespace LegendWorld.Data.Items
             this.Category = ItemCategory.Weapon;
         }
 
-        public byte Damage { get; set; }
+        public byte Power { get; set; }
         public int Speed { get; set; }
         public bool IsTwoHanded { get; set; }
     }

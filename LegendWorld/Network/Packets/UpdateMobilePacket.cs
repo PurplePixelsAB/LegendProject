@@ -28,7 +28,7 @@ namespace Network.Packets
             }
             this.AimToX = character.AimToPosition.X;
             this.AimToY = character.AimToPosition.Y;
-            this.Speed = (byte)character.MaxSpeed; //mobile.Speed;
+            //this.Speed = (byte)character.MaxSpeed; //mobile.Speed;
             this.Health = character.Health;
             //this.Up = character.Up;
             //this.Down = character.Down;
@@ -51,8 +51,9 @@ namespace Network.Packets
         public Int32? AimToX { get; set; }
         public Int32? AimToY { get; set; }
 
-        public byte? Speed { get; set; } //PixelsPerSec
+        //public byte? Speed { get; set; } //PixelsPerSec
         public byte? Health { get; set; }
+        public byte? Energy { get; set; }
         //public Int32 X { get; set; }
         //public Int32 Y { get; set; }
         //public Int32 MovingToX { get; set; }
@@ -77,7 +78,7 @@ namespace Network.Packets
             this.AimToX = packetReader.ReadNullableInt32();
             this.AimToY = packetReader.ReadNullableInt32();
 
-            this.Speed = packetReader.ReadNullableByte();
+            //this.Speed = packetReader.ReadNullableByte();
             this.Health = packetReader.ReadNullableByte();
             //this.X = packetReader.ReadInt32();
             //this.Y = packetReader.ReadInt32();
@@ -105,7 +106,7 @@ namespace Network.Packets
             packetWriter.WriteNullable(this.AimToX);
             packetWriter.WriteNullable(this.AimToY);
 
-            packetWriter.WriteNullable(this.Speed);
+            //packetWriter.WriteNullable(this.Speed);
             packetWriter.WriteNullable(this.Health);
 
             //packetWriter.Write(this.X);

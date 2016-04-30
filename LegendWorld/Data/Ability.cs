@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Data.World;
 using Network;
 using Microsoft.Xna.Framework;
+using LegendWorld.Data.Modifiers;
 
 namespace LegendWorld.Data
 {
@@ -32,6 +33,9 @@ namespace LegendWorld.Data
             if (character.Abilities.Contains(this.Id))
                 return false;
 
+            if (character.IsBusy)
+                return false;
+
             if (character.Energy < this.EnergyCost)
                 return false;
 
@@ -41,12 +45,16 @@ namespace LegendWorld.Data
                     return false;
             }
 
+            if (character.HasModifier(typeof(StunnedModifier)))
+                return false;
+
             return true;
         }
 
         internal virtual void PerformBy(WorldState worldState, Character abilityPerformedBy)
         {
-            abilityPerformedBy.Performing = this;
+            //abilityPerformedBy.Performing = this;
+            abilityPerformedBy.BusyDuration += this.Duration; 
             abilityPerformedBy.Energy -= this.EnergyCost;
             var affectedCharacters = this.GetAbilityEffectArea().GetAffected(worldState, abilityPerformedBy);
             foreach (Character affectedChar in affectedCharacters)
@@ -55,7 +63,10 @@ namespace LegendWorld.Data
             }
         }
 
-        protected abstract void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy);
+        protected virtual void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        {
+
+        }
         public abstract CollitionArea GetAbilityEffectArea();
     }
 }

@@ -45,8 +45,9 @@
     <Compile Include="NetState.cs" />
     <Compile Include="Network\Packets\AimToPacketHandler.cs" />
     <Compile Include="Network\Packets\MoveToPacketHandler.cs" />
+    <Compile Include="Network\Packets\UseConsumablePacketHandler.cs" />
     <Compile Include="Network\Packets\SelectCharacterPacketHandler.cs" />
-    <Compile Include="Network\Packets\SwingPacketHandler.cs" />
+    <Compile Include="Network\Packets\PerformAbilityPacketHandler.cs" />
     <Compile Include="Network\ServerPacketHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

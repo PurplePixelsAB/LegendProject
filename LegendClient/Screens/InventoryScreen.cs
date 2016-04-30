@@ -21,6 +21,8 @@ namespace LegendClient.Screens
         private SpriteFont itemSpriteFont;
         private Texture2D selectionTexture;
 
+        private int currentItemIndex = 0;
+
         public ClientBagItem BaseContainer { get; set; }
 
         public override void Draw(GameTime gameTime)
@@ -31,10 +33,16 @@ namespace LegendClient.Screens
             Vector2 drawPosition = this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2() - bagTexture.Bounds.Center.ToVector2();
             if (this.BaseContainer.Items.Count > 0)
             {
+                int i = 0;
                 foreach (Item bagItem in this.BaseContainer.ItemsInBag)
                 {
-                    spriteBatch.DrawString(itemSpriteFont, bagItem.Identity.ToString(), drawPosition, Color.White);
+                    Color color = Color.White;
+                    if (i == currentItemIndex)
+                        color = Color.Red;
+
+                    spriteBatch.DrawString(itemSpriteFont, bagItem.Identity.ToString(), drawPosition, color);
                     drawPosition.Y += itemSpriteFont.LineSpacing;
+                    i++;
                 }
             }
             else
@@ -60,6 +68,51 @@ namespace LegendClient.Screens
             actionKeyMappingOpenBags.Primary = Keys.B;
             actionKeyMappingOpenBags.ActionTriggered += ActionKeyMappingOpenBags_ActionTriggered;
             Input.Actions.Add(actionKeyMappingOpenBags);
+
+
+            ActionKeyMapping actionKeyMappingUp = new ActionKeyMapping();
+            actionKeyMappingUp.Id = 1;
+            actionKeyMappingUp.Primary = Keys.Up;
+            actionKeyMappingUp.ActionTriggered += ActionKeyMappingUp_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingUp);
+            ActionKeyMapping actionKeyMappingDown = new ActionKeyMapping();
+            actionKeyMappingDown.Id = 2;
+            actionKeyMappingDown.Primary = Keys.Down;
+            actionKeyMappingDown.ActionTriggered += ActionKeyMappingDown_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingDown);
+            ActionKeyMapping actionKeyMappingUse = new ActionKeyMapping();
+            actionKeyMappingUse.Id = 3;
+            actionKeyMappingUse.Primary = Keys.Enter;
+            actionKeyMappingUse.ActionTriggered += ActionKeyMappingUse_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingUse);
+        }
+
+        private void ActionKeyMappingUse_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+           var item = this.BaseContainer.ItemsInBag[currentItemIndex];
+            if (item != null)
+                this.Use(item);
+        }
+
+        public event EventHandler<ItemUsedEventArgs> ItemUsed;
+        private void Use(Item item)
+        {
+            if (this.ItemUsed != null)
+            {
+                this.ItemUsed(this, new ItemUsedEventArgs(item));
+            }
+        }
+
+        private void ActionKeyMappingUp_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            if (this.BaseContainer.ItemsInBag.Count > currentItemIndex + 1)
+                currentItemIndex++;
+        }
+
+        private void ActionKeyMappingDown_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            if (currentItemIndex > 0)
+                currentItemIndex--;
         }
 
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)

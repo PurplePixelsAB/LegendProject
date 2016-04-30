@@ -29,8 +29,8 @@ namespace WindowsClient.Net.Packets
 
             if (updateMobilePacket.Health.HasValue)
                 mobileToUpdate.Health = updateMobilePacket.Health.Value;
-            if (updateMobilePacket.Speed.HasValue)
-                mobileToUpdate.MaxSpeed = (ushort)updateMobilePacket.Speed.Value;
+            //if (updateMobilePacket.Speed.HasValue)
+            //    mobileToUpdate.MaxSpeed = (ushort)updateMobilePacket.Speed.Value;
 
             //mobileToUpdate.Up = updateMobilePacket.Up;
             //mobileToUpdate.Up = updateMobilePacket.Down;

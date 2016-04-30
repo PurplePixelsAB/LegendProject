@@ -9,6 +9,7 @@ using WindowsClient.Net.Packets;
 using WindowsClient.World.Mobiles;
 using WindowsClient.World;
 using LegendWorld.Data.Abilities;
+using LegendWorld.Data.Items;
 
 namespace WindowsClient.Net
 {
@@ -79,6 +80,12 @@ namespace WindowsClient.Net
                 aimToPacket = null;
                 socketClient.Send(toSendPacket);
             }
+        }
+
+        internal void UseItem(ConsumableItem consumable)
+        {
+            UseConsumablePacket useConsumablePacket = new UseConsumablePacket();
+            socketClient.Send(useConsumablePacket);
         }
 
         //public void SendInputUpdate(ClientCharacter clientCharacter)

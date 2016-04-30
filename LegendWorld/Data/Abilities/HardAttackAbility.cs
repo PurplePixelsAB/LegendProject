@@ -1,0 +1,53 @@
+﻿using Data.World;
+using Network;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+
+namespace LegendWorld.Data.Abilities
+{
+    public class HardAttackAbility : Ability
+    {
+        private byte basePower = 34;
+        //private byte baseEnergyCost = 40;
+
+        public HardAttackAbility() : base(AbilityIdentity.HardAttack)
+        {
+            this.Duration = 1000;
+            this.PrepareTime = 1000;
+            this.EnergyCost = 20;
+        }
+
+        public byte Power
+        {
+            get
+            {
+                return basePower;
+            }
+
+            set
+            {
+                basePower = value;
+            }
+        }
+
+        public override CollitionArea GetAbilityEffectArea()
+        {
+            return new ConeCollitionArea() { Range = 20, Fov = 30 };
+        }
+
+        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        {
+            byte damage = abilityPerformedBy.GetDamageFromPower(this.Power);
+            abilityPerformedTo.Health -= damage;
+        }
+
+        internal override void PerformBy(WorldState worldState, Character character)
+        {
+            base.PerformBy(worldState, character);
+        }
+    }
+}
