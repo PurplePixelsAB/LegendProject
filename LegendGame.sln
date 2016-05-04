@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "LegendClient\Client.csproj", "{169087E3-51FD-4CC2-AF79-2E842D1E517F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{32F8FF93-CBEF-496C-A635-5C57FEEA5C6E} = {32F8FF93-CBEF-496C-A635-5C57FEEA5C6E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "LegendServer\Server.csproj", "{32F8FF93-CBEF-496C-A635-5C57FEEA5C6E}"
 EndProject

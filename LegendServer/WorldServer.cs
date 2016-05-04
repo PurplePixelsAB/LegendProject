@@ -107,7 +107,8 @@ namespace UdpServer
                 var groundItemToUpdate = this.GetGroundItem(groundId); //((ServerCharacter)characters[characterId]);
                 sendList.Add(groundItemToUpdate);
             }
-            clientSendTo.Send(new UpdateStaticPacket(sendList));
+            if (sendList.Count > 0)
+                clientSendTo.Send(new UpdateStaticPacket(sendList));
         }
 
         private void character_InputUpdated(object sender, EventArgs e)

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Data.World;
+using Microsoft.Xna.Framework;
+using Network;
+using System;
 
 namespace LegendWorld.Data.Modifiers
 {
@@ -7,14 +10,31 @@ namespace LegendWorld.Data.Modifiers
         public double? Duration { get; internal set; }
         public bool IsUsed { get; protected set; }
 
-        internal virtual int ModifyPower(int power)
-        {
-            return power;
-        }
+        public abstract void Update(GameTime gameTime, Character character);
 
-        internal virtual float ModifyMovement(float movement)
-        {
-            return movement;
-        }
+        //internal virtual float ModifyPower(float powerModifier)
+        //{
+        //    return powerModifier;
+        //}
+
+        //internal virtual float ModifySpeed(float speedModifier)
+        //{
+        //    return speedModifier;
+        //}
+
+        //internal virtual float ModifyEnergyCost(float energyCostModifier)
+        //{
+        //    return energyCostModifier;
+        //}
+
+        //internal virtual float ModifyMaxEnergy(float maxEnergyModifier)
+        //{
+        //    return maxEnergyModifier;
+        //}
+
+        //internal virtual float ModifyMaxHealth(float maxHealthModifier)
+        //{
+        //    return maxHealthModifier;
+        //}
     }
 }

@@ -13,8 +13,8 @@ namespace LegendWorld.Data.Abilities
         CriticalAttack, //Increase dmg of next ability
         StunAttack,
         SlowingAttack,
-        DecreaseEnergy, //Decrease energy cost of DefaultAttack
-        IncreaseEnergy, //Increase energy cost of DefaultAttack
+        DecreaseEnergyCost, //Decrease energy cost of DefaultAttack
+        IncreaseEnergyCost, //Increase energy cost of DefaultAttack
         DecreaseDuration, //Decrease duration of DefaultAttack
         IncreaseDuration, //Increase duration of DefaultAttack
         Meditation, //Increase EnergyRegen active use

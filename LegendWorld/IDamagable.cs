@@ -3,6 +3,6 @@
     internal interface IDamagable
     {
         byte Health { get; set; }
-        byte MaxHealth { get; set; }
+        byte MaxHealth { get; }
     }
 }

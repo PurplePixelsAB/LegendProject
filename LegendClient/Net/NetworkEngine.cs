@@ -67,6 +67,9 @@ namespace WindowsClient.Net
 
         public void Update()
         {
+            if (!this.Connected)
+                return;
+
             socketClient.Process();
             if (moveToPacket != null)
             {

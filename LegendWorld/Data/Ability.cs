@@ -13,6 +13,24 @@ namespace LegendWorld.Data
 {
     public abstract class Ability
     {
+        private static Ability[] abilities = new Ability[ushort.MaxValue];
+        private static void Register(Ability abilityToRegister)
+        {
+            Ability.abilities[(ushort)abilityToRegister.Id] = abilityToRegister;
+        }
+        public static void Load()
+        {
+            Ability.Register(new DefaultAttackAbility());
+            Ability.Register(new CriticalAttackAbility());
+            Ability.Register(new StunAttackAbility());
+            Ability.Register(new SlowingAttackAbility());
+            Ability.Register(new HardAttackAbility());
+        }
+        public static Ability Get(AbilityIdentity id)
+        {
+            return abilities[(ushort)id];
+        }
+
         private AbilityIdentity id;
 
         public Ability(AbilityIdentity abilityIdentity)
@@ -30,13 +48,13 @@ namespace LegendWorld.Data
 
         public virtual bool CanBePerformedBy(Character character)
         {
-            if (character.Abilities.Contains(this.Id))
+            if (!character.Abilities.Contains(this.Id))
                 return false;
 
             if (character.IsBusy)
                 return false;
 
-            if (character.Energy < this.EnergyCost)
+            if (character.Energy < character.Stats.CalculateEnergyCost(this.EnergyCost))
                 return false;
 
             if (this.RequiredItem.HasValue)
@@ -55,7 +73,7 @@ namespace LegendWorld.Data
         {
             //abilityPerformedBy.Performing = this;
             abilityPerformedBy.BusyDuration += this.Duration; 
-            abilityPerformedBy.Energy -= this.EnergyCost;
+            abilityPerformedBy.Energy -= abilityPerformedBy.Stats.CalculateEnergyCost(this.EnergyCost);
             var affectedCharacters = this.GetAbilityEffectArea().GetAffected(worldState, abilityPerformedBy);
             foreach (Character affectedChar in affectedCharacters)
             {

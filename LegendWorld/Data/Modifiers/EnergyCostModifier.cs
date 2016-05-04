@@ -1,28 +1,29 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data.World;
-using Network;
+using Microsoft.Xna.Framework;
 
 namespace LegendWorld.Data.Modifiers
 {
-    public class SlowedModifier : CharacterModifier
+    public class EnergyCostModifier : CharacterModifier
     {
-        public SlowedModifier(int duration, float amount) : base()
+        public EnergyCostModifier(float amount)
         {
-            base.Duration = duration;
             this.Amount = amount;
-            base.IsUsed = false;
         }
 
         public float Amount { get; private set; }
 
+        //internal override int ModifyEnergyCost(int energy)
+        //{
+        //    return base.ModifyEnergyCost(energy);
+        //}
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.MovementSpeed, this.Amount);
+            character.Stats.Modify(StatIdentifier.EnergyCost, this.Amount);
         }
     }
 }

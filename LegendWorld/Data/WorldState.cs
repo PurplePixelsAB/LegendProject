@@ -19,6 +19,12 @@ namespace Network
 
         protected Dictionary<ushort, Item> items = new Dictionary<ushort, Item>();
         public Dictionary<ushort, Item>.KeyCollection Items { get { return items.Keys; } }
+
+        public WorldState()
+        {
+            Ability.Load();
+        }
+
         public virtual Item GetItem(ushort id)
         {
             if (items.ContainsKey(id))
@@ -53,14 +59,7 @@ namespace Network
             }
 
             return null;
-        }
-
-
-        protected Dictionary<AbilityIdentity, Ability> abilities = new Dictionary<AbilityIdentity, Ability>();
-        public Ability GetAbility(AbilityIdentity abilityId)
-        {
-            return abilities[abilityId];
-        }
+        }       
 
         protected Dictionary<ushort, Character> characters = new Dictionary<ushort, Character>();
 
@@ -114,21 +113,27 @@ namespace Network
 
         public virtual void Update(GameTime gameTime)
         {
-            var idList = characters.Keys;
+            List<ushort> idList = new List<ushort>(characters.Keys.Count);
+            idList.AddRange(characters.Keys);
+            //var idList = characters.Keys;
 
             bool isRegenTick = gameTime.TotalGameTime.Ticks >= nextRegendTick;
 
             foreach (ushort characterId in idList)
             {
-                characters[characterId].Update(gameTime);
+                if (!characters.ContainsKey(characterId))
+                    continue;
+
+                Character characterToUpdate = characters[characterId];
+                characterToUpdate.Update(gameTime);
 
                 if (isRegenTick)
                 {
-                    if (characters[characterId].Health < characters[characterId].MaxHealth - 10 && characters[characterId].Health >= 10)
-                        characters[characterId].Health += 1;
+                    if (characterToUpdate.Health < characterToUpdate.MaxHealth - 10 && characterToUpdate.Health >= 10)
+                        characterToUpdate.Health += 1;
 
-                    if (characters[characterId].Energy < characters[characterId].MaxEnergy)
-                        characters[characterId].Energy += 1;
+                    if (characterToUpdate.Energy < characterToUpdate.MaxEnergy)
+                        characterToUpdate.Energy += 1;
 
                     nextRegendTick = (gameTime.TotalGameTime + baseRegenTick).Ticks;
                 }
@@ -145,10 +150,13 @@ namespace Network
         }
         public virtual bool PerformAbility(AbilityIdentity abilityId, Character character)
         {
-            if (!this.abilities.ContainsKey(abilityId))
+            if (character == null)
                 return false;
+            Ability abilityToPerform = Ability.Get(abilityId);
+            if (abilityToPerform == null)
+                return false;            
 
-            return this.PerformAbility(this.GetAbility(abilityId), character);
+            return this.PerformAbility(abilityToPerform, character);
         }
 
         protected abstract WorldMap GetCharactersMap(Character character);

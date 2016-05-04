@@ -18,7 +18,7 @@ namespace Network.Packets
         public UpdateMobilePacket(Character character) : this()
         {
             this.MobileId = character.Id;
-            this.IsVisible = character.IsVisible;
+            //this.IsVisible = character.IsVisible;
             this.X = character.Position.X;
             this.Y = character.Position.Y;
             if (character.MovingToPosition != character.Position)
@@ -38,11 +38,11 @@ namespace Network.Packets
         public UpdateMobilePacket(ushort id) : base(PacketIdentity.UpdateMobile, 5)
         {
             this.MobileId = id;
-            this.IsVisible = false;
+            //this.IsVisible = false;
         }
 
         public UInt16 MobileId { get; set; }
-        public bool IsVisible { get; set; }
+        //public bool IsVisible { get; set; }
 
         public Int32? X { get; set; }
         public Int32? Y { get; set; }

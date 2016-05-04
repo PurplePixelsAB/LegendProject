@@ -16,14 +16,13 @@ namespace Data.World
     {
         public Character()
         {
+            Stats = new Stats();
             Name = "Unknown";
             Position = new Point(1, 1);
             MovingToPosition = Position;
             AimToPosition = new Point(25, 25);
             Health = 75;
-            MaxHealth = 100;
             Energy = 75;
-            MaxEnergy = 100;
             CollitionArea = new CircleCollitionArea();
             CollitionArea.R = 20;
             CollitionArea.Position = this.Position;
@@ -31,6 +30,7 @@ namespace Data.World
             //Inventory.ItemsInBag.Add(new GoldItem() { StackCount = 1000 });
             Abilities = new List<AbilityIdentity>();
             Abilities.Add(AbilityIdentity.DefaultAttack);
+            Modifiers = new ModifiersCollection();
         }
 
         public ushort Id { get; set; }
@@ -50,22 +50,27 @@ namespace Data.World
 
         public string Name { get; set; }
 
-        internal byte GetDamageFromPower(int abilityBasePower)
-        {
-            byte returnDamage = 0;
-            int weaponPower = this.GetWeaponPower();
+        public Stats Stats { get; set; }
 
-            int totalBasePower = weaponPower + abilityBasePower;
-            int modifiedPower = 0;
+        //internal byte GetDamageFromPower(int abilityBasePower)
+        //{
+        //    byte returnDamage = 0;
+        //    int weaponPower = this.GetWeaponPower();
 
-            foreach (var modifier in this.Modifiers)
-            {
-                modifiedPower += modifier.ModifyPower(totalBasePower);
-            }
+        //    int totalBasePower = weaponPower + abilityBasePower;
+        //    //int modifiedPower = 0;
 
-            returnDamage = (byte)MathHelper.Clamp(totalBasePower + modifiedPower, byte.MinValue, byte.MaxValue);
-            return returnDamage;
-        }
+        //    //foreach (var modifier in this.Modifiers)
+        //    //{
+        //    //    modifiedPower += modifier.ModifyPower(totalBasePower);
+        //    //}
+
+        //    this.Modifiers.
+
+        //    returnDamage = (byte)MathHelper.Clamp(totalBasePower + modifiedPower, byte.MinValue, byte.MaxValue);
+        //    return returnDamage;
+        //}
+
 
         private byte GetWeaponPower()
         {
@@ -79,22 +84,47 @@ namespace Data.World
         public Point MovingToPosition { get; protected set; }
         public Point AimToPosition { get; protected set; }
 
-        public bool IsMoving { get { return this.MovingToPosition != this.Position && !this.IsDead; } }
+        public bool IsMoving { get { return this.MovingToPosition != this.Position  && !this.IsDead && this.MovingToPosition != null; } }
 
         public bool IsDead { get { return this.Health == 0; } }
+        
+        public byte Health
+        {
+            get
+            {
+                return this.Stats.GetStat(StatIdentifier.Health);
+            }
 
-        private byte health = 100;
-        //public byte Health { get; set; }
-        public byte MaxHealth { get; set; }
-        public byte MaxEnergy { get; set; }
-        public byte Energy { get; set; }
+            set
+            {
+                var oldHp = this.Stats.GetStat(StatIdentifier.Health); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
+                this.Stats.Modify(StatIdentifier.Health, value);
+                this.OnHealthChange(oldHp);
+            }
+        }
+        public byte Energy
+        {
+            get
+            {
+                return this.Stats.GetStat(StatIdentifier.Energy);
+            }
+
+            set
+            {
+                //var oldEnergy = this.Stats.GetStat(StatIdentifier.Energy); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
+                this.Stats.Modify(StatIdentifier.Energy, value);
+                //this.OnEnergyChange(oldEnergy); //ToDo: Add to Stats as event.
+            }
+        }
+        public byte MaxHealth { get { return this.Stats.GetStat(StatIdentifier.HealthMax); } }
+        public byte MaxEnergy { get { return this.Stats.GetStat(StatIdentifier.EnergyMax); } }
 
         public CircleCollitionArea CollitionArea { get; set; }
 
         //public BagItem Inventory { get; set; }
         public ushort InventoryBagId { get; set; }
 
-        public List<CharacterModifier> Modifiers { get; set; }
+        public ModifiersCollection Modifiers { get; set; }
         public List<AbilityIdentity> Abilities { get; set; }
         public List<WeaponItem> Holster { get; set; }
         public ArmorItem Armor { get; set; }
@@ -155,26 +185,14 @@ namespace Data.World
             return e.IsValid;
         }
 
-        Queue<CharacterModifier> durationRunOutModifiers = new Queue<CharacterModifier>(10);
         public void Update(GameTime gameTime)
         {
+            this.Stats.Update(gameTime);
+            this.Modifiers.Update(gameTime, this);
             if (this.BusyDuration > 0)
             {
                 this.BusyDuration -= gameTime.ElapsedGameTime.TotalMilliseconds;
             }
-            foreach (var modifier in this.Modifiers)
-            {
-                if (modifier.Duration.HasValue)
-                {
-                    modifier.Duration -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                    if (modifier.Duration < 0)
-                    {
-                        durationRunOutModifiers.Enqueue(modifier);
-                    }
-                }
-            }
-            while (durationRunOutModifiers.Count > 0)
-                this.Modifiers.Remove(durationRunOutModifiers.Dequeue());
 
             if (this.IsMoving)
             {
@@ -186,25 +204,16 @@ namespace Data.World
             if (!IsMoving)
                 return;
 
-            if (health == 0)
-                return;
-
             Vector2 start = this.Position.ToVector2();
+            Vector2 newPosition = start;
             Vector2 end = this.MovingToPosition.ToVector2();
             float distance = Vector2.Distance(start, end);
             Vector2 direction = Vector2.Normalize(end - start);
-            Vector2 newPosition = this.Position.ToVector2();
 
-            newPosition += direction * 20f; //this.MaxSpeed;//* ((float)gameTime.ElapsedGameTime.TotalMilliseconds / 60000f);
+            newPosition += this.Stats.CalculateMovement(direction);
             if (Vector2.Distance(start, newPosition) >= distance)
             {
                 newPosition = end;
-                float modifyMovement = 1f;
-                foreach (var modifier in this.Modifiers)
-                {
-                    modifyMovement = modifier.ModifyMovement(modifyMovement);
-                }
-                newPosition *= modifyMovement;
                 this.MovingToPosition = newPosition.ToPoint();
             }
 
@@ -212,27 +221,12 @@ namespace Data.World
             this.CollitionArea.Position = this.Position;
         }
 
-        //public ushort Acceleration { get; set; } //PixelsPerSecound
-        //public ushort MaxSpeed { get; set; } //PixelsPerSecound 
 
-        public byte Health
-        {
-            get
-            {
-                return health;
-            }
-
-            set
-            {
-                var oldHp = health;
-                health = value;
-                this.OnHealthChange(oldHp);
-            }
-        }
-
-        public bool IsVisible { get; set; }
+        //public bool IsVisible { get; set; }
         public double BusyDuration { get; internal set; }
         public bool IsBusy { get { return this.BusyDuration > 0D; } }
+
+        //public float MovementSpeed { get; internal set; }
 
         public event EventHandler<HealthChangedEventArgs> HealthChanged;
         private void OnHealthChange(byte oldHp)

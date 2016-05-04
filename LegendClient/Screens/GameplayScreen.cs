@@ -62,6 +62,7 @@ namespace WindowsClient
 
             rnd = new Random();
             world = new ClientWorldState();
+            world.CharacterAdded += World_CharacterAdded;
             network = new NetworkEngine();
             network.WorldState = world;
             worldPump = new WorldPump();
@@ -85,7 +86,7 @@ namespace WindowsClient
         {
             world.PlayerCharacter = new ClientCharacter();
             world.PlayerCharacter.Id = charId;
-            world.PlayerCharacter.HealthChanged += PlayerCharacter_HealthChanged;
+            //world.PlayerCharacter.HealthChanged += PlayerCharacter_HealthChanged;
             world.AddCharacter(world.PlayerCharacter);
             network.SelectCharacter(charId);
         }
@@ -162,12 +163,12 @@ namespace WindowsClient
             Input.Actions.Add(actionKeyMappingAbility3);
             ActionKeyMapping actionKeyMappingAbility4 = new ActionKeyMapping();
             actionKeyMappingAbility4.Id = 14;
-            actionKeyMappingAbility4.Primary = Keys.Q;
+            actionKeyMappingAbility4.Primary = Keys.D4;
             actionKeyMappingAbility4.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
             Input.Actions.Add(actionKeyMappingAbility4);
             ActionKeyMapping actionKeyMappingAbility5 = new ActionKeyMapping();
             actionKeyMappingAbility5.Id = 15;
-            actionKeyMappingAbility5.Primary = Keys.E;
+            actionKeyMappingAbility5.Primary = Keys.D5;
             actionKeyMappingAbility5.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
             Input.Actions.Add(actionKeyMappingAbility5);
 
@@ -197,10 +198,14 @@ namespace WindowsClient
             this.Game.Window.Position = Point.Zero;
         }
 
-        private void PlayerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
+        private void World_CharacterAdded(object sender, NewCharacterEventArgs e)
+        {
+            e.Character.HealthChanged += Character_HealthChanged;
+        }
+        private void Character_HealthChanged(object sender, Character.HealthChangedEventArgs e)
         {
             ClientCharacter clientCharacter = (ClientCharacter)sender;
-            if (clientCharacter.Health < e.PreviousHelth) //Damage
+            if (clientCharacter.Health <= e.PreviousHelth) //Damage
             {
                 this.AddDamageIndicator(clientCharacter, e.PreviousHelth - clientCharacter.Health);
             }
@@ -229,7 +234,7 @@ namespace WindowsClient
 
         private void actionKeyMappingAbility_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            var abilityIndex = e.Action.Id - 10;
+            var abilityIndex = e.Action.Id - 11;
             if (world.PlayerCharacter.Abilities.Count > abilityIndex)
             {
                 var abilityId = world.PlayerCharacter.Abilities[abilityIndex];
@@ -289,6 +294,8 @@ namespace WindowsClient
 
         public override void Update(GameTime gameTime)
         {
+
+
             worldPump.Update(gameTime);
             world.ClientUpdate(gameTime);
             network.Update();

@@ -44,6 +44,7 @@
     <Compile Include="Data\Abilities\AbilityIdentity.cs" />
     <Compile Include="Data\Abilities\CriticalAttackAbility.cs" />
     <Compile Include="Data\Abilities\SlowingAttackAbility.cs" />
+    <Compile Include="Data\Abilities\DecreaseEnergyAbility.cs" />
     <Compile Include="Data\Abilities\StunAttackAbility.cs" />
     <Compile Include="Data\Abilities\HardAttackAbility.cs" />
     <Compile Include="Data\Abilities\DefaultAttackAbility.cs" />
@@ -68,9 +69,13 @@
     <Compile Include="Data\ItemCategory.cs" />
     <Compile Include="Data\ItemType.cs" />
     <Compile Include="Data\Modifiers\CharacterModifier.cs" />
+    <Compile Include="Data\Modifiers\EnergyCostModifier.cs" />
+    <Compile Include="Data\Modifiers\ModifiersCollection.cs" />
     <Compile Include="Data\Modifiers\SlowedModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
+    <Compile Include="Data\StatIdentifier.cs" />
+    <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />

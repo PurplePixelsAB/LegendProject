@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Network;
+using Data.World;
 
 namespace LegendWorld.Data.Modifiers
 {
@@ -15,9 +17,10 @@ namespace LegendWorld.Data.Modifiers
             base.IsUsed = false;
         }
 
-        internal override float ModifyMovement(float movement)
+        public override void Update(GameTime gameTime, Character character)
         {
-            return 0f;
+            character.Stats.Modify(StatIdentifier.MovementSpeed, 0f);
+            character.BusyDuration = base.Duration.Value;
         }
     }
 }

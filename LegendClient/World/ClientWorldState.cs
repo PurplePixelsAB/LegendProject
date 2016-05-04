@@ -24,6 +24,21 @@ namespace WindowsClient.World
             return new WorldMap() { Bounds = new Rectangle(0, 0, short.MaxValue, short.MaxValue) };
         }
 
+        public override void AddCharacter(Character newCharacter)
+        {
+            base.AddCharacter(newCharacter);
+            this.OnCharacterAdded(newCharacter);
+        }
+
+        public event EventHandler<NewCharacterEventArgs> CharacterAdded;
+        private void OnCharacterAdded(Character newCharacter)
+        {
+            if (this.CharacterAdded != null)
+            {
+                this.CharacterAdded(this, new NewCharacterEventArgs() { Character = newCharacter });
+            }
+        }
+
         internal void ClientUpdate(GameTime gameTime)
         {
             Vector2 centerVector2 = new Vector2(960f, 540f);
@@ -49,5 +64,10 @@ namespace WindowsClient.World
                 }
             }
         }
+    }
+
+    public class NewCharacterEventArgs : EventArgs
+    {
+        public Character Character { get; set; }
     }
 }
