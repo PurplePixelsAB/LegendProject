@@ -1,15 +1,22 @@
 ﻿using Data;
+using LegendWorld.Data.Items;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LegendWorld.Data
 {
-    public class Item
+    [KnownType(typeof(AbilityScrollItem))]
+    [DataContract]
+    public abstract class Item
     {
-        public ushort Id { get; set; }
+        //public int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public ItemIdentity Identity { get; set; }
         public ItemCategory Category { get; set; }
 

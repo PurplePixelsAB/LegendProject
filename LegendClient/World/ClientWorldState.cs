@@ -15,7 +15,7 @@ namespace WindowsClient.World
 
         //private byte swingDmg = 24;
 
-        public IEnumerable<ushort> Characters { get { return base.characters.Keys; } }
+        //public IEnumerable<ushort> Characters { get { return base.characters.Keys; } }
         internal ClientCharacter PlayerCharacter { get; set; }
 
         protected override WorldMap GetCharactersMap(Character character)

@@ -100,7 +100,7 @@ namespace WindowsClient
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
-            network.LoadContent();
+            network.LoadContent(world);
             inventoryScreen.LoadContent(graphicsDevice);   
 
             spriteBatch = new SpriteBatch(graphicsDevice);

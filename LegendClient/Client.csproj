@@ -80,7 +80,6 @@
     <Compile Include="GameLegend.cs" />
     <Compile Include="Net\ClientPacketHandler.cs" />
     <Compile Include="Net\NetworkEngine.cs" />
-    <Compile Include="Net\Packets\UpdateStaticPacketHandler.cs" />
     <Compile Include="Net\Packets\UpdateMobilePacketHandler.cs" />
     <Compile Include="Net\SocketClient.cs" />
     <Compile Include="Program.cs" />
@@ -123,6 +122,10 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataClient\DataClient.csproj">
+      <Project>{f048bff1-b2e4-4416-a0d4-0cd988e598d5}</Project>
+      <Name>DataClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LegendWorld\World.csproj">
       <Project>{3a3489ce-3b13-427f-a769-f2ae439f4c2d}</Project>
       <Name>World</Name>

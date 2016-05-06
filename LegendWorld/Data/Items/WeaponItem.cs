@@ -16,5 +16,8 @@ namespace LegendWorld.Data.Items
         public byte Power { get; set; }
         public int Speed { get; set; }
         public bool IsTwoHanded { get; set; }
+        //public ushort Id { get; set; }
+        //public ItemIdentity Identity { get; set; }
+        //public ItemCategory Category { get; set; }
     }
 }

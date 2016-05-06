@@ -26,18 +26,36 @@ namespace LegendClient.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
-        public string ServerAddress {
+        public string GameServerAddress {
             get {
-                return ((string)(this["ServerAddress"]));
+                return ((string)(this["GameServerAddress"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("27960")]
-        public int ServerPort {
+        public int GameServerPort {
             get {
-                return ((int)(this["ServerPort"]));
+                return ((int)(this["GameServerPort"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string DataServerAddress {
+            get {
+                return ((string)(this["DataServerAddress"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("61220")]
+        public int DataServerPort {
+            get {
+                return ((int)(this["DataServerPort"]));
             }
         }
     }

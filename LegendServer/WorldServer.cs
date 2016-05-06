@@ -6,6 +6,8 @@ using System;
 using Data;
 using Microsoft.Xna.Framework;
 using LegendWorld.Data;
+using LegendWorld.Data.Abilities;
+using LegendWorld.Data.Items;
 
 namespace UdpServer
 {
@@ -35,7 +37,7 @@ namespace UdpServer
             maptoCharacterRelations[character.CurrentMapId].Add(character.Id); 
             this.UpdateThisCharacterOfEveryone(serverCharacter);
             this.UpdateEveryoneOfThisCharacter(serverCharacter);
-            this.UpdateCharacterOfEveryGroundItem(serverCharacter);
+            //this.UpdateCharacterOfEveryGroundItem(serverCharacter);
         }
 
         //public override void AddItem(Item item)
@@ -50,9 +52,9 @@ namespace UdpServer
             GroundItem groundItem = new GroundItem();
             groundItem.Position = position;
             groundItem.CurrentMapId = mapId;
-            groundItem.ItemId = item.Id;
+            groundItem.ItemId = (ushort)item.Id;
             base.AddGroundItem(groundItem);
-            this.UpdateEveryoneOfGroundItem(groundItem);
+            //this.UpdateEveryoneOfGroundItem(groundItem);
         }
 
         internal void CharacterDisconnects(object sender, EventArgs e)
@@ -87,29 +89,29 @@ namespace UdpServer
                 clientSendTo.Send(packet);
             }
         }
-        internal void UpdateEveryoneOfGroundItem(GroundItem aboutItem)
-        {
-            var packet = new UpdateStaticPacket(new List<GroundItem>(new GroundItem[] { aboutItem }));
-            foreach (ushort mapCharacterId in maptoCharacterRelations[aboutItem.CurrentMapId])
-            {
-                ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
-                NetState clientSendTo = characterToUpdate.Owner;
+        //internal void UpdateEveryoneOfGroundItem(GroundItem aboutItem)
+        //{
+        //    var packet = new UpdateStaticPacket(new List<GroundItem>(new GroundItem[] { aboutItem }));
+        //    foreach (ushort mapCharacterId in maptoCharacterRelations[aboutItem.CurrentMapId])
+        //    {
+        //        ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
+        //        NetState clientSendTo = characterToUpdate.Owner;
 
-                clientSendTo.Send(packet);
-            }
-        }
-        private void UpdateCharacterOfEveryGroundItem(ServerCharacter characterToUpdate)
-        {
-            NetState clientSendTo = characterToUpdate.Owner;
-            var sendList = new List<GroundItem>(this.GroundItems.Count);
-            foreach (ushort groundId in this.GroundItems)
-            {
-                var groundItemToUpdate = this.GetGroundItem(groundId); //((ServerCharacter)characters[characterId]);
-                sendList.Add(groundItemToUpdate);
-            }
-            if (sendList.Count > 0)
-                clientSendTo.Send(new UpdateStaticPacket(sendList));
-        }
+        //        clientSendTo.Send(packet);
+        //    }
+        //}
+        //private void UpdateCharacterOfEveryGroundItem(ServerCharacter characterToUpdate)
+        //{
+        //    NetState clientSendTo = characterToUpdate.Owner;
+        //    var sendList = new List<GroundItem>(this.GroundItems.Count);
+        //    foreach (ushort groundId in this.GroundItems)
+        //    {
+        //        var groundItemToUpdate = this.GetGroundItem(groundId); //((ServerCharacter)characters[characterId]);
+        //        sendList.Add(groundItemToUpdate);
+        //    }
+        //    if (sendList.Count > 0)
+        //        clientSendTo.Send(new UpdateStaticPacket(sendList));
+        //}
 
         private void character_InputUpdated(object sender, EventArgs e)
         {

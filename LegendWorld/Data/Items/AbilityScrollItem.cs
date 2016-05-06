@@ -11,7 +11,7 @@ namespace LegendWorld.Data.Items
 {
     public class AbilityScrollItem : ConsumableItem //Consumable
     {
-        public AbilityIdentity Ability { get; set; }
+        public AbilityIdentity Ability { get { return (AbilityIdentity)base.StackCount; } set { base.StackCount = (uint)value; } }
         public AbilityScrollItem()
         {
             //this.Name = "Ability Scroll";

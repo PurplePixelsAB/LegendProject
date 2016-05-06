@@ -10,6 +10,8 @@ using WindowsClient.World.Mobiles;
 using WindowsClient.World;
 using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
+using DataClient;
+using LegendWorld.Data;
 
 namespace WindowsClient.Net
 {
@@ -19,11 +21,13 @@ namespace WindowsClient.Net
         internal uint Ticks { get; set; }
         public ClientWorldState WorldState { get; internal set; }
 
+        private WorldWebDataContext dataContext;
         private SocketClient socketClient;
         private ClientPacketHandler[] clientPacketHandlers;
 
         public NetworkEngine()
         {
+            dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendClient.Properties.Settings.Default.DataServerAddress, LegendClient.Properties.Settings.Default.DataServerPort));
             clientPacketHandlers = new ClientPacketHandler[byte.MaxValue];
             clientPacketHandlers[(byte)PacketIdentity.UpdateMobile] = new UpdateMobilePacketHandler();
             PacketFactory.Register(PacketIdentity.UpdateMobile, () => new UpdateMobilePacket());
@@ -48,7 +52,7 @@ namespace WindowsClient.Net
         {
             try
             {
-                socketClient.Connect(LegendClient.Properties.Settings.Default.ServerAddress, LegendClient.Properties.Settings.Default.ServerPort);
+                socketClient.Connect(LegendClient.Properties.Settings.Default.GameServerAddress, LegendClient.Properties.Settings.Default.GameServerPort);
             }
             catch (Exception)
             {
@@ -57,9 +61,26 @@ namespace WindowsClient.Net
             }
         }
 
-        public void LoadContent()
-        { 
+        public void LoadContent(ClientWorldState world)
+        {
+            IEnumerable<Item> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId).Result;
+            if (items != null)
+            {
+                foreach (Item item in items)
+                {
+                    world.AddItem(item);
+                }
+            }
+            IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(world.PlayerCharacter.CurrentMapId).Result;
+            if (groundItems != null)
+            {
+                foreach (Item item in items)
+                {
+                    world.AddItem(item);
+                }
+            }
         }
+        
         public void UnloadContent()
         {
             socketClient.Disconnect();

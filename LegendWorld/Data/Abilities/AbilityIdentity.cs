@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Abilities
 {
-    public enum AbilityIdentity : ushort
+    public enum AbilityIdentity : int
     {
         DefaultAttack, //Everybody Has
         HardAttack, //No Movement extra Dmg

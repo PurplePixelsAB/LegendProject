@@ -94,8 +94,8 @@ namespace UdpServer
                     netState.buffer = new byte[Packet.DefaultBufferSize];
                     netState.Socket.BeginReceive(this.Buffer, 0, Packet.DefaultBufferSize, 0, new AsyncCallback(netState.OnReceive), netState);
                 }
-                else
-                    Dispose();
+                //else
+                    //Dispose();
             }
             catch
             {

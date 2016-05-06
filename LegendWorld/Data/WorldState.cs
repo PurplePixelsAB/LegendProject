@@ -1,6 +1,7 @@
 ﻿using Data.World;
 using LegendWorld.Data;
 using LegendWorld.Data.Abilities;
+using LegendWorld.Data.Items;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ namespace Network
 {
     public abstract class WorldState
     {
-        protected byte swingDmg = 24;
-        protected byte swingEnergy = 34;
-        protected byte healAmount = 11;
+        //protected byte swingDmg = 24;
+        //protected byte swingEnergy = 34;
+        //protected byte healAmount = 11;
 
         protected TimeSpan baseRegenTick = new TimeSpan(0, 0, 1);
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
@@ -23,6 +24,28 @@ namespace Network
         public WorldState()
         {
             Ability.Load();
+
+            //ushort itemId = 1;
+            //foreach (AbilityIdentity abilityId in Enum.GetValues(typeof(AbilityIdentity)))
+            //{
+            //    Random rnd = new Random();
+            //    for (ushort i = 0; i < 10; i++)
+            //    {
+            //        AbilityScrollItem item = new AbilityScrollItem();
+            //        item.Id = itemId;
+            //        item.Ability = abilityId;
+            //        itemId++;
+            //        this.AddItem(item);
+
+            //        GroundItem groundItem = new GroundItem();
+            //        groundItem.ItemId = item.Id;
+            //        groundItem.Id = itemId;
+            //        groundItem.Position = new Point(rnd.Next(1, 1000), rnd.Next(1, 1000));
+            //        this.AddGroundItem(groundItem);
+
+            //        itemId++;
+            //    }
+            //}
         }
 
         public virtual Item GetItem(ushort id)
@@ -36,22 +59,22 @@ namespace Network
         }
         public virtual void AddItem(Item item)
         {
-            if (items.ContainsKey(item.Id))
+            if (items.ContainsKey((ushort)item.Id))
                 return;
 
-            items.Add(item.Id, item);
+            items.Add((ushort)item.Id, item);
         }
         public virtual void RemoveItem(Item item)
         {
-            if (!items.ContainsKey(item.Id))
+            if (!items.ContainsKey((ushort)item.Id))
                 return;
 
-            items.Remove(item.Id);
+            items.Remove((ushort)item.Id);
         }
 
-        protected Dictionary<ushort, GroundItem> groundItems = new Dictionary<ushort, GroundItem>();
-        public Dictionary<ushort, GroundItem>.KeyCollection GroundItems { get { return groundItems.Keys; } }
-        public virtual GroundItem GetGroundItem(ushort id)
+        protected Dictionary<int, GroundItem> groundItems = new Dictionary<int, GroundItem>();
+        public Dictionary<int, GroundItem>.KeyCollection GroundItems { get { return groundItems.Keys; } }
+        public virtual GroundItem GetGroundItem(int id)
         {
             if (groundItems.ContainsKey(id))
             {
@@ -59,7 +82,7 @@ namespace Network
             }
 
             return null;
-        }       
+        }
 
         protected Dictionary<ushort, Character> characters = new Dictionary<ushort, Character>();
 
@@ -154,7 +177,7 @@ namespace Network
                 return false;
             Ability abilityToPerform = Ability.Get(abilityId);
             if (abilityToPerform == null)
-                return false;            
+                return false;
 
             return this.PerformAbility(abilityToPerform, character);
         }
