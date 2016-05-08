@@ -8,28 +8,30 @@ using System.Text;
 
 namespace Network.Packets
 {
-    public class SelectCharacterPacket : Packet
+    public class AuthPacket : Packet
     {
-        public SelectCharacterPacket() : base(PacketIdentity.SelectCharacter, 5)
+        public AuthPacket() : base(PacketIdentity.Auth, 30)
         {
 
         }
-        public SelectCharacterPacket(int selectedId) : this()
+        public AuthPacket(int sessionId) : this()
         {
-            this.CharacterId = (UInt16)selectedId;
+            this.SessionId = sessionId;
+            //this.CharacterId = (UInt16)selectedId;
         }
 
-        public UInt16 CharacterId { get; set; }
+        //public UInt16 CharacterId { get; set; }
+        public int SessionId { get; set; }
 
         public override void OnReadBuffer(PacketReader packetReader)
         {
             base.OnReadBuffer(packetReader);
-            this.CharacterId = packetReader.ReadUInt16();
+            this.SessionId = packetReader.ReadInt32();
         }
         public override void OnWriteBuffer(PacketWriter packetWriter)
         {
             base.OnWriteBuffer(packetWriter);
-            packetWriter.Write(this.CharacterId);
+            packetWriter.Write(this.SessionId);
         }
     }
 }

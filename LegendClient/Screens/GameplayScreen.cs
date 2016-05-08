@@ -15,6 +15,7 @@ using Network;
 using WindowsClient.World;
 using LegendClient.Screens;
 using LegendWorld.Data.Items;
+using LegendWorld.Data;
 
 namespace WindowsClient
 {
@@ -24,7 +25,10 @@ namespace WindowsClient
 
         //private long lastTick;
         //private long nextTick;
-        public bool IsConnected { get { return this.network.Connected; } }
+        public bool IsConnected { get { return this.network.ConnectedToWorld; } }
+
+        private bool assetsLoaded = false, networkLoaded = false;
+        public bool IsLoaded { get { return assetsLoaded && networkLoaded; } }
 
         private SpriteBatch spriteBatch;
         private Texture2D bodyTexture;
@@ -77,18 +81,20 @@ namespace WindowsClient
             if (e.ItemUsed.Category == LegendWorld.Data.ItemCategory.Consumable)
             {
                 ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
-                consumable.Use(world.PlayerCharacter);
+                consumable.Use(world.PlayerCharacter, world);
                 network.UseItem(consumable);
             }
         }
 
-        internal void SelectCharacter(ushort charId)
+        internal void SelectCharacter(int charId)
         {
+            network.SelectCharacter(charId);
+
             world.PlayerCharacter = new ClientCharacter();
             world.PlayerCharacter.Id = charId;
-            //world.PlayerCharacter.HealthChanged += PlayerCharacter_HealthChanged;
             world.AddCharacter(world.PlayerCharacter);
-            network.SelectCharacter(charId);
+
+            networkLoaded = true;
         }
 
         public override void Initialize(ScreenManager screenManager)
@@ -114,6 +120,7 @@ namespace WindowsClient
             damageSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             bigBushTexture = Game.Content.Load<Texture2D>("bigbush");
             hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
+            itemScrollTexture = Game.Content.Load<Texture2D>("Scroll");
 
             //generalMappings = Game.Content.Load<ActionKeyMapping[]>("DefaultKeys\\General");
             //for (int i = 0; i <= generalMappings.GetUpperBound(0); i++)
@@ -184,6 +191,8 @@ namespace WindowsClient
             actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
             Input.Actions.Add(actionKeyMappingToggleFlullscreen);
+
+            assetsLoaded = true;
         }
         
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
@@ -215,9 +224,14 @@ namespace WindowsClient
             }
         }
 
-        private void AddHealIndicator(ClientCharacter clientCharacter, int v)
+        private void AddHealIndicator(ClientCharacter clientCharacter, int healAmount)
         {
-            //throw new NotImplementedException();
+            var dmgEfx = new DamageTextEffect();
+            dmgEfx.Character = clientCharacter;
+            dmgEfx.Text = string.Format("{0}", healAmount);
+            dmgEfx.Duration = 2000;
+            dmgEfx.Color = Color.White;
+            DamageTextEffectList.Enqueue(dmgEfx);
         }
 
         private Queue<DamageTextEffect> DamageTextEffectList = new Queue<DamageTextEffect>();
@@ -229,6 +243,7 @@ namespace WindowsClient
             dmgEfx.Character = clientCharacter;
             dmgEfx.Text = string.Format("{0}", damageAmount);
             dmgEfx.Duration = 2000;
+            dmgEfx.Color = Color.Red;
             DamageTextEffectList.Enqueue(dmgEfx);
         }
 
@@ -252,7 +267,7 @@ namespace WindowsClient
             if (world.PlayerCharacter.AimToPosition != worldPosition)
             {
                 world.PlayerCharacter.SetAimToPosition(worldPosition);
-                network.AimTo(worldPosition);
+                network.AimTo(world.PlayerCharacter.Id, worldPosition);
             }
         }
 
@@ -267,7 +282,7 @@ namespace WindowsClient
             if (world.PlayerCharacter.MovingToPosition != worldPosition)
             {
                 world.PlayerCharacter.SetMoveToPosition(worldPosition);
-                network.MoveTo(worldPosition);
+                network.MoveTo(world.PlayerCharacter.Id, worldPosition);
             }
 
             if (lastMovementClickTicks + doubleClickSpeed.Ticks >= e.GameTime.TotalGameTime.Ticks)
@@ -275,7 +290,7 @@ namespace WindowsClient
                 if (world.PlayerCharacter.AimToPosition != worldPosition)
                 {
                     world.PlayerCharacter.SetAimToPosition(worldPosition);
-                    network.AimTo(worldPosition);
+                    network.AimTo(world.PlayerCharacter.Id, worldPosition);
                 }
             }
             lastMovementClickTicks = e.GameTime.TotalGameTime.Ticks;
@@ -294,28 +309,26 @@ namespace WindowsClient
 
         public override void Update(GameTime gameTime)
         {
-
-
             worldPump.Update(gameTime);
             world.ClientUpdate(gameTime);
             network.Update();
             movementBodyBobEffect.Update(gameTime);
         }
 
-        public void UpdateRandomBodyMovement(GameTime gameTime)
-        {
-            //ToDo: SAVE CODE - Random Body movement instead.
-            //if ((lastUpdateTime.TotalSeconds + updateTime) <= gameTime.TotalGameTime.TotalSeconds)
-            //{
-            //    rndHeadLast = rndHeadTarget;
-            //    rndHeadTarget = new Vector2(rnd.Next(-2, 2), rnd.Next(-1, 3));
-            //    lastUpdateTime = gameTime.TotalGameTime;
-            //    updateTime = rnd.Next(1, 3);
-            //}
-            //float lerp = (float)((gameTime.TotalGameTime.TotalSeconds - lastUpdateTime.TotalSeconds) / updateTime);
-            //rndHead.X = (float)Math.Round(MathHelper.Lerp(rndHeadLast.X, rndHeadTarget.X, lerp));
-            //rndHead.Y = (float)Math.Round(MathHelper.Lerp(rndHeadLast.Y, rndHeadTarget.Y, lerp));
-        }
+        //public void UpdateRandomBodyMovement(GameTime gameTime)
+        //{
+        //    //ToDo: SAVE CODE - Random Body movement instead.
+        //    //if ((lastUpdateTime.TotalSeconds + updateTime) <= gameTime.TotalGameTime.TotalSeconds)
+        //    //{
+        //    //    rndHeadLast = rndHeadTarget;
+        //    //    rndHeadTarget = new Vector2(rnd.Next(-2, 2), rnd.Next(-1, 3));
+        //    //    lastUpdateTime = gameTime.TotalGameTime;
+        //    //    updateTime = rnd.Next(1, 3);
+        //    //}
+        //    //float lerp = (float)((gameTime.TotalGameTime.TotalSeconds - lastUpdateTime.TotalSeconds) / updateTime);
+        //    //rndHead.X = (float)Math.Round(MathHelper.Lerp(rndHeadLast.X, rndHeadTarget.X, lerp));
+        //    //rndHead.Y = (float)Math.Round(MathHelper.Lerp(rndHeadLast.Y, rndHeadTarget.Y, lerp));
+        //}
 
         //private float Vector2ToRadian(Vector2 direction)
         //{
@@ -326,10 +339,21 @@ namespace WindowsClient
         {
             spriteBatch.Begin();
             this.BaseDrawing(spriteBatch);
+            this.DrawGroundItems(spriteBatch);
             this.DrawCharacters(spriteBatch);
             this.DrawDamageEffect(spriteBatch, gameTime);
             this.DrawHud(spriteBatch);
             spriteBatch.End();
+        }
+
+        private void DrawGroundItems(SpriteBatch spriteBatch)
+        {
+            foreach (int itemId in world.GroundItems)
+            {
+                GroundItem groundItem = world.GetGroundItem(itemId);
+                Vector2 drawPosition = CenterScreen - (world.PlayerCharacter.Position - groundItem.Position).ToVector2();
+                spriteBatch.Draw(itemScrollTexture, drawPosition, Color.White);
+            }
         }
 
         private void DrawHud(SpriteBatch spriteBatch)
@@ -402,7 +426,6 @@ namespace WindowsClient
             }
         }
 
-
         public class MovementBodyBobEffect
         {
             //float lerp = 0f;
@@ -427,8 +450,9 @@ namespace WindowsClient
             }
         }
         private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
-        private Texture2D bagTexture;
+        //private Texture2D bagTexture;
         private InventoryScreen inventoryScreen;
+        private Texture2D itemScrollTexture;
 
         private void DrawCharacters(SpriteBatch spriteBatch)
         {

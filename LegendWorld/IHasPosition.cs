@@ -4,7 +4,7 @@ namespace Data
 {
     public interface IHasPosition : IEntity
     {
-        ushort CurrentMapId { get; set; }
+        int CurrentMapId { get; set; }
         Point Position { get; }
     }
 }

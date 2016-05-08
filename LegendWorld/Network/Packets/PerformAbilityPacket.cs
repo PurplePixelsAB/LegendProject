@@ -11,7 +11,7 @@ namespace Network.Packets
 {
     public class PerformAbilityPacket : Packet
     {
-        public PerformAbilityPacket() : base(PacketIdentity.PerformAbility)
+        public PerformAbilityPacket() : base(PacketIdentity.PerformAbility, 30)
         {
 
         }

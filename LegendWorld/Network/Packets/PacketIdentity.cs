@@ -5,10 +5,13 @@
         Invalid = 0,
         MoveTo = 1,
         AimTo = 2,
-        UpdateMobile = 3,
-        SelectCharacter = 4,
+        StatsChanged = 3,
+        //SelectCharacter = 4,
         PerformAbility = 5,
-        UpdateStatic = 6,
-        UseConsumable = 7,
+        //UpdateStatic = 6,
+        UseItem = 7,
+        //Ack = 253,
+        Auth = 254,
+        Error = 255
     }
 }

@@ -17,22 +17,29 @@ namespace WindowsClient.Net
 {
     public class NetworkEngine
     {
-        internal bool Connected { get { return socketClient.State == State.Connected; } }
+        internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
         internal uint Ticks { get; set; }
         public ClientWorldState WorldState { get; internal set; }
+        public int SessionId { get; private set; }
 
         private WorldWebDataContext dataContext;
-        private SocketClient socketClient;
+        private SocketClient worldServerClient;
         private ClientPacketHandler[] clientPacketHandlers;
 
         public NetworkEngine()
         {
             dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendClient.Properties.Settings.Default.DataServerAddress, LegendClient.Properties.Settings.Default.DataServerPort));
             clientPacketHandlers = new ClientPacketHandler[byte.MaxValue];
-            clientPacketHandlers[(byte)PacketIdentity.UpdateMobile] = new UpdateMobilePacketHandler();
-            PacketFactory.Register(PacketIdentity.UpdateMobile, () => new UpdateMobilePacket());
-            socketClient = new SocketClient();
-            socketClient.ProcessPacket += SocketClient_ProcessPacket;
+            clientPacketHandlers[(byte)PacketIdentity.StatsChanged] = new StatsChangedPacketHandler();
+            PacketFactory.Register(PacketIdentity.StatsChanged, () => new StatsChangedPacket());
+            clientPacketHandlers[(byte)PacketIdentity.MoveTo] = new MoveToPacketHandler();
+            PacketFactory.Register(PacketIdentity.MoveTo, () => new MoveToPacket());
+            clientPacketHandlers[(byte)PacketIdentity.AimTo] = new AimToPacketHandler();
+            PacketFactory.Register(PacketIdentity.AimTo, () => new AimToPacket());
+            clientPacketHandlers[(byte)PacketIdentity.PerformAbility] = new PerformAbilityPacketHandler();
+            PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
+            worldServerClient = new SocketClient();
+            worldServerClient.ProcessPacket += SocketClient_ProcessPacket;
         }
 
         //public event EventHandler HandlePacket;
@@ -52,7 +59,7 @@ namespace WindowsClient.Net
         {
             try
             {
-                socketClient.Connect(LegendClient.Properties.Settings.Default.GameServerAddress, LegendClient.Properties.Settings.Default.GameServerPort);
+                worldServerClient.Connect(LegendClient.Properties.Settings.Default.GameServerAddress, LegendClient.Properties.Settings.Default.GameServerPort);
             }
             catch (Exception)
             {
@@ -63,7 +70,7 @@ namespace WindowsClient.Net
 
         public void LoadContent(ClientWorldState world)
         {
-            IEnumerable<Item> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId).Result;
+            IEnumerable<Item> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
             if (items != null)
             {
                 foreach (Item item in items)
@@ -71,45 +78,45 @@ namespace WindowsClient.Net
                     world.AddItem(item);
                 }
             }
-            IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(world.PlayerCharacter.CurrentMapId).Result;
+            IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(world.PlayerCharacter.CurrentMapId);
             if (groundItems != null)
             {
-                foreach (Item item in items)
+                foreach (GroundItem item in groundItems)
                 {
-                    world.AddItem(item);
+                    world.AddGroundItem(item);
                 }
             }
         }
         
         public void UnloadContent()
         {
-            socketClient.Disconnect();
+            worldServerClient.Disconnect();
         }
 
         public void Update()
         {
-            if (!this.Connected)
+            if (!this.ConnectedToWorld)
                 return;
 
-            socketClient.Process();
+            worldServerClient.Process();
             if (moveToPacket != null)
             {
                 var toSendPacket = moveToPacket;
                 moveToPacket = null;
-                socketClient.Send(toSendPacket);
+                worldServerClient.Send(toSendPacket);
             }
             if (aimToPacket != null)
             {
                 var toSendPacket = aimToPacket;
                 aimToPacket = null;
-                socketClient.Send(toSendPacket);
+                worldServerClient.Send(toSendPacket);
             }
         }
 
         internal void UseItem(ConsumableItem consumable)
         {
-            UseConsumablePacket useConsumablePacket = new UseConsumablePacket();
-            socketClient.Send(useConsumablePacket);
+            UseItemPacket useConsumablePacket = new UseItemPacket();
+            worldServerClient.Send(useConsumablePacket);
         }
 
         //public void SendInputUpdate(ClientCharacter clientCharacter)
@@ -124,31 +131,43 @@ namespace WindowsClient.Net
         //    socketClient.Send(inputPacket);
         //}
 
-        internal void SelectCharacter(int id)
+        internal void SelectCharacter(int selectedCharacterId)
         {
-            SelectCharacterPacket packet = new SelectCharacterPacket(id);
-            socketClient.Send(packet);
+            this.SessionId = dataContext.CreateSession(selectedCharacterId);
+            AuthPacket packet = new AuthPacket(this.SessionId);
+            worldServerClient.Send(packet);
+        }
+        internal List<SelectableCharacter> GetCharacters()
+        {
+            List<SelectableCharacter> returnList = new List<SelectableCharacter>(3);
+            var charList = dataContext.GetCharacters();
+            if (charList != null)
+            {
+                returnList.AddRange(charList);
+            }
+
+            return returnList;
         }
 
         private MoveToPacket moveToPacket;
         private AimToPacket aimToPacket;
 
-        internal void MoveTo(Point moveToPoint)
+        internal void MoveTo(int characterId, Point moveToPoint)
         {
-            moveToPacket = new MoveToPacket(moveToPoint);
+            moveToPacket = new MoveToPacket(characterId, moveToPoint);
             //socketClient.Send(packet);
         }
 
-        internal void AimTo(Point aimToPoint)
+        internal void AimTo(int characterId, Point aimToPoint)
         {
-            aimToPacket = new AimToPacket(aimToPoint);
+            aimToPacket = new AimToPacket(characterId, aimToPoint);
             //socketClient.Send(packet);
         }
 
         internal void PerformAbility(ClientCharacter playerCharacter, AbilityIdentity abilityId)
         {
             PerformAbilityPacket packet = new PerformAbilityPacket(playerCharacter.Id, abilityId);
-            socketClient.Send(packet);
+            worldServerClient.Send(packet);
         }
 
         //internal void PerformHeal(ClientCharacter playerCharacter)

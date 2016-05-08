@@ -1,4 +1,5 @@
-﻿using WindowsClient.World.Mobiles;
+﻿using Microsoft.Xna.Framework;
+using WindowsClient.World.Mobiles;
 
 namespace WindowsClient
 {
@@ -9,6 +10,7 @@ namespace WindowsClient
         }
 
         public ClientCharacter Character { get; internal set; }
+        public Color Color { get; internal set; }
         public double Duration { get; internal set; }
         public string Text { get; internal set; }
     }

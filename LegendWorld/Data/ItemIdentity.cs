@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data
 {
-    public enum ItemIdentity : ushort
+    public enum ItemIdentity : int
     {
         Bag,
         Gold,

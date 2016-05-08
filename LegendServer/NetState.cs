@@ -16,9 +16,9 @@ namespace UdpServer
         private static List<NetState> m_Instances = new List<NetState>();
         public static List<NetState> Instances { get { return m_Instances; } }
 
-        public UInt16 Id { get; set; }
-        public UInt16 WorldId { get; set; }
-        public UInt32 LastRecivedTick { get; set; }
+        public int Id { get; set; }
+        public int WorldId { get; set; }
+        public long LastRecivedTick { get; set; }
 
         public NetState(Socket socket)
         {
@@ -53,9 +53,7 @@ namespace UdpServer
 
         private byte[] buffer = new byte[Packet.DefaultBufferSize];
         public byte[] Buffer { get { return buffer; } }
-
-        public uint Ticks { get; internal set; }
-
+        
         public ThreadQueue<IPacket> Packets;
 
         public void Start()
@@ -94,8 +92,8 @@ namespace UdpServer
                     netState.buffer = new byte[Packet.DefaultBufferSize];
                     netState.Socket.BeginReceive(this.Buffer, 0, Packet.DefaultBufferSize, 0, new AsyncCallback(netState.OnReceive), netState);
                 }
-                //else
-                    //Dispose();
+                else
+                    Dispose();
             }
             catch
             {

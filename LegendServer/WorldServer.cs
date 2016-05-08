@@ -8,36 +8,117 @@ using Microsoft.Xna.Framework;
 using LegendWorld.Data;
 using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
+using DataClient;
 
 namespace UdpServer
 {
-    internal class WorldServer : WorldState
+    internal class ServerWorldState : WorldState
     {
-        private List<ushort>[] maptoCharacterRelations;
-        private List<ushort>[] mapToGroundItems;
+        private List<int>[] maptoCharacterRelations;
+        private List<int>[] mapToGroundItems;
+        private WorldWebDataContext dataContext;
 
-        public WorldServer() : base()
+
+        public ServerWorldState() : base()
         {
+            dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendServer.Properties.Settings.Default.DataServerAddress, LegendServer.Properties.Settings.Default.DataServerPort));
             int expectedMaxPlayers = 1000; //server.Statistics.PlayerPeak;
             int mapZones = 1; //maps.Count;
-            characters = new Dictionary<ushort, Character>(expectedMaxPlayers);
-            maptoCharacterRelations = new List<ushort>[mapZones];
-            mapToGroundItems = new List<ushort>[mapZones];
+            characters = new Dictionary<int, Character>(expectedMaxPlayers);
+            maptoCharacterRelations = new List<int>[mapZones];
+            mapToGroundItems = new List<int>[mapZones];
             for (int i = 0; i < mapZones; i++)
             {
-                maptoCharacterRelations[i] = new List<ushort>(expectedMaxPlayers);
-                mapToGroundItems[i] = new List<ushort>(expectedMaxPlayers);
+                maptoCharacterRelations[i] = new List<int>(expectedMaxPlayers);
+                mapToGroundItems[i] = new List<int>(expectedMaxPlayers);
             }
+        }
+
+        internal void LoadMapData(int mapId)
+        {
+            IEnumerable<Item> items = dataContext.GetItems(mapId);
+            if (items != null)
+            {
+                foreach (Item item in items)
+                {
+                    this.AddItem(item);
+                }
+            }
+            IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(mapId);
+            if (groundItems != null)
+            {
+                foreach (GroundItem item in groundItems)
+                {
+                    this.AddGroundItem(item);
+                }
+            }
+        }
+
+        internal PlayerSession GetPlayerSession(int sessionId)
+        {
+            return dataContext.GetSession(sessionId);
+        }
+
+        internal IEnumerable<int> GetMapCharacters(int currentMapId)
+        {
+            return maptoCharacterRelations[currentMapId];
         }
 
         public override void AddCharacter(Character character)
         {
-            base.AddCharacter(character);
             ServerCharacter serverCharacter = (ServerCharacter)character;
-            maptoCharacterRelations[character.CurrentMapId].Add(character.Id); 
+            serverCharacter.HealthChanged += ServerCharacter_HealthChanged;
+            serverCharacter.AimToChanged += ServerCharacter_AimToChanged;
+            serverCharacter.MoveToChanged += ServerCharacter_MoveToChanged;
+            serverCharacter.Owner.Disconnected += ServerCharacter_Disconnects;
+
+            base.AddCharacter(character);
+            this.AddCharacterToMap(character);
             this.UpdateThisCharacterOfEveryone(serverCharacter);
             this.UpdateEveryoneOfThisCharacter(serverCharacter);
             //this.UpdateCharacterOfEveryGroundItem(serverCharacter);
+        }
+
+        private void AddCharacterToMap(Character character)
+        {
+            var mapCollection = maptoCharacterRelations[character.CurrentMapId];
+
+            if (mapCollection.Count == 0)
+                this.LoadMapData(character.CurrentMapId);
+
+            mapCollection.Add(character.Id);
+        }
+
+        private void ServerCharacter_MoveToChanged(object sender, EventArgs e)
+        {
+            ServerCharacter character = (ServerCharacter)sender;
+            MoveToPacket packet = new MoveToPacket(character.Id, character.MovingToPosition);
+            foreach (ushort mapCharacterId in maptoCharacterRelations[character.CurrentMapId])
+            {
+                ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
+                NetState clientSendTo = characterToUpdate.Owner;
+
+                clientSendTo.Send(packet);
+            }
+        }
+
+        private void ServerCharacter_AimToChanged(object sender, EventArgs e)
+        {
+            ServerCharacter character = (ServerCharacter)sender;
+            AimToPacket packet = new AimToPacket(character.Id, character.AimToPosition);
+            foreach (ushort mapCharacterId in maptoCharacterRelations[character.CurrentMapId])
+            {
+                ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
+                NetState clientSendTo = characterToUpdate.Owner;
+
+                clientSendTo.Send(packet);
+            }
+        }
+
+        private void ServerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
+        {
+            ServerCharacter character = (ServerCharacter)sender;
+            this.UpdateEveryoneOfThisCharacter(character);
         }
 
         //public override void AddItem(Item item)
@@ -57,7 +138,7 @@ namespace UdpServer
             //this.UpdateEveryoneOfGroundItem(groundItem);
         }
 
-        internal void CharacterDisconnects(object sender, EventArgs e)
+        private void ServerCharacter_Disconnects(object sender, EventArgs e)
         {
             NetState dcOwner = (NetState)sender;
             ServerCharacter character = (ServerCharacter)this.GetCharacter(dcOwner.WorldId);
@@ -75,12 +156,12 @@ namespace UdpServer
                     continue;
 
                 ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
-                clientSendTo.Send(new UpdateMobilePacket(aboutCharacter));
+                clientSendTo.Send(new StatsChangedPacket(aboutCharacter.Id, aboutCharacter.Health, aboutCharacter.Energy));
             }
         }
         internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
         {
-            var packet = new UpdateMobilePacket(aboutCharacter);
+            var packet = new StatsChangedPacket(aboutCharacter.Id, aboutCharacter.Health, aboutCharacter.Energy);
             foreach (ushort mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
             {
                 ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
@@ -121,6 +202,9 @@ namespace UdpServer
 
         public override void RemoveCharacter(Character character)
         {
+            character.HealthChanged -= ServerCharacter_HealthChanged;
+            character.AimToChanged -= ServerCharacter_AimToChanged;
+            character.MoveToChanged -= ServerCharacter_MoveToChanged;
             base.RemoveCharacter(character);
             maptoCharacterRelations[character.CurrentMapId].Remove(character.Id);
         }
@@ -138,6 +222,10 @@ namespace UdpServer
             return new WorldMap() { Bounds = new Rectangle(0, 0, short.MaxValue, short.MaxValue) };
         }
 
+        public override bool PerformAbility(AbilityIdentity abilityId, Character character)
+        {
+            return base.PerformAbility(abilityId, character);
+        }
         //public void Update()
         //{
 

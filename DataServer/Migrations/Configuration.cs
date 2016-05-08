@@ -31,28 +31,34 @@ namespace DataServer.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            context.Database.ExecuteSqlCommand("DELETE FROM Items");
+            context.Database.ExecuteSqlCommand("DELETE FROM GroundItems");
 
-
-            //ushort itemId = 1;
+            Random rnd = new Random();
             foreach (AbilityIdentity abilityId in Enum.GetValues(typeof(AbilityIdentity)))
             {
-                Random rnd = new Random();
+                if (abilityId == AbilityIdentity.DefaultAttack)
+                    continue;
+
                 for (ushort i = 0; i < 10; i++)
                 {
                     AbilityScrollItem item = new AbilityScrollItem();
                     //item.Id = itemId;
                     item.Ability = abilityId;
                     //itemId++;
-                    context.Items.AddOrUpdate(item);
-
-                    GroundItem groundItem = new GroundItem();
-                    groundItem.ItemId = (ushort)item.Id;
-                    //groundItem.Id = itemId;
-                    groundItem.Position = new Point(rnd.Next(1, 1000), rnd.Next(1, 1000));
-                    context.GroundItems.AddOrUpdate(groundItem);
-
+                    var itemAdded = context.Items.Add(item);
                     //itemId++;
                 }
+            }
+            context.SaveChanges();
+
+            var itemList = context.Items.ToList();
+            foreach (Item item in itemList)
+            {
+                GroundItem groundItem = new GroundItem();
+                groundItem.ItemId = item.Id;
+                groundItem.Position = new Point(rnd.Next(1, 1000), rnd.Next(1, 1000));
+                context.GroundItems.AddOrUpdate(groundItem);
             }
         }
     }

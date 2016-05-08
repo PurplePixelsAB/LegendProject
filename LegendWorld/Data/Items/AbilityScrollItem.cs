@@ -4,23 +4,23 @@ using Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
+    [DataContract]
     public class AbilityScrollItem : ConsumableItem //Consumable
     {
-        public AbilityIdentity Ability { get { return (AbilityIdentity)base.StackCount; } set { base.StackCount = (uint)value; } }
+        [DataMember]
+        public AbilityIdentity Ability { get { return (AbilityIdentity)base.StackCount; } set { base.StackCount = (int)value; } }
         public AbilityScrollItem()
         {
-            //this.Name = "Ability Scroll";
-            //this.IsStackable = false;
             this.Identity = ItemIdentity.AbilityScoll;
-            this.Category = ItemCategory.Consumable;
-            //this.Weight = 100;
+            this.Weight = 100;
         }
-        public override bool OnUse(Character usedBy)
+        public override bool OnUse(Character usedBy, WorldState worldState)
         {
             if (usedBy.Teach(this.Ability))
             {

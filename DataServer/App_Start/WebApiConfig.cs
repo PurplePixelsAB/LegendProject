@@ -25,6 +25,11 @@ namespace DataServer
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            config.Routes.MapHttpRoute(
+                name: "RcpApi",
+                routeTemplate: "rcp/{controller}/{action}/{id}",
+                defaults: new { Controller = "Auth", id = RouteParameter.Optional }
+            );
         }
     }
 }

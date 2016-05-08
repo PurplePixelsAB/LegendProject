@@ -20,9 +20,9 @@ namespace UdpServer.Network
             return Handlers[(byte)packetID];
         }
 
-        protected abstract void OnHandle(IPacket packet, NetState netState, WorldServer worldState);
+        protected abstract void OnHandle(IPacket packet, NetState netState, ServerWorldState worldState);
 
-        public void Handle(IPacket packet, NetState netState, WorldServer worldState)
+        public void Handle(IPacket packet, NetState netState, ServerWorldState worldState)
         {
             this.OnHandle(packet, netState, worldState);
         }

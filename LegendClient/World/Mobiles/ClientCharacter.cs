@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Network;
+using LegendWorld.Data;
 
 namespace WindowsClient.World.Mobiles
 {
@@ -18,9 +19,32 @@ namespace WindowsClient.World.Mobiles
         public Vector2 DrawPosition { get; set; }
 
         public Point lastKnownServerPosition;
-        internal void CheckServerPosition(long tick, Point point)
+        internal void ServerMoveToRecived(Point point)
         {
             lastKnownServerPosition = point;
+        }
+
+        internal void ServerStatsRecived(byte? health, byte? energy)
+        {
+            if (health.HasValue)
+            {
+                if (this.Health != health.Value)
+                {
+                    this.Stats.Modify(StatIdentifier.Health, health.Value);
+                }
+            }
+            if (energy.HasValue)
+            {
+                if (this.Energy != energy.Value)
+                {
+                    this.Stats.Modify(StatIdentifier.Energy, energy.Value);
+                }
+            }
+        }
+
+        internal void ServerAimToRecived(Point point)
+        {
+            this.AimToPosition = point;
         }
     }
 }

@@ -7,6 +7,6 @@ namespace Data
 {
     public interface IEntity
     {
-        ushort Id { get; set; }
+        int Id { get; set; }
     }
 }

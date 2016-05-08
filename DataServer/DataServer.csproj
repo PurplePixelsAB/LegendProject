@@ -50,6 +50,10 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MonoGame.Framework, Version=3.5.1.1679, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -68,9 +72,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
     </Reference>
@@ -207,9 +208,11 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\GroundItemsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
+    <Compile Include="Controllers\PlayerSessionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -220,6 +223,14 @@
     <Compile Include="Migrations\201605061301135_Initial.cs" />
     <Compile Include="Migrations\201605061301135_Initial.Designer.cs">
       <DependentUpon>201605061301135_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605070855342_GroundItem-Fix.cs" />
+    <Compile Include="Migrations\201605070855342_GroundItem-Fix.Designer.cs">
+      <DependentUpon>201605070855342_GroundItem-Fix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605081016240_CreatePlayerSession.cs" />
+    <Compile Include="Migrations\201605081016240_CreatePlayerSession.Designer.cs">
+      <DependentUpon>201605081016240_CreatePlayerSession.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -309,6 +320,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605061301135_Initial.resx">
       <DependentUpon>201605061301135_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605070855342_GroundItem-Fix.resx">
+      <DependentUpon>201605070855342_GroundItem-Fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605081016240_CreatePlayerSession.resx">
+      <DependentUpon>201605081016240_CreatePlayerSession.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

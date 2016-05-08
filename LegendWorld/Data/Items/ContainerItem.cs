@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace LegendWorld.Data.Items
 {
+    [DataContract]
     public abstract class ContainerItem : Item
     {
         public ContainerItem()
         {
-            this.Items = new List<ushort>();
+            this.Items = new List<int>();
             this.Category = ItemCategory.Container;
         }
 
-        public List<ushort> Items { get; set; }
-        //public ushort Id { get; set; }
-        //public ItemIdentity Identity { get; set; }
-        //public ItemCategory Category { get; set; }
+        [DataMember]
+        public List<int> Items { get; set; }
 
         public void AddItem(ushort id)
         {

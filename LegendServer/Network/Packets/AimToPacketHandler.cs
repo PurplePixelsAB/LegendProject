@@ -12,7 +12,7 @@ namespace UdpServer.Network.Packets
 {
     class AimToPacketHandler : ServerPacketHandler
     {
-        protected override void OnHandle(IPacket packet, NetState netState, WorldServer worldState)
+        protected override void OnHandle(IPacket packet, NetState netState, ServerWorldState worldState)
         {
             AimToPacket packetToHandle = (AimToPacket)packet;
             ServerCharacter serverCharacter = (ServerCharacter)worldState.GetCharacter(netState.WorldId);

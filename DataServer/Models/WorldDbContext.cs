@@ -22,6 +22,8 @@ namespace DataServer.Models
         }
 
         public DbSet<Item> Items { get; set; }
+        public DbSet<GroundItem> GroundItems { get; set; }
+        public DbSet<PlayerSession> PlayerSessions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -34,6 +36,5 @@ namespace DataServer.Models
             base.OnModelCreating(modelBuilder);
         }
 
-        public System.Data.Entity.DbSet<LegendWorld.Data.GroundItem> GroundItems { get; set; }
     }
 }

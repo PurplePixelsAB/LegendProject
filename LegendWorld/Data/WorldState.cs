@@ -84,7 +84,7 @@ namespace Network
             return null;
         }
 
-        protected Dictionary<ushort, Character> characters = new Dictionary<ushort, Character>();
+        protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
 
         public virtual void AddGroundItem(GroundItem groundItem)
         {
@@ -101,8 +101,8 @@ namespace Network
             groundItems.Remove(groundItem.Id);
         }
 
-        public Dictionary<ushort, Character>.KeyCollection Characters { get { return characters.Keys; } }
-        public virtual Character GetCharacter(ushort id)
+        public Dictionary<int, Character>.KeyCollection Characters { get { return characters.Keys; } }
+        public virtual Character GetCharacter(int id)
         {
             if (characters.ContainsKey(id))
             {
@@ -136,7 +136,7 @@ namespace Network
 
         public virtual void Update(GameTime gameTime)
         {
-            List<ushort> idList = new List<ushort>(characters.Keys.Count);
+            List<int> idList = new List<int>(characters.Keys.Count);
             idList.AddRange(characters.Keys);
             //var idList = characters.Keys;
 

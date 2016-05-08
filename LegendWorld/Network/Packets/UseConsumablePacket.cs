@@ -10,30 +10,32 @@ using System.Text;
 
 namespace Network.Packets
 {
-    public class UseConsumablePacket : Packet
+    public class UseItemPacket : Packet
     {
-        public UseConsumablePacket() : base(PacketIdentity.UseConsumable, 10)
+        public UseItemPacket() : base(PacketIdentity.UseItem, 32)
         {
 
         }
-        public UseConsumablePacket(ushort itemId) : this()
+        public UseItemPacket(ushort itemId, ushort mobileId) : this()
         {
             this.ItemId = itemId;
         }
 
         public UInt16 ItemId { get; set; }
+        public UInt16 MobileId { get; set; }
 
         public override void OnReadBuffer(PacketReader packetReader)
         {
             base.OnReadBuffer(packetReader);
             this.ItemId = packetReader.ReadUInt16();
+            this.MobileId = packetReader.ReadUInt16();
 
         }
         public override void OnWriteBuffer(PacketWriter packetWriter)
         {
             base.OnWriteBuffer(packetWriter);
             packetWriter.Write(this.ItemId);
-
+            packetWriter.Write(this.MobileId);
         }
     }
 }

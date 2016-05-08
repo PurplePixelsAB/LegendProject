@@ -74,9 +74,12 @@
     <Compile Include="Data\Modifiers\SlowedModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
+    <Compile Include="Data\PlayerSession.cs" />
+    <Compile Include="Data\SelectableCharacter.cs" />
     <Compile Include="Data\StatIdentifier.cs" />
     <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />
+    <Compile Include="Network\JsonCreationConverter.cs" />
     <Compile Include="Network\Models\ItemModel.cs" />
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />
@@ -85,11 +88,11 @@
     <Compile Include="Network\Packets\PacketIdentity.cs" />
     <Compile Include="Network\PacketReader.cs" />
     <Compile Include="Network\PacketStream.cs" />
+    <Compile Include="Network\Packets\SelectCharacterPacket.cs" />
     <Compile Include="Network\Packets\UseConsumablePacket.cs" />
     <Compile Include="Network\PacketWriter.cs" />
-    <Compile Include="Network\Packets\SelectCharacterPacket.cs" />
     <Compile Include="Network\Packets\PerformAbilityPacket.cs" />
-    <Compile Include="Network\Packets\UpdateMobilePacket.cs" />
+    <Compile Include="Network\Packets\StatsChangedPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThreadQueue.cs" />
     <Compile Include="Data\WorldMap.cs" />
@@ -103,16 +106,8 @@
     <Compile Include="INamable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Data.Edm, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.Edm.5.6.4\lib\net40\Microsoft.Data.Edm.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Data.OData, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.OData.5.6.4\lib\net40\Microsoft.Data.OData.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Data.Services.Client, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.4\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenTK">
@@ -130,10 +125,6 @@
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Spatial.5.6.4\lib\net40\System.Spatial.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

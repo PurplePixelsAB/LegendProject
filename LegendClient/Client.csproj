@@ -69,6 +69,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WindowsClient.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\InputEngine\ActionEvents.cs" />
     <Compile Include="Engine\InputEngine\ActionMappings.cs" />
@@ -80,7 +83,11 @@
     <Compile Include="GameLegend.cs" />
     <Compile Include="Net\ClientPacketHandler.cs" />
     <Compile Include="Net\NetworkEngine.cs" />
-    <Compile Include="Net\Packets\UpdateMobilePacketHandler.cs" />
+    <Compile Include="Net\Packets\PerformAbilityPacketHandler.cs" />
+    <Compile Include="Net\Packets\AimToPacketHandler.cs" />
+    <Compile Include="Net\Packets\MoveToPacketHandler.cs" />
+    <Compile Include="Net\Packets\StatsChangedPacketHandler.cs" />
+    <Compile Include="Net\Packets\UseConsumablePacketHandler.cs" />
     <Compile Include="Net\SocketClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,11 +98,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Screens\ItemUsedEventArgs.cs" />
+    <Compile Include="Screens\SelectCharacterScreen.cs" />
     <Compile Include="World\Items\ClientBagItem.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
-    <Compile Include="World\ClientWorldState.cs" />
+    <Compile Include="World\WorldWebDataContext.cs" />
     <Compile Include="World\Items\GoldClientItem.cs" />
     <Compile Include="World\Mobiles\ClientCharacter.cs" />
   </ItemGroup>

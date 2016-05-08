@@ -35,7 +35,7 @@ namespace LegendWorld.Data
             }
         }
 
-        internal void Modify(StatIdentifier statId, float modifyAmount)
+        public void Modify(StatIdentifier statId, float modifyAmount)
         {
             float baseValue = (float)baseStats[statId];
             float modValue = baseValue * modifyAmount;

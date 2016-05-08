@@ -18,7 +18,7 @@ namespace UdpServer
         private SocketServer socketServer;
         private Task worldServerTask;
         private Task socketServerTask;
-        private WorldServer worldState;
+        private ServerWorldState worldState;
         private WorldPump worldPump;
 
         internal ConsoleGameServer()
@@ -66,7 +66,7 @@ namespace UdpServer
             try
             {
                 ConsoleGameServer.WriteLine("Starting WorldServer...");
-                worldState = new WorldServer();
+                worldState = new ServerWorldState();
                 worldPump = new WorldPump();
                 worldPump.State = worldState;
                 worldServerTask = Task.Factory.StartNew(() => worldPump.Start());

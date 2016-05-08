@@ -33,7 +33,7 @@ namespace Data.World
             Modifiers = new ModifiersCollection();
         }
 
-        public ushort Id { get; set; }
+        public int Id { get; set; }
 
         internal bool HasModifier(Type modifierType)
         {
@@ -46,7 +46,7 @@ namespace Data.World
             return false;
         }
 
-        public ushort CurrentMapId { get; set; }
+        public int CurrentMapId { get; set; }
 
         public string Name { get; set; }
 
@@ -132,17 +132,33 @@ namespace Data.World
 
         //public Ability Performing { get; set; }
 
+        public event EventHandler MoveToChanged;
         public virtual void SetMoveToPosition(Point mapPoint)
         {
             if (MoveToIsValid(mapPoint))
             {
                 this.MovingToPosition = mapPoint;
+                this.OnMoveToChanged();
             }
         }
 
+        protected virtual void OnMoveToChanged()
+        {
+            if (this.MoveToChanged != null)
+                this.MoveToChanged(this, new EventArgs());
+        }
+
+        public event EventHandler AimToChanged;
         public virtual void SetAimToPosition(Point mapPoint)
         {
             this.AimToPosition = mapPoint;
+            this.OnAimToChanged();
+        }
+
+        protected virtual void OnAimToChanged()
+        {
+            if (this.AimToChanged != null)
+                this.AimToChanged(this, new EventArgs());
         }
 
         internal bool Teach(AbilityIdentity ability)
