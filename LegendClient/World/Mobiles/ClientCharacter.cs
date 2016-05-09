@@ -11,18 +11,17 @@ namespace WindowsClient.World.Mobiles
 {
     public class ClientCharacter : Character
     {
+        public Point DrawPosition { get; set; }
+
         public override void SetMoveToPosition(Point mapPoint)
         {
             base.SetMoveToPosition(mapPoint);
         }
 
-        public Vector2 DrawPosition { get; set; }
-
-        private Point lastKnownServerPosition;
+        public Vector2 OldDrawPosition { get; set; }
         internal void ServerMoveToRecived(Point point)
         {
-
-            lastKnownServerPosition = point;
+            this.SetMoveToPosition(point);
         }
 
         internal void ServerStatsRecived(byte? health, byte? energy)

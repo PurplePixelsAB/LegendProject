@@ -43,11 +43,12 @@ namespace WindowsClient.World
         {
             Vector2 centerVector2 = new Vector2(960f, 540f);
             float lerpAmount = (float)(gameTime.ElapsedGameTime.TotalMilliseconds / WorldPump.Interval);
-
-            Vector2 realPlayerPosition = centerVector2 - this.PlayerCharacter.Position.ToVector2();
-            if (realPlayerPosition != PlayerCharacter.DrawPosition)
+            
+            if (this.PlayerCharacter.Position != PlayerCharacter.DrawPosition)
             {
-                PlayerCharacter.DrawPosition = Vector2.Lerp(PlayerCharacter.DrawPosition, realPlayerPosition, lerpAmount);
+                Vector2 drawPosition = Vector2.Lerp(PlayerCharacter.DrawPosition.ToVector2(), this.PlayerCharacter.Position.ToVector2(), lerpAmount);
+                PlayerCharacter.DrawPosition = drawPosition.ToPoint();
+                PlayerCharacter.OldDrawPosition = PlayerCharacter.DrawPosition.ToVector2();
             }
 
             foreach (ushort clientId in Characters)
@@ -57,10 +58,14 @@ namespace WindowsClient.World
 
                 ClientCharacter client = (ClientCharacter)this.GetCharacter(clientId);
 
-                Vector2 realClientPosition = centerVector2 - (this.PlayerCharacter.Position - client.lastKnownServerPosition).ToVector2(); //new Vector2(this.PlayerCharacter.Position.X - client.Position.X, this.PlayerCharacter.Position.Y - client.Position.Y);
-                if (realClientPosition != client.DrawPosition)
+                //Vector2 realClientPosition = centerVector2 - (this.PlayerCharacter.Position - client.Position).ToVector2(); //new Vector2(this.PlayerCharacter.Position.X - client.Position.X, this.PlayerCharacter.Position.Y - client.Position.Y);
+                if (client.Position != client.DrawPosition)
                 {
-                    client.DrawPosition = Vector2.Lerp(client.DrawPosition, realClientPosition, lerpAmount);
+                    Vector2 drawPosition = Vector2.Lerp(client.DrawPosition.ToVector2(), client.Position.ToVector2(), lerpAmount);
+                    client.DrawPosition = drawPosition.ToPoint();
+                    client.OldDrawPosition = PlayerCharacter.DrawPosition.ToVector2();
+
+                    //client.OldDrawPosition = Vector2.Lerp(client.OldDrawPosition, realClientPosition, lerpAmount);
                 }
             }
         }
