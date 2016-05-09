@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "World", "LegendWorld\World.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataClient", "DataClient\DataClient.csproj", "{F048BFF1-B2E4-4416-A0D4-0CD988E598D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServer", "DataServer\DataServer.csproj", "{EFD8B09D-3B99-4820-849B-2C00CB202B7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,14 @@ Global
 		{F048BFF1-B2E4-4416-A0D4-0CD988E598D5}.Release|Any CPU.ActiveCfg = Release|x86
 		{F048BFF1-B2E4-4416-A0D4-0CD988E598D5}.Release|x86.ActiveCfg = Release|x86
 		{F048BFF1-B2E4-4416-A0D4-0CD988E598D5}.Release|x86.Build.0 = Release|x86
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
