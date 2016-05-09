@@ -103,7 +103,7 @@
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
-    <Compile Include="World\WorldWebDataContext.cs" />
+    <Compile Include="World\ClientWorldState.cs" />
     <Compile Include="World\Items\GoldClientItem.cs" />
     <Compile Include="World\Mobiles\ClientCharacter.cs" />
   </ItemGroup>

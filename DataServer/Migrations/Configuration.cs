@@ -57,7 +57,7 @@ namespace DataServer.Migrations
             {
                 GroundItem groundItem = new GroundItem();
                 groundItem.ItemId = item.Id;
-                groundItem.Position = new Point(rnd.Next(1, 1000), rnd.Next(1, 1000));
+                groundItem.Position = new Point(rnd.Next(1, 5000), rnd.Next(1, 5000));
                 context.GroundItems.AddOrUpdate(groundItem);
             }
         }

@@ -18,9 +18,10 @@ namespace WindowsClient.World.Mobiles
 
         public Vector2 DrawPosition { get; set; }
 
-        public Point lastKnownServerPosition;
+        private Point lastKnownServerPosition;
         internal void ServerMoveToRecived(Point point)
         {
+
             lastKnownServerPosition = point;
         }
 
