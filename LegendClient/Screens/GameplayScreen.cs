@@ -21,14 +21,7 @@ namespace WindowsClient
 {
     public class GameplayScreen : Screen
     {
-        //public static TimeSpan TickSpeed = new TimeSpan(0, 0, 0, 0, 100);
-
-        //private long lastTick;
-        //private long nextTick;
         public bool IsConnected { get { return this.network.ConnectedToWorld; } }
-
-        private bool assetsLoaded = false, networkLoaded = false;
-        public bool IsLoaded { get { return assetsLoaded && networkLoaded; } }
 
         private SpriteBatch spriteBatch;
         private Texture2D bodyTexture;
@@ -36,17 +29,7 @@ namespace WindowsClient
         private Texture2D leatherHoodTexture;
         private Texture2D leatherArmorTexture;
         private Texture2D bowTexture;
-        private Texture2D backgroundTexture;
-
-        //ClientCharacter character;
-        //Rectangle headPosition, bodyPosition;
-        Random rnd;
-        //Vector2 rndHead;
-        //Vector2 rndHeadTarget;
-        //Vector2 rndHeadLast;
-        //Vector2 headPosition;
-        //private TimeSpan lastUpdateTime;
-        //private int updateTime = 10;
+        private Texture2D backgroundTexture;        
 
         private NetworkEngine network;
         private ClientWorldState world;
@@ -59,15 +42,14 @@ namespace WindowsClient
         Rectangle Viewport;
         Vector2 CenterScreen;
 
-        public GameplayScreen()
+        public GameplayScreen(NetworkEngine networkEngine)
         {
             Viewport = new Rectangle(0, 0, 1920, 1080);
             CenterScreen = Viewport.Center.ToVector2();
-
-            rnd = new Random();
+            
             world = new ClientWorldState();
             world.CharacterAdded += World_CharacterAdded;
-            network = new NetworkEngine();
+            network = networkEngine;
             network.WorldState = world;
             worldPump = new WorldPump();
             worldPump.State = world;
@@ -84,17 +66,6 @@ namespace WindowsClient
                 consumable.Use(world.PlayerCharacter, world);
                 network.UseItem(consumable);
             }
-        }
-
-        internal void SelectCharacter(int charId)
-        {
-            network.SelectCharacter(charId);
-
-            world.PlayerCharacter = new ClientCharacter();
-            world.PlayerCharacter.Id = charId;
-            world.AddCharacter(world.PlayerCharacter);
-
-            networkLoaded = true;
         }
 
         public override void Initialize(ScreenManager screenManager)
@@ -191,8 +162,6 @@ namespace WindowsClient
             actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
             Input.Actions.Add(actionKeyMappingToggleFlullscreen);
-
-            assetsLoaded = true;
         }
         
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
@@ -309,9 +278,13 @@ namespace WindowsClient
 
         public override void Update(GameTime gameTime)
         {
+            network.Update();
+
+            if (!this.IsConnected)
+                return;
+
             worldPump.Update(gameTime);
             world.ClientUpdate(gameTime);
-            network.Update();
             movementBodyBobEffect.Update(gameTime);
         }
 
@@ -338,11 +311,18 @@ namespace WindowsClient
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            this.BaseDrawing(spriteBatch);
-            this.DrawGroundItems(spriteBatch);
-            this.DrawCharacters(spriteBatch);
-            this.DrawDamageEffect(spriteBatch, gameTime);
-            this.DrawHud(spriteBatch);
+            if (this.IsConnected)
+            {
+                this.BaseDrawing(spriteBatch);
+                this.DrawGroundItems(spriteBatch);
+                this.DrawCharacters(spriteBatch);
+                this.DrawDamageEffect(spriteBatch, gameTime);
+                this.DrawHud(spriteBatch);
+            }
+            else
+            {
+                spriteBatch.DrawString(damageSpriteFont, "Disconnected, press ESC to exit Game.", CenterScreen, Color.White);
+            }
             spriteBatch.End();
         }
 

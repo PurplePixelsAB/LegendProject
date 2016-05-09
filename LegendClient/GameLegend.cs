@@ -16,7 +16,7 @@ namespace WindowsClient
         GraphicsDeviceManager graphics;
         private ScreenManager screenManager;
         private InputManager inputManager;
-        private LoadingScreen firstScreen;
+        private Screen firstScreen;
 
         public GameLegend()
         {
@@ -29,7 +29,7 @@ namespace WindowsClient
             Content.RootDirectory = "Content";
             inputManager = new InputManager();
             screenManager = new ScreenManager(this, inputManager);
-            firstScreen = new LoadingScreen();
+            firstScreen = new SelectCharacterScreen(new Net.NetworkEngine());
         }
 
         /// <summary>

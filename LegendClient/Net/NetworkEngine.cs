@@ -18,10 +18,12 @@ namespace WindowsClient.Net
     public class NetworkEngine
     {
         internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
+        internal bool CharacterSelected {  get { return playerCharacterId != -1; } }
         internal uint Ticks { get; set; }
         public ClientWorldState WorldState { get; internal set; }
         public int SessionId { get; private set; }
 
+        private int playerCharacterId = -1;
         private WorldWebDataContext dataContext;
         private SocketClient worldServerClient;
         private ClientPacketHandler[] clientPacketHandlers;
@@ -70,6 +72,10 @@ namespace WindowsClient.Net
 
         public void LoadContent(ClientWorldState world)
         {
+            world.PlayerCharacter = new ClientCharacter(); //Todo: Get from DataServer
+            world.PlayerCharacter.Id = playerCharacterId;
+            world.AddCharacter(world.PlayerCharacter);
+
             IEnumerable<Item> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
             if (items != null)
             {
@@ -101,9 +107,8 @@ namespace WindowsClient.Net
             worldServerClient.Process();
             if (moveToPacket != null)
             {
-                var toSendPacket = moveToPacket;
+                worldServerClient.Send(moveToPacket);
                 moveToPacket = null;
-                worldServerClient.Send(toSendPacket);
             }
             if (aimToPacket != null)
             {
@@ -111,6 +116,30 @@ namespace WindowsClient.Net
                 aimToPacket = null;
                 worldServerClient.Send(toSendPacket);
             }
+            if (performAbilityPacket != null)
+            {
+                var toSendPacket = performAbilityPacket;
+                performAbilityPacket = null;
+                worldServerClient.Send(toSendPacket);
+            }
+        }
+
+        private MoveToPacket moveToPacket;
+        internal void MoveTo(int characterId, Point moveToPoint)
+        {
+            moveToPacket = new MoveToPacket(characterId, moveToPoint); //Packets are sent on Update to reduce Spam
+        }
+
+        private AimToPacket aimToPacket;
+        internal void AimTo(int characterId, Point aimToPoint)
+        {
+            aimToPacket = new AimToPacket(characterId, aimToPoint); //Packets are sent on Update to reduce Spam
+        }
+
+        PerformAbilityPacket performAbilityPacket;
+        internal void PerformAbility(ClientCharacter playerCharacter, AbilityIdentity abilityId)
+        {
+            performAbilityPacket = new PerformAbilityPacket(playerCharacter.Id, abilityId); //Packets are sent on Update to reduce Spam
         }
 
         internal void UseItem(ConsumableItem consumable)
@@ -133,6 +162,7 @@ namespace WindowsClient.Net
 
         internal void SelectCharacter(int selectedCharacterId)
         {
+            this.playerCharacterId = selectedCharacterId;
             this.SessionId = dataContext.CreateSession(selectedCharacterId);
             AuthPacket packet = new AuthPacket(this.SessionId);
             worldServerClient.Send(packet);
@@ -147,27 +177,6 @@ namespace WindowsClient.Net
             }
 
             return returnList;
-        }
-
-        private MoveToPacket moveToPacket;
-        private AimToPacket aimToPacket;
-
-        internal void MoveTo(int characterId, Point moveToPoint)
-        {
-            moveToPacket = new MoveToPacket(characterId, moveToPoint);
-            //socketClient.Send(packet);
-        }
-
-        internal void AimTo(int characterId, Point aimToPoint)
-        {
-            aimToPacket = new AimToPacket(characterId, aimToPoint);
-            //socketClient.Send(packet);
-        }
-
-        internal void PerformAbility(ClientCharacter playerCharacter, AbilityIdentity abilityId)
-        {
-            PerformAbilityPacket packet = new PerformAbilityPacket(playerCharacter.Id, abilityId);
-            worldServerClient.Send(packet);
         }
 
         //internal void PerformHeal(ClientCharacter playerCharacter)

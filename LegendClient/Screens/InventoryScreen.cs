@@ -31,23 +31,26 @@ namespace LegendClient.Screens
             spriteBatch.Draw(whitePixel, this.Game.GraphicsDevice.Viewport.Bounds, this.Game.GraphicsDevice.Viewport.Bounds, Color.Black * .8f, 0f, Vector2.Zero, SpriteEffects.None, 1f);
             spriteBatch.Draw(bagTexture, this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(), bagTexture.Bounds, Color.White, 0f, bagTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
             Vector2 drawPosition = this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2() - bagTexture.Bounds.Center.ToVector2();
-            if (this.BaseContainer.Items.Count > 0)
+            if (this.BaseContainer != null && this.BaseContainer.Items != null)
             {
-                int i = 0;
-                foreach (Item bagItem in this.BaseContainer.ItemsInBag)
+                if (this.BaseContainer.Items.Count > 0)
                 {
-                    Color color = Color.White;
-                    if (i == currentItemIndex)
-                        color = Color.Red;
+                    int i = 0;
+                    foreach (Item bagItem in this.BaseContainer.ItemsInBag)
+                    {
+                        Color color = Color.White;
+                        if (i == currentItemIndex)
+                            color = Color.Red;
 
-                    spriteBatch.DrawString(itemSpriteFont, bagItem.Identity.ToString(), drawPosition, color);
-                    drawPosition.Y += itemSpriteFont.LineSpacing;
-                    i++;
+                        spriteBatch.DrawString(itemSpriteFont, bagItem.Identity.ToString(), drawPosition, color);
+                        drawPosition.Y += itemSpriteFont.LineSpacing;
+                        i++;
+                    }
                 }
-            }
-            else
-            {
-                spriteBatch.DrawString(itemSpriteFont, "Bag is Empty.", drawPosition, Color.White);
+                else
+                {
+                    spriteBatch.DrawString(itemSpriteFont, "Bag is Empty.", drawPosition, Color.White);
+                }
             }
 
             spriteBatch.Draw(selectionTexture, this.Manager.InputManager.MousePosition.ToVector2(), selectionTexture.Bounds, Color.White, 0f, selectionTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);

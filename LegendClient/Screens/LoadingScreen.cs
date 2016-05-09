@@ -14,16 +14,22 @@ namespace LegendClient.Screens
     {
         private Point centerScreen;
         private SpriteFont loadingSpriteFont;
-        GameplayScreen screenToLoad;
+        private Screen screenToLoad;
         private SpriteBatch spriteBatch;
         private List<char> dots = new List<char>(20);
         private TimeSpan dotInterval = new TimeSpan(0, 0, 0, 0, 1500);
         private TimeSpan nextDot;
         //private Task loadingTask;
-        private bool isLoadCompleated;
+        //private bool isLoadCompleated;
+        private bool isOnlyScreen = false;
 
         public override void Draw(GameTime gameTime)
         {
+            if (this.Manager.ScreenCount == 1 && this.Visible)
+            {
+                isOnlyScreen = true;
+            }
+
             spriteBatch.Begin();
             spriteBatch.DrawString(loadingSpriteFont, "Loading." + new String(dots.ToArray()), centerScreen.ToVector2(), Color.White);
             spriteBatch.End();
@@ -34,8 +40,7 @@ namespace LegendClient.Screens
             spriteBatch = new SpriteBatch(graphicsDevice);
             centerScreen = graphicsDevice.Viewport.Bounds.Center;
             loadingSpriteFont = Game.Content.Load<SpriteFont>("Damage");
-            screenToLoad = new GameplayScreen();
-            screenToLoad.Initialize(this.Manager);
+            //screenToLoad = new GameplayScreen();
             //loadingTask = Task.Factory.StartNew(() => screenToLoad.LoadContent(graphicsDevice)); //Causes double LoadContent event.
         }
 
@@ -44,35 +49,48 @@ namespace LegendClient.Screens
 
         }
 
-        private bool charIsSelected = false;
-        private bool screenIsLoaded = false;
+        public LoadingScreen(Screen screenToLoad)
+        {
+            this.screenToLoad = screenToLoad;
+        }
+
+        //private bool screenIsLoaded = false;
         public override void Update(GameTime gameTime)
         {
-            if (isLoadCompleated)
-                return;
 
-            if (nextDot <= gameTime.TotalGameTime)
+            if (isOnlyScreen)
             {
-                dots.Add('.');
-                nextDot = gameTime.TotalGameTime.Add(dotInterval);
-                if (dots.Count >= 10)
-                    dots.Clear();
-            }
+                this.Close();
 
-            if (screenToLoad.IsConnected) // && loadingTask.IsCompleted)
-            {
-                if (!charIsSelected)
-                {
-                    Random rnd = new Random();
-                    screenToLoad.SelectCharacter((ushort)rnd.Next(1, UInt16.MaxValue));
-                }
-                else if (screenToLoad.IsLoaded)
-                {
-                    screenToLoad.Activate();
-                    isLoadCompleated = true;
-                    this.Close();
-                }
+                screenToLoad.Initialize(this.Manager);
+                screenToLoad.Activate();
+
+                this.Game.ResetElapsedTime();
             }
+            
+
+            //if (nextDot <= gameTime.TotalGameTime)
+            //{
+            //    dots.Add('.');
+            //    nextDot = gameTime.TotalGameTime.Add(dotInterval);
+            //    if (dots.Count >= 10)
+            //        dots.Clear();
+            //}
+
+            //if (screenToLoad.IsConnected) // && loadingTask.IsCompleted)
+            //{
+            //    //if (!charIsSelected)
+            //    //{
+            //    //    //Random rnd = new Random();
+            //    //    screenToLoad.SelectCharacter((ushort)rnd.Next(1, UInt16.MaxValue));
+            //    //}
+            //    //else if (screenToLoad.IsLoaded)
+            //    //{
+            //    screenToLoad.Activate();
+            //    isLoadCompleated = true;
+            //    this.Close();
+            //    //}
+            //}
             
         }
     }

@@ -47,6 +47,7 @@ namespace Engine.ScreenEngine
 
         public Game Game { get; internal set; }
         public InputManager InputManager { get; private set; }
+        public int ScreenCount { get { return this.screenList.Count; } }
 
         protected internal void Initialize()
         {
