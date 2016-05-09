@@ -35,13 +35,7 @@ namespace LegendWorld.Data
             }
         }
 
-        public void Modify(StatIdentifier statId, float modifyAmount)
-        {
-            float baseValue = (float)baseStats[statId];
-            float modValue = baseValue * modifyAmount;
-            byte roundedClampedModValue = (byte)MathHelper.Clamp((float)Math.Round(modValue), byte.MinValue, byte.MaxValue);
-            this.Modify(statId, roundedClampedModValue);
-        }
+
 
         internal byte CalculateDamageTaken(byte attackersPower)
         {
@@ -56,17 +50,23 @@ namespace LegendWorld.Data
             return this.GetModdedStatByFactor(StatIdentifier.Power, power);
         }
 
-        internal void Modify(StatIdentifier statId, int modifyAmount)
+        public void Modify(StatIdentifier statId, int modifyAmount)
         {
             int baseValue = (int)baseStats[statId];
             int modValue = baseValue + modifyAmount;
             byte clampedModValue = (byte)MathHelper.Clamp(modValue, byte.MinValue, byte.MaxValue);
             this.Modify(statId, clampedModValue);
         }
-
-        internal void Modify(StatIdentifier statId, byte modifyAmountTo)
+        public void Modify(StatIdentifier statId, byte modifyAmountTo)
         {
             modStats[statId] = modifyAmountTo;
+        }
+        public void Modify(StatIdentifier statId, float modifyAmount)
+        {
+            float baseValue = (float)baseStats[statId];
+            float modValue = baseValue * modifyAmount;
+            byte roundedClampedModValue = (byte)MathHelper.Clamp((float)Math.Round(modValue), byte.MinValue, byte.MaxValue);
+            this.Modify(statId, roundedClampedModValue);
         }
 
         internal byte GetStat(StatIdentifier statId)

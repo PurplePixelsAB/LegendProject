@@ -1,12 +1,28 @@
 ﻿using LegendWorld.Data;
 using LegendWorld.Data.Items;
 using System.Collections.Generic;
+using WindowsClient.World;
 
 namespace LegendClient.Screens
 {
-    public class ClientBagItem : BagItem
+    public class ClientBagItem
     {
-        public List<Item> ItemsInBag { get; set; }
+        public ClientBagItem(BagItem bagItem)
+        {
+            this.BagItem = bagItem;
+            this.ItemsInBag = new List<Item>(bagItem.Items.Count+1);
+        }
+
+        public BagItem BagItem { get; private set; }
+        public List<Item> ItemsInBag { get; private set; }
+
+        public void LoadItems(ClientWorldState world)
+        {
+            foreach (int itemId in BagItem.Items)
+            {
+                ItemsInBag.Add(world.GetItem(itemId));
+            }
+        }
 
         //public virtual string GetInventoryString()
         //{

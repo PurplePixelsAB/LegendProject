@@ -144,6 +144,8 @@ namespace UdpServer
             ServerCharacter character = (ServerCharacter)this.GetCharacter(dcOwner.WorldId);
             if (character != null)
                 this.RemoveCharacter(character);
+            if (dcOwner.Id != -1)
+                dataContext.EndSession(dcOwner.Id);
         }
 
         internal void UpdateThisCharacterOfEveryone(ServerCharacter characterToUpdate)

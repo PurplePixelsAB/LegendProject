@@ -75,5 +75,10 @@ namespace DataClient
         {
             return this.Get<IEnumerable<SelectableCharacter>>(authAddress + "GetCharacterList/");
         }
+
+        public void EndSession(int sessionId)
+        {
+            var result = this.Get<object>(authAddress + "EndSession/" + sessionId); ;
+        }
     }
 }

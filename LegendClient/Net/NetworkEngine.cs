@@ -62,6 +62,8 @@ namespace WindowsClient.Net
             try
             {
                 worldServerClient.Connect(LegendClient.Properties.Settings.Default.GameServerAddress, LegendClient.Properties.Settings.Default.GameServerPort);
+                AuthPacket packet = new AuthPacket(this.SessionId);
+                worldServerClient.Send(packet);
             }
             catch (Exception)
             {
@@ -166,8 +168,6 @@ namespace WindowsClient.Net
         {
             this.playerCharacterId = selectedCharacterId;
             this.SessionId = dataContext.CreateSession(selectedCharacterId);
-            AuthPacket packet = new AuthPacket(this.SessionId);
-            worldServerClient.Send(packet);
         }
         internal List<SelectableCharacter> GetCharacters()
         {

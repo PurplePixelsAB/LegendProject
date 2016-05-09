@@ -36,7 +36,7 @@ namespace LegendClient.Screens
             characterSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             fontSizeVector = new Vector2(0f, characterSpriteFont.LineSpacing);
             //network = new NetworkEngine();
-            characters =  network.GetCharacters();
+            characters = network.GetCharacters();
 
             ActionKeyMapping actionKeyMappingUp = new ActionKeyMapping();
             actionKeyMappingUp.Id = 40;
@@ -94,7 +94,7 @@ namespace LegendClient.Screens
             if (characters == null)
                 return;
 
-            if (selectedIndex >= characters.Count-1)
+            if (selectedIndex >= characters.Count - 1)
                 return;
 
             selectedIndex++;

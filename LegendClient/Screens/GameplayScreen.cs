@@ -166,7 +166,7 @@ namespace WindowsClient
         
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            inventoryScreen.BaseContainer = (ClientBagItem)world.GetItem(world.PlayerCharacter.InventoryBagId);
+            inventoryScreen.BaseContainer = new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
             inventoryScreen.Activate();
         }
 

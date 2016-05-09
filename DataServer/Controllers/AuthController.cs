@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -16,23 +17,43 @@ namespace DataServer.Controllers
     {
         private WorldDbContext db = new WorldDbContext();
 
-        public async Task<IHttpActionResult> CreateSession(int characterId) //Could be moved to PlayerSessionsPost, just ignore all incoming fields except CharacterId.
+        [HttpGet]
+        public async Task<IHttpActionResult> CreateSession(int id) //Could be moved to PlayerSessionsPost, just ignore all incoming fields except CharacterId.
         {
             string clientAddress = HttpContext.Current.Request.UserHostAddress.Trim();
-            PlayerSession playerSession = await db.PlayerSessions.Where(ps => ps.CharacterId == characterId).FirstOrDefaultAsync();
+            PlayerSession playerSession = await db.PlayerSessions.Where(ps => ps.CharacterId == id).FirstOrDefaultAsync();
             if (playerSession == null)
             {
                 playerSession = db.PlayerSessions.Create();
-                playerSession.CharacterId = characterId;
                 playerSession.ClientAddress = clientAddress;
                 playerSession.Created = DateTime.Now;
                 db.PlayerSessions.Add(playerSession);
-                int result = await db.SaveChangesAsync();
             }
             if (playerSession.ClientAddress != clientAddress)
                 return BadRequest();
+            
+            playerSession.CharacterId = id;
+            int result = await db.SaveChangesAsync();
 
             return Ok(playerSession.Id);
+        }
+
+        [HttpGet]
+        //[WorldServerAuthentication]
+        public async Task<IHttpActionResult> EndSession(int id) //WorldServer ONLY
+        {
+            string clientAddress = HttpContext.Current.Request.UserHostAddress.Trim();
+            PlayerSession playerSession = await db.PlayerSessions.FindAsync(id);
+            if (playerSession != null)
+            {
+                //if (playerSession.ClientAddress != clientAddress)
+                //    return BadRequest();
+
+                db.PlayerSessions.Remove(playerSession);
+                int result = await db.SaveChangesAsync();
+            }
+
+            return Ok();
         }
 
         public async Task<IHttpActionResult> GetCharacterList()
@@ -43,5 +64,28 @@ namespace DataServer.Controllers
                 new SelectableCharacter() { CharacterId = rnd.Next(ushort.MinValue, ushort.MaxValue), Name = "Temp Character#2" },
                 new SelectableCharacter() { CharacterId = rnd.Next(ushort.MinValue, ushort.MaxValue), Name = "Temp Character#3" } }.ToList());
         }
+
+        //private string GetClientIp(HttpRequestMessage request = null)
+        //{
+        //    request = request ?? Request;
+
+        //    if (request.Properties.ContainsKey("MS_HttpContext"))
+        //    {
+        //        return ((HttpContextWrapper)request.Properties["MS_HttpContext"]).Request.UserHostAddress;
+        //    }
+        //    else if (request.Properties.ContainsKey(RemoteEndpointMessageProperty.Name))
+        //    {
+        //        RemoteEndpointMessageProperty prop = (RemoteEndpointMessageProperty)request.Properties[RemoteEndpointMessageProperty.Name];
+        //        return prop.Address;
+        //    }
+        //    else if (HttpContext.Current != null)
+        //    {
+        //        return HttpContext.Current.Request.UserHostAddress;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
     }
 }
