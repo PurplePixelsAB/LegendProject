@@ -9,6 +9,7 @@ namespace WindowsClient
         {
         }
 
+        public Point OffsetPostion { get; set; }
         public ClientCharacter Character { get; internal set; }
         public Color Color { get; internal set; }
         public double Duration { get; internal set; }

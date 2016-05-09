@@ -187,7 +187,8 @@ namespace Network
 
         public double VectorToRadian(Vector2 direction)
         {
-            direction.Normalize();
+            if (direction != Vector2.Zero)
+                direction.Normalize();
             return Math.Atan2(direction.X, -direction.Y) + MathHelper.Pi;
         }
         //public double VectorToAngle(Vector2 vector)

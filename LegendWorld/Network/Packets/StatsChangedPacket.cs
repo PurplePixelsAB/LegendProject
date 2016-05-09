@@ -93,7 +93,7 @@ namespace Network.Packets
 
             //packetWriter.WriteNullable(this.Speed);
             packetWriter.WriteNullable(this.Health);
-            packetWriter.WriteNullable(this.Health);
+            packetWriter.WriteNullable(this.Energy);
         }
     }
 }

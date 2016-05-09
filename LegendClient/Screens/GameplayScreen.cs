@@ -29,7 +29,7 @@ namespace WindowsClient
         private Texture2D leatherHoodTexture;
         private Texture2D leatherArmorTexture;
         private Texture2D bowTexture;
-        private Texture2D backgroundTexture;        
+        private Texture2D backgroundTexture;
 
         private NetworkEngine network;
         private ClientWorldState world;
@@ -48,7 +48,7 @@ namespace WindowsClient
             Viewport = new Rectangle(0, 0, 1920, 1080);
             centerScreen = Viewport.Center;
             CenterScreenVector2 = centerScreen.ToVector2();
-            
+
             world = new ClientWorldState();
             world.CharacterAdded += World_CharacterAdded;
             network = networkEngine;
@@ -80,7 +80,7 @@ namespace WindowsClient
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
             network.LoadContent(world);
-            inventoryScreen.LoadContent(graphicsDevice);   
+            inventoryScreen.LoadContent(graphicsDevice);
 
             spriteBatch = new SpriteBatch(graphicsDevice);
             bodyTexture = Game.Content.Load<Texture2D>("Body");
@@ -165,7 +165,7 @@ namespace WindowsClient
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
             Input.Actions.Add(actionKeyMappingToggleFlullscreen);
         }
-        
+
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
             inventoryScreen.BaseContainer = new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
@@ -191,7 +191,7 @@ namespace WindowsClient
             }
             else //Healing
             {
-                this.AddHealIndicator(clientCharacter, e.PreviousHelth - clientCharacter.Health);
+                this.AddHealIndicator(clientCharacter, clientCharacter.Health - e.PreviousHelth);
             }
         }
 
@@ -334,8 +334,8 @@ namespace WindowsClient
             {
                 GroundItem groundItem = world.GetGroundItem(itemId);
                 Point drawPosition = this.GetScreenPostion(groundItem.Position - itemScrollTexture.Bounds.Center);
-                    //groundItem.Position.ToVector2() - (world.PlayerCharacter.OldDrawPosition * -1f) - itemScrollTexture.Bounds.Center.ToVector2(); 
-                    //CenterScreen - (world.PlayerCharacter.Position - groundItem.Position).ToVector2();
+                //groundItem.Position.ToVector2() - (world.PlayerCharacter.OldDrawPosition * -1f) - itemScrollTexture.Bounds.Center.ToVector2(); 
+                //CenterScreen - (world.PlayerCharacter.Position - groundItem.Position).ToVector2();
                 spriteBatch.Draw(itemScrollTexture, new Rectangle(drawPosition, itemScrollTexture.Bounds.Size), Color.White);
             }
         }
@@ -399,10 +399,10 @@ namespace WindowsClient
             {
                 var effect = queue.Dequeue();
 
-                Point effectDrawLocation = centerScreen - (world.PlayerCharacter.DrawPosition - effect.Character.DrawPosition); //new Vector2(world.PlayerCharacter.Position.X - charTakingDmgLocation.X, world.PlayerCharacter.Position.Y - charTakingDmgLocation.Y);
-                spriteBatch.DrawString(damageSpriteFont, effect.Text, effectDrawLocation.ToVector2(), Color.Red);
+                Point effectDrawLocation = centerScreen - (world.PlayerCharacter.DrawPosition - effect.Character.DrawPosition) + effect.OffsetPostion; //new Vector2(world.PlayerCharacter.Position.X - charTakingDmgLocation.X, world.PlayerCharacter.Position.Y - charTakingDmgLocation.Y);
+                spriteBatch.DrawString(damageSpriteFont, effect.Text, effectDrawLocation.ToVector2(), effect.Color);
                 effect.Duration -= gameTime.ElapsedGameTime.TotalMilliseconds;
-
+                effect.OffsetPostion -= new Point(0, 1);
                 if (effect.Duration > 0D)
                     DamageTextEffectList.Enqueue(effect);
             }
@@ -421,14 +421,14 @@ namespace WindowsClient
                 BobValue = new Vector2(0f, 2f);
                 PositioinBob = new Vector2(0f, 0f);
             }
-                
+
 
             public void Update(GameTime gameTime)
             {
                 double msElapsed = gameTime.TotalGameTime.Milliseconds;
                 var offset = (float)Math.Sin(msElapsed * lerpSpeed);
 
-                this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue*-1f, offset);
+                this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue * -1f, offset);
             }
         }
         private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
@@ -459,7 +459,8 @@ namespace WindowsClient
                     bodyMovingBobPosition = movementBodyBobEffect.PositioinBob;
 
                 Vector2 bodyRotationPosition = charToDrawDirection;
-                bodyRotationPosition.Normalize();
+                if (bodyRotationPosition != Vector2.Zero)
+                    bodyRotationPosition.Normalize();
                 bodyRotationPosition.X *= 2f;
                 if (bodyRotationPosition.Y < 0f)
                     bodyRotationPosition.Y *= 10f;
@@ -493,7 +494,7 @@ namespace WindowsClient
             Rectangle destinationRectangle = new Rectangle(Point.Zero, backgroundTexture.Bounds.Size);
             int scaledWidth = backgroundTexture.Width;
             int scaledHeight = backgroundTexture.Height;
-            
+
             for (int X = Viewport.X; X <= Viewport.Width; X += scaledWidth)
             {
                 for (int Y = Viewport.Y; Y <= Viewport.Height; Y += scaledHeight)
