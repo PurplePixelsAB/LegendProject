@@ -74,7 +74,9 @@ namespace WindowsClient.Net
         {
             world.PlayerCharacter = new ClientCharacter(); //Todo: Get from DataServer
             world.PlayerCharacter.Id = playerCharacterId;
+            world.PlayerCharacter.InventoryBagId = 666;
             world.AddCharacter(world.PlayerCharacter);
+            world.AddItem(new BagItem() { Id = 666 });
 
             IEnumerable<Item> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
             if (items != null)

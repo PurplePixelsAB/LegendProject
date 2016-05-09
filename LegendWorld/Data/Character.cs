@@ -122,7 +122,7 @@ namespace Data.World
         public CircleCollitionArea CollitionArea { get; set; }
 
         //public BagItem Inventory { get; set; }
-        public ushort InventoryBagId { get; set; }
+        public int InventoryBagId { get; set; }
 
         public ModifiersCollection Modifiers { get; set; }
         public List<AbilityIdentity> Abilities { get; set; }

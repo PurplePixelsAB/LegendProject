@@ -18,8 +18,8 @@ namespace Network
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
         private long nextRegendTick = 0;
 
-        protected Dictionary<ushort, Item> items = new Dictionary<ushort, Item>();
-        public Dictionary<ushort, Item>.KeyCollection Items { get { return items.Keys; } }
+        protected Dictionary<int, Item> items = new Dictionary<int, Item>();
+        public Dictionary<int, Item>.KeyCollection Items { get { return items.Keys; } }
 
         public WorldState()
         {
@@ -48,7 +48,7 @@ namespace Network
             //}
         }
 
-        public virtual Item GetItem(ushort id)
+        public virtual Item GetItem(int id)
         {
             if (items.ContainsKey(id))
             {
