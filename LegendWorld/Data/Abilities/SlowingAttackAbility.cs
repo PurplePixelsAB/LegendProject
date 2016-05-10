@@ -31,7 +31,7 @@ namespace LegendWorld.Data.Abilities
 
         protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Modifiers.Add(new SlowedModifier(this.StunDuration, this.SlowAmount));
+            abilityPerformedTo.Stats.Modifiers.Add(new SlowedModifier(this.StunDuration, this.SlowAmount));
         }
 
         internal override void PerformBy(WorldState worldState, Character character)

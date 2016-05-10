@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WindowsClient.World.Mobiles;
+using LegendWorld.Data;
+using LegendClient.World.Items;
 
 namespace WindowsClient.World
 {
@@ -68,6 +70,27 @@ namespace WindowsClient.World
                     //client.OldDrawPosition = Vector2.Lerp(client.OldDrawPosition, realClientPosition, lerpAmount);
                 }
             }
+        }
+
+        float lootDistance = 20f;
+        internal List<ClientGroundItem> GroundItemsInRange(int id)
+        {
+            List<ClientGroundItem> itemsInRange = new List<ClientGroundItem>(10);
+            Character charToRangeCheck = this.GetCharacter(id);
+            Vector2 positionToCheck = charToRangeCheck.Position.ToVector2();
+            foreach (var groundItem in this.groundItems.Values)
+            {
+                float distance = Vector2.Distance(positionToCheck, groundItem.Position.ToVector2());
+                if (distance <= lootDistance)
+                {
+                    ClientGroundItem clientGroundItem = new ClientGroundItem();
+                    clientGroundItem.GroundItem = groundItem;
+                    clientGroundItem.Item = this.GetItem(groundItem.ItemId);
+                    itemsInRange.Add(clientGroundItem);
+                }
+            }
+
+            return itemsInRange;
         }
     }
 

@@ -60,16 +60,6 @@ namespace WindowsClient
             inventoryScreen.ItemUsed += InventoryScreen_ItemUsed;
         }
 
-        private void InventoryScreen_ItemUsed(object sender, ItemUsedEventArgs e)
-        {
-            if (e.ItemUsed.Category == LegendWorld.Data.ItemCategory.Consumable)
-            {
-                ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
-                consumable.Use(world.PlayerCharacter, world);
-                network.UseItem(consumable);
-            }
-        }
-
         public override void Initialize(ScreenManager screenManager)
         {
             base.Initialize(screenManager);
@@ -169,7 +159,21 @@ namespace WindowsClient
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
             inventoryScreen.BaseContainer = new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+            inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
             inventoryScreen.Activate();
+        }
+        private void InventoryScreen_ItemUsed(object sender, ItemUsedEventArgs e)
+        {
+            if (e.ItemUsed.Category == LegendWorld.Data.ItemCategory.Consumable)
+            {
+                ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
+                if (consumable.Use(world.PlayerCharacter, world))
+                {
+                    network.UseItem(consumable);
+                    inventoryScreen.BaseContainer = new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+                    inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+                }
+            }
         }
 
         private void ActionKeyMappingToggleFlullscreen_ActionTriggered(object sender, ActionTriggeredEventArgs e)

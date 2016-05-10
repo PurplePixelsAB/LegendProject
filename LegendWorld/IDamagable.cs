@@ -4,5 +4,7 @@
     {
         byte Health { get; set; }
         byte MaxHealth { get; }
+
+        //void ApplyDamage(byte damageAmount);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Data.World;
+using LegendWorld.Data.Modifiers;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +14,13 @@ namespace LegendWorld.Data
         public static StatIdentifier[] All = (StatIdentifier[])Enum.GetValues(typeof(StatIdentifier));
         private Dictionary<StatIdentifier, byte> baseStats;
         private Dictionary<StatIdentifier, byte> modStats;
+        private Character character;
 
-        public Stats()
+        public ModifiersCollection Modifiers { get; set; }
+
+        public Stats(Character attachedCharacter)
         {
+            character = attachedCharacter;
             baseStats = new Dictionary<StatIdentifier, byte>(Stats.All.Length);
             modStats = new Dictionary<StatIdentifier, byte>(Stats.All.Length);
             byte defaultValue = 100;
@@ -23,6 +29,7 @@ namespace LegendWorld.Data
                 baseStats.Add(stat, defaultValue);
                 modStats.Add(stat, defaultValue);
             }
+            Modifiers = new ModifiersCollection();
         }
 
         public void Update(GameTime gameTime)
@@ -35,7 +42,17 @@ namespace LegendWorld.Data
             }
         }
 
+        //public event EventHandler<StatModifyEventArgs> StatModify;
+        protected virtual byte OnStatModify(Character character, StatIdentifier statToModify, byte newValue, byte oldValue)
+        {
+            byte returnValue = newValue;
+            foreach (CharacterModifier modifier in this.Modifiers)
+            {
+                returnValue = modifier.Modify(character, statToModify, returnValue, oldValue);
+            }
 
+            return returnValue;
+        }
 
         internal byte CalculateDamageTaken(byte attackersPower)
         {
@@ -59,7 +76,7 @@ namespace LegendWorld.Data
         }
         public void Modify(StatIdentifier statId, byte modifyAmountTo)
         {
-            modStats[statId] = modifyAmountTo;
+            modStats[statId] = this.OnStatModify(character, statId, modifyAmountTo, modStats[statId]);
         }
         public void Modify(StatIdentifier statId, float modifyAmount)
         {
@@ -69,6 +86,16 @@ namespace LegendWorld.Data
             this.Modify(statId, roundedClampedModValue);
         }
 
+        internal bool HasModifier(Type modifierType)
+        {
+            foreach (var modifer in this.Modifiers)
+            {
+                if (modifer.GetType() == modifierType)
+                    return true;
+            }
+
+            return false;
+        }
         internal byte GetStat(StatIdentifier statId)
         {
             return modStats[statId];
@@ -89,7 +116,12 @@ namespace LegendWorld.Data
 
         private float GetStatFactor(StatIdentifier statId)
         {
-            return MathHelper.Clamp(modStats[statId], 1f, 255f) / 100f; //(float)byte.MaxValue; //MathHelper.Clamp(baseStats[StatIdentifier.EnergyCost], 1f, 255f);
+            return GetStatFactor(statId, 100);
+        }
+        private float GetStatFactor(StatIdentifier statId, byte restPoint)
+        {
+            float restPointFloat = restPoint;
+            return MathHelper.Clamp(modStats[statId], 1f, 255f) / restPointFloat;
         }
         private byte GetModdedStatByFactor(StatIdentifier statId, byte baseValue)
         {
@@ -99,6 +131,59 @@ namespace LegendWorld.Data
             float factor = this.GetStatFactor(statId);
             byte moddedValue = (byte)MathHelper.Clamp((int)Math.Round(baseValue * factor), 1, 255);
             return moddedValue;
+        }
+
+        public class StatModifyEventArgs : EventArgs
+        {
+            private byte newValue;
+            private byte oldValue;
+            private StatIdentifier statToModify;
+
+            public StatModifyEventArgs(StatIdentifier statToModify, byte oldValue, byte newValue)
+            {
+                this.statToModify = statToModify;
+                this.oldValue = oldValue;
+                this.newValue = newValue;
+            }
+
+            public byte NewValue
+            {
+                get
+                {
+                    return newValue;
+                }
+
+                set
+                {
+                    newValue = value;
+                }
+            }
+
+            public byte OldValue
+            {
+                get
+                {
+                    return oldValue;
+                }
+
+                set
+                {
+                    oldValue = value;
+                }
+            }
+
+            public StatIdentifier Stat
+            {
+                get
+                {
+                    return statToModify;
+                }
+
+                set
+                {
+                    statToModify = value;
+                }
+            }
         }
     }
 }

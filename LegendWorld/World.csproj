@@ -42,7 +42,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\Abilities\AbilityIdentity.cs" />
+    <Compile Include="Data\Abilities\DefelctDamageAbility.cs" />
+    <Compile Include="Data\Abilities\AbsorbDamageAbility.cs" />
     <Compile Include="Data\Abilities\CriticalAttackAbility.cs" />
+    <Compile Include="Data\Abilities\IncreaseDurationAbility.cs" />
+    <Compile Include="Data\Abilities\DecreaseDurationAbility.cs" />
+    <Compile Include="Data\Abilities\IncreaseEnergyAbility.cs" />
+    <Compile Include="Data\Abilities\MeditationAbility.cs" />
     <Compile Include="Data\Abilities\SlowingAttackAbility.cs" />
     <Compile Include="Data\Abilities\DecreaseEnergyAbility.cs" />
     <Compile Include="Data\Abilities\StunAttackAbility.cs" />
@@ -68,10 +74,14 @@
     <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemCategory.cs" />
     <Compile Include="Data\ItemType.cs" />
+    <Compile Include="Data\Modifiers\DeflectDamageModifier.cs" />
     <Compile Include="Data\Modifiers\CharacterModifier.cs" />
+    <Compile Include="Data\Modifiers\DurationModifier.cs" />
+    <Compile Include="Data\Modifiers\MeditationModifier.cs" />
     <Compile Include="Data\Modifiers\EnergyCostModifier.cs" />
     <Compile Include="Data\Modifiers\ModifiersCollection.cs" />
     <Compile Include="Data\Modifiers\SlowedModifier.cs" />
+    <Compile Include="Data\Modifiers\AbsorbDamageModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
     <Compile Include="Data\PlayerSession.cs" />

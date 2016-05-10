@@ -16,35 +16,33 @@ namespace Data.World
     {
         public Character()
         {
-            Stats = new Stats();
-            Name = "Unknown";
+            Stats = new Stats(this);
+            Abilities = new List<AbilityIdentity>();
+
             Position = new Point(1, 1);
             MovingToPosition = Position;
             AimToPosition = new Point(25, 25);
             Health = 75;
             Energy = 75;
+
             CollitionArea = new CircleCollitionArea();
             CollitionArea.R = 20;
             CollitionArea.Position = this.Position;
-            //Inventory = new BagItem();
-            //Inventory.ItemsInBag.Add(new GoldItem() { StackCount = 1000 });
-            Abilities = new List<AbilityIdentity>();
+            
+            //Stats.StatModify += Stats_StatModify;
             Abilities.Add(AbilityIdentity.DefaultAttack);
-            Modifiers = new ModifiersCollection();
         }
+
+        //private void Stats_StatModify(object sender, Stats.StatModifyEventArgs e)
+        //{
+        //    foreach (CharacterModifier modifier in this.Modifiers)
+        //    {
+        //        modifier.OnStatModify(e.Stat, e.NewValue, e.OldValue);
+        //    }
+        //}
 
         public int Id { get; set; }
 
-        internal bool HasModifier(Type modifierType)
-        {
-            foreach (var modifer in this.Modifiers)
-            {
-                if (modifer.GetType() == modifierType)
-                    return true;
-            }
-
-            return false;
-        }
 
         public int CurrentMapId { get; set; }
 
@@ -84,10 +82,10 @@ namespace Data.World
         public Point MovingToPosition { get; protected set; }
         public Point AimToPosition { get; protected set; }
 
-        public bool IsMoving { get { return this.MovingToPosition != this.Position  && !this.IsDead && this.MovingToPosition != null; } }
+        public bool IsMoving { get { return this.MovingToPosition != this.Position && !this.IsDead && this.MovingToPosition != null; } }
 
         public bool IsDead { get { return this.Health == 0; } }
-        
+
         public byte Health
         {
             get
@@ -98,8 +96,11 @@ namespace Data.World
             set
             {
                 var oldHp = this.Stats.GetStat(StatIdentifier.Health); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
-                this.Stats.Modify(StatIdentifier.Health, value);
-                this.OnHealthChange(oldHp);
+                if (oldHp != value)
+                {
+                    this.Stats.Modify(StatIdentifier.Health, value);
+                    this.OnHealthChange(oldHp);
+                }
             }
         }
         public byte Energy
@@ -124,7 +125,6 @@ namespace Data.World
         //public BagItem Inventory { get; set; }
         public int InventoryBagId { get; set; }
 
-        public ModifiersCollection Modifiers { get; set; }
         public List<AbilityIdentity> Abilities { get; set; }
         public List<WeaponItem> Holster { get; set; }
         public ArmorItem Armor { get; set; }
@@ -166,6 +166,9 @@ namespace Data.World
             if (this.Abilities.Count >= 6)
                 return false;
 
+            if (this.Abilities.Contains(ability))
+                return false;
+
             this.Abilities.Add(ability);
 
             return true;
@@ -204,7 +207,7 @@ namespace Data.World
         public void Update(GameTime gameTime)
         {
             this.Stats.Update(gameTime);
-            this.Modifiers.Update(gameTime, this);
+            this.Stats.Modifiers.Update(gameTime, this);
             if (this.BusyDuration > 0)
             {
                 this.BusyDuration -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -252,6 +255,14 @@ namespace Data.World
                 this.HealthChanged(this, new HealthChangedEventArgs() { PreviousHelth = oldHp });
             }
         }
+
+        //public void ApplyDamage(byte damageAmount)
+        //{
+        //    if (this.HasModifier(typeof(AbsorbDamageModifier)))
+        //    {
+        //        AbsorbDamageModifier absorbDamageModifier = (AbsorbDamageModifier)this.Modifiers.First(m => m is AbsorbDamageModifier);
+        //    }
+        //}
 
         public class HealthChangedEventArgs : EventArgs
         {

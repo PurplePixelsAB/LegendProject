@@ -10,26 +10,28 @@ using LegendWorld.Data.Modifiers;
 
 namespace LegendWorld.Data.Abilities
 {
-    public class StunAttackAbility : Ability
+    public class MeditationAbility : Ability
     {
-        public int StunDuration { get; private set; }
-
-        public StunAttackAbility() : base(AbilityIdentity.StunAttack)
+        public MeditationAbility() : base(AbilityIdentity.Meditation)
         {
             this.Duration = 0;
             this.PrepareTime = 0;
-            this.EnergyCost = 60;
-            this.StunDuration = 10000;
+            this.EnergyCost = 1;
+            this.StartValue = 1.1f;
+            this.EndValue = 5f;
         }
+
+        public float EndValue { get; private set; }
+        public float StartValue { get; private set; }
 
         public override CollitionArea GetAbilityEffectArea()
         {
-            return new ConeCollitionArea() { Range = 20, Fov = 30 };
+            return new SelfCollitionArea();
         }
 
         protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Stats.Modifiers.Add(new StunnedModifier(this.StunDuration));
+            abilityPerformedTo.Stats.Modifiers.Add(new MeditationModifier(this.StartValue, this.EndValue));
         }
 
         internal override void PerformBy(WorldState worldState, Character character)

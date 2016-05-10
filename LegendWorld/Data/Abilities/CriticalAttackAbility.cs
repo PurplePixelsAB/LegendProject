@@ -26,7 +26,7 @@ namespace LegendWorld.Data.Abilities
 
         public override bool CanBePerformedBy(Character character)
         {
-            if (character.HasModifier(typeof(DoublePowerModifier)))
+            if (character.Stats.HasModifier(typeof(DoublePowerModifier)))
                 return false;
 
             return base.CanBePerformedBy(character);
@@ -34,7 +34,7 @@ namespace LegendWorld.Data.Abilities
 
         protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Modifiers.Add(new DoublePowerModifier());
+            abilityPerformedTo.Stats.Modifiers.Add(new DoublePowerModifier());
         }
 
         //internal override void PerformBy(WorldState worldState, Character character)

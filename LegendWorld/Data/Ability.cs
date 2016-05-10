@@ -30,6 +30,10 @@ namespace LegendWorld.Data
         {
             return abilities[(ushort)id];
         }
+        public static List<Ability> GetAll()
+        {
+            return abilities.ToList();
+        }
 
         private AbilityIdentity id;
 
@@ -63,7 +67,7 @@ namespace LegendWorld.Data
                     return false;
             }
 
-            if (character.HasModifier(typeof(StunnedModifier)))
+            if (character.Stats.HasModifier(typeof(StunnedModifier)))
                 return false;
 
             return true;

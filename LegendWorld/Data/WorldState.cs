@@ -69,7 +69,18 @@ namespace Network
             if (!items.ContainsKey((ushort)item.Id))
                 return;
 
-            items.Remove((ushort)item.Id);
+            items.Remove(item.Id);
+            int groundItemIdToRemove = -1;
+            foreach (var groundItem in groundItems.Values)
+            {
+                if (groundItem.ItemId == item.Id)
+                {
+                    groundItemIdToRemove = groundItem.Id;
+                }
+            }
+            if (groundItemIdToRemove > 0)
+                groundItems.Remove(groundItemIdToRemove);
+
         }
 
         protected Dictionary<int, GroundItem> groundItems = new Dictionary<int, GroundItem>();

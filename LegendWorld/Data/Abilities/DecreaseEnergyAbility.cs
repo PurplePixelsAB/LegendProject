@@ -29,7 +29,7 @@ namespace LegendWorld.Data.Abilities
 
         protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Modifiers.Add(new EnergyCostModifier(this.EnergyModifier));
+            abilityPerformedTo.Stats.Modifiers.Add(new EnergyCostModifier(this.EnergyModifier));
         }
 
         internal override void PerformBy(WorldState worldState, Character character)

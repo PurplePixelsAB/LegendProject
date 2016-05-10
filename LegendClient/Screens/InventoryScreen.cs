@@ -10,6 +10,7 @@ using Engine.InputEngine;
 using Microsoft.Xna.Framework.Input;
 using LegendWorld.Data.Items;
 using LegendWorld.Data;
+using LegendClient.World.Items;
 
 namespace LegendClient.Screens
 {
@@ -22,57 +23,22 @@ namespace LegendClient.Screens
         private Texture2D selectionTexture;
 
         private int currentItemIndex = 0;
+        private bool isNavigatingBag = true;
 
         public ClientBagItem BaseContainer { get; set; }
+        public List<ClientGroundItem> GroundItems { get; set; }
 
-        public override void Draw(GameTime gameTime)
+        public InventoryScreen()
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(whitePixel, this.Game.GraphicsDevice.Viewport.Bounds, this.Game.GraphicsDevice.Viewport.Bounds, Color.Black * .8f, 0f, Vector2.Zero, SpriteEffects.None, 1f);
-            spriteBatch.Draw(bagTexture, this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(), bagTexture.Bounds, Color.White, 0f, bagTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
-            Vector2 drawPosition = this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2() - bagTexture.Bounds.Center.ToVector2();
-            if (this.BaseContainer != null && this.BaseContainer.ItemsInBag != null)
-            {
-                if (this.BaseContainer.ItemsInBag.Count > 0)
-                {
-                    int i = 0;
-                    foreach (Item bagItem in this.BaseContainer.ItemsInBag)
-                    {
-                        Color color = Color.White;
-                        if (i == currentItemIndex)
-                            color = Color.Red;
-
-                        spriteBatch.DrawString(itemSpriteFont, bagItem.Identity.ToString(), drawPosition, color);
-                        drawPosition.Y += itemSpriteFont.LineSpacing;
-                        i++;
-                    }
-                }
-                else
-                {
-                    spriteBatch.DrawString(itemSpriteFont, "Bag is Empty.", drawPosition, Color.White);
-                }
-            }
-
-            spriteBatch.Draw(selectionTexture, this.Manager.InputManager.MousePosition.ToVector2(), selectionTexture.Bounds, Color.White, 0f, selectionTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
-
-            spriteBatch.End();
         }
-
-        public override void LoadContent(GraphicsDevice graphicsDevice)
+        public override void Initialize(ScreenManager screenManager)
         {
-            spriteBatch = new SpriteBatch(graphicsDevice);
-            whitePixel = Game.Content.Load<Texture2D>("WhitePixel");
-            itemSpriteFont = Game.Content.Load<SpriteFont>("Damage");
-            bagTexture = Game.Content.Load<Texture2D>("CharacterBag");
-            selectionTexture = Game.Content.Load<Texture2D>("Selection");
-
+            base.Initialize(screenManager);
             ActionKeyMapping actionKeyMappingOpenBags = new ActionKeyMapping();
             actionKeyMappingOpenBags.Id = 4;
             actionKeyMappingOpenBags.Primary = Keys.B;
             actionKeyMappingOpenBags.ActionTriggered += ActionKeyMappingOpenBags_ActionTriggered;
             Input.Actions.Add(actionKeyMappingOpenBags);
-
-
             ActionKeyMapping actionKeyMappingUp = new ActionKeyMapping();
             actionKeyMappingUp.Id = 1;
             actionKeyMappingUp.Primary = Keys.Up;
@@ -88,13 +54,121 @@ namespace LegendClient.Screens
             actionKeyMappingUse.Primary = Keys.Enter;
             actionKeyMappingUse.ActionTriggered += ActionKeyMappingUse_ActionTriggered;
             Input.Actions.Add(actionKeyMappingUse);
+            ActionKeyMapping actionKeyMappingLeft = new ActionKeyMapping();
+            actionKeyMappingLeft.Id = 4;
+            actionKeyMappingLeft.Primary = Keys.Left;
+            actionKeyMappingLeft.ActionTriggered += ActionKeyMappingLeft_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingLeft);
+            ActionKeyMapping actionKeyMappingRight = new ActionKeyMapping();
+            actionKeyMappingRight.Id = 5;
+            actionKeyMappingRight.Primary = Keys.Right;
+            actionKeyMappingRight.ActionTriggered += ActionKeyMappingRight_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingRight);
+        }
+        public override void Draw(GameTime gameTime)
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(whitePixel, this.Game.GraphicsDevice.Viewport.Bounds, this.Game.GraphicsDevice.Viewport.Bounds, Color.Black * .8f, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.Draw(bagTexture, this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(), bagTexture.Bounds, Color.White, 0f, bagTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+
+            if (this.BaseContainer != null && this.BaseContainer.ItemsInBag != null)
+            {
+                Vector2 drawPosition = this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2() - bagTexture.Bounds.Center.ToVector2();
+                if (this.BaseContainer.ItemsInBag.Count > 0)
+                {
+                    int i = 0;
+                    foreach (Item bagItem in this.BaseContainer.ItemsInBag)
+                    {
+                        Color color = Color.White;
+                        if (i == currentItemIndex && isNavigatingBag)
+                            color = Color.Red;
+
+                        spriteBatch.DrawString(itemSpriteFont, bagItem.ToString(), drawPosition, color);
+                        drawPosition.Y += itemSpriteFont.LineSpacing;
+                        i++;
+                    }
+                }
+                else
+                {
+                    spriteBatch.DrawString(itemSpriteFont, "Bag is Empty.", drawPosition, Color.White);
+                }
+            }
+            if (this.GroundItems != null)
+            {
+                Vector2 drawPosition = new Vector2(100f, this.Game.GraphicsDevice.Viewport.Bounds.Center.Y);
+                spriteBatch.DrawString(itemSpriteFont, "Items on Ground", drawPosition - new Vector2(0, itemSpriteFont.LineSpacing), Color.White);
+                if (this.GroundItems.Count > 0)
+                {
+                    int i = 0;
+                    foreach (ClientGroundItem groundItem in this.GroundItems)
+                    {
+                        Color color = Color.White;
+                        if (i == currentItemIndex && !isNavigatingBag)
+                            color = Color.Red;
+
+                        spriteBatch.DrawString(itemSpriteFont, groundItem.Item.ToString(), drawPosition, color);
+                        drawPosition.Y += itemSpriteFont.LineSpacing;
+                        i++;
+                    }
+                }
+                else
+                {
+                    spriteBatch.DrawString(itemSpriteFont, "No Items close by.", drawPosition, Color.White);
+                }
+            }
+
+            spriteBatch.Draw(selectionTexture, this.Manager.InputManager.MousePosition.ToVector2(), selectionTexture.Bounds, Color.White, 0f, selectionTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+
+            spriteBatch.End();
+        }
+
+        public override void LoadContent(GraphicsDevice graphicsDevice)
+        {
+            spriteBatch = new SpriteBatch(graphicsDevice);
+            whitePixel = Game.Content.Load<Texture2D>("WhitePixel");
+            itemSpriteFont = Game.Content.Load<SpriteFont>("Damage");
+            bagTexture = Game.Content.Load<Texture2D>("CharacterBag");
+            selectionTexture = Game.Content.Load<Texture2D>("Selection");
+        }
+
+        private void ActionKeyMappingLeft_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            currentItemIndex = 0;
+            isNavigatingBag = false;
+        }
+
+        private void ActionKeyMappingRight_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            currentItemIndex = 0;
+            isNavigatingBag = true;
         }
 
         private void ActionKeyMappingUse_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-           var item = this.BaseContainer.ItemsInBag[currentItemIndex];
-            if (item != null)
-                this.Use(item);
+            if (isNavigatingBag)
+            {
+                if (currentItemIndex < this.BaseContainer.ItemsInBag.Count)
+                {
+                    var item = this.BaseContainer.ItemsInBag[currentItemIndex];
+                    if (item != null)
+                        this.Use(item);
+
+                    if (currentItemIndex >= this.BaseContainer.ItemsInBag.Count && currentItemIndex > 0)
+                        currentItemIndex--;
+                }
+            }
+            else
+            {
+                if (currentItemIndex < this.GroundItems.Count)
+                {
+                    var item = this.GroundItems[currentItemIndex].Item;
+                    if (item != null)
+                        this.Use(item);
+
+                    if (currentItemIndex >= this.GroundItems.Count && currentItemIndex > 0)
+                        currentItemIndex--;
+                }
+            }
         }
 
         public event EventHandler<ItemUsedEventArgs> ItemUsed;
@@ -108,14 +182,22 @@ namespace LegendClient.Screens
 
         private void ActionKeyMappingUp_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            if (this.BaseContainer.ItemsInBag.Count > currentItemIndex + 1)
-                currentItemIndex++;
+            if (currentItemIndex > 0)
+                currentItemIndex--;
         }
 
         private void ActionKeyMappingDown_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            if (currentItemIndex > 0)
-                currentItemIndex--;
+            if (isNavigatingBag)
+            {
+                if (this.BaseContainer.ItemsInBag.Count > currentItemIndex + 1)
+                    currentItemIndex++;
+            }
+            else
+            {
+                if (this.GroundItems.Count > currentItemIndex + 1)
+                    currentItemIndex++;
+            }
         }
 
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)

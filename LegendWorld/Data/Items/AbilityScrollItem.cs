@@ -24,10 +24,16 @@ namespace LegendWorld.Data.Items
         {
             if (usedBy.Teach(this.Ability))
             {
+                this.StackCount = 0;
                 return true;
             }
 
             return false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}{1}", this.Ability, this.Identity);
         }
     }
 }

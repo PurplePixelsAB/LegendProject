@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace LegendWorld.Data.Modifiers
 {
-    public class EnergyCostModifier : CharacterModifier
+    public class DurationModifier : CharacterModifier
     {
-        public EnergyCostModifier(float amount)
+        public DurationModifier(float amount)
         {
             this.Amount = amount;
         }
@@ -20,7 +20,7 @@ namespace LegendWorld.Data.Modifiers
         public override void Update(GameTime gameTime, Character character)
         {
             character.Stats.Modify(StatIdentifier.EnergyCost, this.Amount);
-            character.Stats.Modify(StatIdentifier.Power, this.Amount);
+            character.Stats.Modify(StatIdentifier.Speed, this.Amount);
         }
     }
 }

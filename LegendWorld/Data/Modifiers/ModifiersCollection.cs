@@ -16,6 +16,7 @@ namespace LegendWorld.Data.Modifiers
         {
             foreach (var modifier in this)
             {
+                modifier.Update(gameTime, character);
                 if (modifier.Duration.HasValue)
                 {
                     modifier.Duration -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -23,10 +24,13 @@ namespace LegendWorld.Data.Modifiers
                     {
                         durationRunOutModifiers.Enqueue(modifier);
                     }
-
-                    modifier.Update(gameTime, character);
+                }
+                else if (modifier.IsUsed)
+                {
+                    durationRunOutModifiers.Enqueue(modifier);
                 }
             }
+
             while (durationRunOutModifiers.Count > 0)
                 this.Remove(durationRunOutModifiers.Dequeue());
         }
