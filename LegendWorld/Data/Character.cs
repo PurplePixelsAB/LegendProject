@@ -130,6 +130,7 @@ namespace Data.World
         public ArmorItem Armor { get; set; }
         public WeaponItem WeaponInHand { get; set; }
 
+        public PrepareAbility PrepareToPerform { get; set;  }
         //public Ability Performing { get; set; }
 
         public event EventHandler MoveToChanged;

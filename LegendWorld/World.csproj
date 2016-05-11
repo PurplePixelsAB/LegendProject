@@ -42,6 +42,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\Abilities\AbilityIdentity.cs" />
+    <Compile Include="Data\Abilities\IncreaseEnergyRegenAbility.cs" />
+    <Compile Include="Data\Abilities\IncreaseHealthRegenAbility.cs" />
+    <Compile Include="Data\Abilities\IncreaseMaxEnergyAbility.cs" />
+    <Compile Include="Data\Abilities\IncreaseMaxHealthAbility.cs" />
+    <Compile Include="Data\Abilities\IncreaseSpeedAbility.cs" />
+    <Compile Include="Data\Abilities\ShortSpeedBurstAbility.cs" />
     <Compile Include="Data\Abilities\DefelctDamageAbility.cs" />
     <Compile Include="Data\Abilities\AbsorbDamageAbility.cs" />
     <Compile Include="Data\Abilities\CriticalAttackAbility.cs" />
@@ -55,6 +61,7 @@
     <Compile Include="Data\Abilities\HardAttackAbility.cs" />
     <Compile Include="Data\Abilities\DefaultAttackAbility.cs" />
     <Compile Include="Data\Ability.cs" />
+    <Compile Include="Data\AbilityChargeUp.cs" />
     <Compile Include="Data\CollitionArea.cs" />
     <Compile Include="Data\GroundItem.cs" />
     <Compile Include="Data\Item.cs" />
@@ -77,10 +84,15 @@
     <Compile Include="Data\Modifiers\DeflectDamageModifier.cs" />
     <Compile Include="Data\Modifiers\CharacterModifier.cs" />
     <Compile Include="Data\Modifiers\DurationModifier.cs" />
+    <Compile Include="Data\Modifiers\EnergyRegenerationModifier.cs" />
+    <Compile Include="Data\Modifiers\MaxEnergyModifier.cs" />
+    <Compile Include="Data\Modifiers\HealthRegenerationModifier.cs" />
     <Compile Include="Data\Modifiers\MeditationModifier.cs" />
     <Compile Include="Data\Modifiers\EnergyCostModifier.cs" />
     <Compile Include="Data\Modifiers\ModifiersCollection.cs" />
-    <Compile Include="Data\Modifiers\SlowedModifier.cs" />
+    <Compile Include="Data\Modifiers\MaxHealthModifier.cs" />
+    <Compile Include="Data\Modifiers\SpeedModifier.cs" />
+    <Compile Include="Data\Modifiers\TimedSpeedModifier.cs" />
     <Compile Include="Data\Modifiers\AbsorbDamageModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />

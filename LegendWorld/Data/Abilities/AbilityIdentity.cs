@@ -20,17 +20,20 @@ namespace LegendWorld.Data.Abilities
         Meditation, //Increase EnergyRegen active use
         DamageToEnergy, //Absorb dmg to energy
         Deflect, //Deflect abilities
-        Interrupt, //Interrupt abilites
-        IncreaseMaxWeight, //Carry more/faster
+        ShortSpeedBurst,
+        IncreaseSpeed,
         IncreaseMaxHealth, //More health
         IncreaseMaxEnergy, //More energy
         IncreaseHealthRegen, //More hp regen
         IncreaseEnergyRegen, //More en regen
+        //Comeplete
+
+        //ToDo
         IncreaseSwordPower, //Increase dmg of all attacks with sword
         IncreaseBowPower, //Increase dmg of all attacks with bow
         IncreasePlateArmor,
         IncreaseLeatherArmor,
-        IncreaseSpeed,
-        ShortSpeedBurst,
+        IncreaseMaxWeight, //Carry more/faster
+        Interrupt, //Interrupt abilites
     }
 }

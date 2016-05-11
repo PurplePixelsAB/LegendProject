@@ -9,20 +9,20 @@ using Network;
 
 namespace LegendWorld.Data.Modifiers
 {
-    public class SlowedModifier : CharacterModifier
+    public class MaxHealthModifier : CharacterModifier
     {
-        public SlowedModifier(int duration, float amount) : base()
+        public MaxHealthModifier(byte setTo) : base()
         {
-            base.Duration = duration;
-            this.Amount = amount;
+            base.Duration = null;
+            this.NewMaxHealth = setTo;
             base.IsUsed = false;
         }
 
-        public float Amount { get; private set; }
+        public byte NewMaxHealth { get; private set; }
 
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.MovementSpeed, this.Amount);
+            character.Stats.Modify(StatIdentifier.HealthMax, this.NewMaxHealth);
         }
     }
 }

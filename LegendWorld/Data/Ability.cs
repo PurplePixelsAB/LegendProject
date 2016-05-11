@@ -24,7 +24,15 @@ namespace LegendWorld.Data
             Ability.Register(new CriticalAttackAbility());
             Ability.Register(new StunAttackAbility());
             Ability.Register(new SlowingAttackAbility());
-            Ability.Register(new HardAttackAbility());
+            Ability.Register(new DecreaseEnergyCostAbility());
+            Ability.Register(new IncreaseEnergyCostAbility());
+            Ability.Register(new DecreaseDurationAbility());
+            Ability.Register(new IncreaseDurationAbility());
+            Ability.Register(new MeditationAbility());
+            Ability.Register(new AbsorbDamageAbility());
+            Ability.Register(new DeflectDamageAbility());
+            Ability.Register(new ShortSpeedBurstAbility());
+            Ability.Register(new IncreaseSpeedAbility());
         }
         public static Ability Get(AbilityIdentity id)
         {
@@ -71,6 +79,11 @@ namespace LegendWorld.Data
                 return false;
 
             return true;
+        }
+
+        internal virtual void Update(GameTime gameTime, WorldState worldState, Character abilityOwner)
+        {
+
         }
 
         internal virtual void PerformBy(WorldState worldState, Character abilityPerformedBy)
