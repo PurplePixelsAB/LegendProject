@@ -15,20 +15,20 @@ namespace Network.Packets
         {
 
         }
-        public PerformAbilityPacket(int characterId, AbilityIdentity ability) : base(PacketIdentity.PerformAbility)
+        public PerformAbilityPacket(int characterId, CharacterPowerIdentity ability) : base(PacketIdentity.PerformAbility)
         {
             this.CharacterId = (ushort)characterId;
             this.AbilityUsed = ability;
         }
 
         public ushort CharacterId { get; set; }
-        public AbilityIdentity AbilityUsed { get; set; }
+        public CharacterPowerIdentity AbilityUsed { get; set; }
 
         public override void OnReadBuffer(PacketReader packetReader)
         {
             base.OnReadBuffer(packetReader);
             this.CharacterId = packetReader.ReadUInt16();
-            this.AbilityUsed = (AbilityIdentity)packetReader.ReadUInt16();
+            this.AbilityUsed = (CharacterPowerIdentity)packetReader.ReadUInt16();
         }
         public override void OnWriteBuffer(PacketWriter packetWriter)
         {

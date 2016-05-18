@@ -1,10 +1,12 @@
-﻿using Data.World;
+﻿using Data;
+using Data.World;
 using LegendWorld.Data;
 using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using static Data.ItemData;
 
 namespace Network
 {
@@ -18,12 +20,12 @@ namespace Network
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
         private long nextRegendTick = 0;
 
-        protected Dictionary<int, Item> items = new Dictionary<int, Item>();
-        public Dictionary<int, Item>.KeyCollection Items { get { return items.Keys; } }
+        protected Dictionary<int, IItem> items = new Dictionary<int, IItem>();
+        public Dictionary<int, IItem>.KeyCollection Items { get { return items.Keys; } }
 
         public WorldState()
         {
-            Ability.Load();
+            CharacterPower.Load();
 
             //ushort itemId = 1;
             //foreach (AbilityIdentity abilityId in Enum.GetValues(typeof(AbilityIdentity)))
@@ -48,7 +50,7 @@ namespace Network
             //}
         }
 
-        public virtual Item GetItem(int id)
+        public virtual IItem GetItem(int id)
         {
             if (items.ContainsKey(id))
             {
@@ -57,61 +59,71 @@ namespace Network
 
             return null;
         }
-        public virtual void AddItem(Item item)
+        public virtual void AddItem(IItem item)
         {
-            if (items.ContainsKey((ushort)item.Id))
+            if (items.ContainsKey((ushort)item.Data.ItemDataID))
                 return;
 
-            items.Add((ushort)item.Id, item);
+            items.Add((ushort)item.Data.ItemDataID, item);
         }
-        public virtual void RemoveItem(Item item)
+        public virtual void RemoveItem(IItem item)
         {
-            if (!items.ContainsKey((ushort)item.Id))
+            if (!items.ContainsKey((ushort)item.Data.ItemDataID))
                 return;
 
-            items.Remove(item.Id);
-            int groundItemIdToRemove = -1;
-            foreach (var groundItem in groundItems.Values)
-            {
-                if (groundItem.ItemId == item.Id)
-                {
-                    groundItemIdToRemove = groundItem.Id;
-                }
-            }
-            if (groundItemIdToRemove > 0)
-                groundItems.Remove(groundItemIdToRemove);
+            items.Remove(item.Data.ItemDataID);
+            //int groundItemIdToRemove = -1;
+            //foreach (var groundItem in groundItems.Values)
+            //{
+            //    if (groundItem.ItemId == item.Id)
+            //    {
+            //        groundItemIdToRemove = groundItem.Id;
+            //    }
+            //}
+            //if (groundItemIdToRemove > 0)
+            //    groundItems.Remove(groundItemIdToRemove);
 
         }
 
-        protected Dictionary<int, GroundItem> groundItems = new Dictionary<int, GroundItem>();
-        public Dictionary<int, GroundItem>.KeyCollection GroundItems { get { return groundItems.Keys; } }
-        public virtual GroundItem GetGroundItem(int id)
+        public IItem CreateItem(ItemData itemData)
         {
-            if (groundItems.ContainsKey(id))
-            {
-                return groundItems[id];
-            }
+            IItemFactory factory = this.GetItemFactory(itemData.Identity);
+            IItem newReturnItem = factory.CreateNew(itemData);
 
-            return null;
+            return newReturnItem;
         }
+
+        protected abstract IItemFactory GetItemFactory(ItemIdentity identity);
+
+        //protected Dictionary<int, GroundItem> groundItems = new Dictionary<int, GroundItem>();
+        //public Dictionary<int, GroundItem>.KeyCollection GroundItems { get { return groundItems.Keys; } }
+        //public virtual GroundItem GetGroundItem(int id)
+        //{
+        //    if (groundItems.ContainsKey(id))
+        //    {
+        //        return groundItems[id];
+        //    }
+
+        //    return null;
+        //}
+
+
+        //public virtual void AddGroundItem(GroundItem groundItem)
+        //{
+        //    if (groundItems.ContainsKey(groundItem.Id))
+        //        return;
+
+        //    groundItems.Add(groundItem.Id, groundItem);
+        //}
+        //public virtual void RemoveGroundItem(GroundItem groundItem)
+        //{
+        //    if (groundItems.ContainsKey(groundItem.Id))
+        //        return;
+
+        //    groundItems.Remove(groundItem.Id);
+        //}
 
         protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
-
-        public virtual void AddGroundItem(GroundItem groundItem)
-        {
-            if (groundItems.ContainsKey(groundItem.Id))
-                return;
-
-            groundItems.Add(groundItem.Id, groundItem);
-        }
-        public virtual void RemoveGroundItem(GroundItem groundItem)
-        {
-            if (groundItems.ContainsKey(groundItem.Id))
-                return;
-
-            groundItems.Remove(groundItem.Id);
-        }
-
         public Dictionary<int, Character>.KeyCollection Characters { get { return characters.Keys; } }
         public virtual Character GetCharacter(int id)
         {
@@ -174,7 +186,7 @@ namespace Network
             }
         }
 
-        public virtual bool PerformAbility(Ability ability, Character character)
+        public virtual bool PerformAbility(CharacterPower ability, Character character)
         {
             if (!ability.CanBePerformedBy(character))
                 return false;
@@ -182,11 +194,11 @@ namespace Network
             ability.PerformBy(this, character);
             return true;
         }
-        public virtual bool PerformAbility(AbilityIdentity abilityId, Character character)
+        public virtual bool PerformAbility(CharacterPowerIdentity abilityId, Character character)
         {
             if (character == null)
                 return false;
-            Ability abilityToPerform = Ability.Get(abilityId);
+            CharacterPower abilityToPerform = CharacterPower.Get(abilityId);
             if (abilityToPerform == null)
                 return false;
 

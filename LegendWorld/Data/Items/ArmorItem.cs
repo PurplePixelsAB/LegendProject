@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Data;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
-    public abstract class ArmorItem : Item
+    public abstract class ArmorItem : IItem
     {
         public ArmorItem()
         {
             this.Category = ItemCategory.Armor;
         }
-        [DataMember]
         public int Armor { get; set; }
-
-        //public ItemCategory Category { get; set; }
-
-        //public ushort Id { get; set; }
-
-        //public ItemIdentity Identity { get; set; }
+        public ItemCategory Category { get; protected set; }
+        public ItemData Data { get; set; }
+        public int Weight { get; protected set; }
     }
 }

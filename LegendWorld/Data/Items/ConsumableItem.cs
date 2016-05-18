@@ -5,7 +5,6 @@ using Network;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
     public abstract class ConsumableItem : StackableItem
     {
         public ConsumableItem()

@@ -1,5 +1,5 @@
-﻿using LegendWorld.Data;
-using LegendWorld.Data.Items;
+﻿using Data;
+using LegendWorld.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -21,8 +21,8 @@ namespace DataServer.Models
         {
         }
 
-        public DbSet<Item> Items { get; set; }
-        public DbSet<GroundItem> GroundItems { get; set; }
+        public DbSet<ItemData> Items { get; set; }
+        //public DbSet<GroundItem> GroundItems { get; set; }
         public DbSet<PlayerSession> PlayerSessions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

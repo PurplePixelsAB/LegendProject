@@ -41,46 +41,44 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Data\Abilities\AbilityIdentity.cs" />
-    <Compile Include="Data\Abilities\IncreaseEnergyRegenAbility.cs" />
-    <Compile Include="Data\Abilities\IncreaseHealthRegenAbility.cs" />
-    <Compile Include="Data\Abilities\IncreaseMaxEnergyAbility.cs" />
-    <Compile Include="Data\Abilities\IncreaseMaxHealthAbility.cs" />
-    <Compile Include="Data\Abilities\IncreaseSpeedAbility.cs" />
-    <Compile Include="Data\Abilities\ShortSpeedBurstAbility.cs" />
-    <Compile Include="Data\Abilities\DefelctDamageAbility.cs" />
-    <Compile Include="Data\Abilities\AbsorbDamageAbility.cs" />
-    <Compile Include="Data\Abilities\CriticalAttackAbility.cs" />
-    <Compile Include="Data\Abilities\IncreaseDurationAbility.cs" />
-    <Compile Include="Data\Abilities\DecreaseDurationAbility.cs" />
-    <Compile Include="Data\Abilities\IncreaseEnergyAbility.cs" />
-    <Compile Include="Data\Abilities\MeditationAbility.cs" />
-    <Compile Include="Data\Abilities\SlowingAttackAbility.cs" />
-    <Compile Include="Data\Abilities\DecreaseEnergyAbility.cs" />
-    <Compile Include="Data\Abilities\StunAttackAbility.cs" />
-    <Compile Include="Data\Abilities\HardAttackAbility.cs" />
-    <Compile Include="Data\Abilities\DefaultAttackAbility.cs" />
-    <Compile Include="Data\Ability.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseEnergyRegenAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseHealthRegenAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseMaxEnergyAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseMaxHealthAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseSpeedAbility.cs" />
+    <Compile Include="Data\CharacterPowers\ShortSpeedBurstAbility.cs" />
+    <Compile Include="Data\CharacterPowers\DefelctDamageAbility.cs" />
+    <Compile Include="Data\CharacterPowers\AbsorbDamageAbility.cs" />
+    <Compile Include="Data\CharacterPowers\CriticalAttackAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseDurationAbility.cs" />
+    <Compile Include="Data\CharacterPowers\DecreaseDurationAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseEnergyAbility.cs" />
+    <Compile Include="Data\CharacterPowers\MeditationAbility.cs" />
+    <Compile Include="Data\CharacterPowers\SlowingAttackAbility.cs" />
+    <Compile Include="Data\CharacterPowers\DecreaseEnergyAbility.cs" />
+    <Compile Include="Data\CharacterPowers\StunAttackAbility.cs" />
+    <Compile Include="Data\CharacterPowers\HardAttackAbility.cs" />
+    <Compile Include="Data\CharacterPowers\DefaultAttackAbility.cs" />
+    <Compile Include="Data\CharacterPower.cs" />
     <Compile Include="Data\AbilityChargeUp.cs" />
     <Compile Include="Data\CollitionArea.cs" />
-    <Compile Include="Data\GroundItem.cs" />
+    <Compile Include="Data\IItemFactory.cs" />
     <Compile Include="Data\Item.cs" />
-    <Compile Include="Data\ItemIdentity.cs" />
+    <Compile Include="Data\Items\BandageItem.cs" />
     <Compile Include="Data\Items\AbilityScrollItem.cs" />
     <Compile Include="Data\Items\ArmorItem.cs" />
     <Compile Include="Data\Items\BagItem.cs" />
     <Compile Include="Data\Items\BowItem.cs" />
     <Compile Include="Data\Items\ContainerItem.cs" />
     <Compile Include="Data\Items\GoldItem.cs" />
+    <Compile Include="Data\Items\ClothArmor.cs" />
     <Compile Include="Data\Items\LeatherArmor.cs" />
     <Compile Include="Data\Items\ConsumableItem.cs" />
     <Compile Include="Data\Items\PlateArmor.cs" />
     <Compile Include="Data\Items\StackableItem.cs" />
-    <Compile Include="Data\Items\StaffItem.cs" />
     <Compile Include="Data\Items\SwordItem.cs" />
     <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemCategory.cs" />
-    <Compile Include="Data\ItemType.cs" />
     <Compile Include="Data\Modifiers\DeflectDamageModifier.cs" />
     <Compile Include="Data\Modifiers\CharacterModifier.cs" />
     <Compile Include="Data\Modifiers\DurationModifier.cs" />
@@ -96,8 +94,6 @@
     <Compile Include="Data\Modifiers\AbsorbDamageModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
-    <Compile Include="Data\PlayerSession.cs" />
-    <Compile Include="Data\SelectableCharacter.cs" />
     <Compile Include="Data\StatIdentifier.cs" />
     <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />
@@ -125,7 +121,6 @@
     <Compile Include="IDamagable.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="IHasPosition.cs" />
-    <Compile Include="INamable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -158,6 +153,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{b3023368-0065-4eee-aba2-71643b1505bd}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

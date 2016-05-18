@@ -36,22 +36,28 @@ namespace UdpServer
 
         internal void LoadMapData(int mapId)
         {
-            IEnumerable<Item> items = dataContext.GetItems(mapId);
+            IEnumerable<ItemData> items = dataContext.GetItems(mapId);
             if (items != null)
             {
-                foreach (Item item in items)
+                foreach (ItemData itemData in items)
                 {
-                    this.AddItem(item);
+                    IItem item = this.GetItem(itemData.ItemDataID);
+                    if (item == null)
+                    {
+                        item = this.CreateItem(itemData);
+                        this.AddItem(item);
+                    }
+                    item.Data = itemData;
                 }
             }
-            IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(mapId);
-            if (groundItems != null)
-            {
-                foreach (GroundItem item in groundItems)
-                {
-                    this.AddGroundItem(item);
-                }
-            }
+            //IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(mapId);
+            //if (groundItems != null)
+            //{
+            //    foreach (GroundItem item in groundItems)
+            //    {
+            //        this.AddGroundItem(item);
+            //    }
+            //}
         }
 
         internal PlayerSession GetPlayerSession(int sessionId)
@@ -127,16 +133,16 @@ namespace UdpServer
         //    //ServerCharacter serverCharacter = (ServerCharacter)character;
         //    maptoCharacterRelations[character.CurrentMapId].Add(character.Id);
         //}
-        public void AddGroundItem(Item item, ushort mapId, Point position)
-        {
-            this.AddItem(item);
-            GroundItem groundItem = new GroundItem();
-            groundItem.Position = position;
-            groundItem.CurrentMapId = mapId;
-            groundItem.ItemId = (ushort)item.Id;
-            base.AddGroundItem(groundItem);
-            //this.UpdateEveryoneOfGroundItem(groundItem);
-        }
+        //public void AddGroundItem(Item item, ushort mapId, Point position)
+        //{
+        //    this.AddItem(item);
+        //    GroundItem groundItem = new GroundItem();
+        //    groundItem.Position = position;
+        //    groundItem.CurrentMapId = mapId;
+        //    groundItem.ItemId = (ushort)item.Id;
+        //    base.AddGroundItem(groundItem);
+        //    //this.UpdateEveryoneOfGroundItem(groundItem);
+        //}
 
         private void ServerCharacter_Disconnects(object sender, EventArgs e)
         {
@@ -224,9 +230,14 @@ namespace UdpServer
             return new WorldMap() { Bounds = new Rectangle(0, 0, short.MaxValue, short.MaxValue) };
         }
 
-        public override bool PerformAbility(AbilityIdentity abilityId, Character character)
+        public override bool PerformAbility(CharacterPowerIdentity abilityId, Character character)
         {
             return base.PerformAbility(abilityId, character);
+        }
+
+        protected override IItemFactory GetItemFactory(ItemData.ItemIdentity identity)
+        {
+            return new ServerItemFactory(identity);
         }
         //public void Update()
         //{

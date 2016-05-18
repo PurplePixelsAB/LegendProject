@@ -73,24 +73,52 @@ namespace WindowsClient.World
         }
 
         float lootDistance = 20f;
-        internal List<ClientGroundItem> GroundItemsInRange(int id)
+        internal List<IClientItem> GroundItemsInRange(int id)
         {
-            List<ClientGroundItem> itemsInRange = new List<ClientGroundItem>(10);
+            List<IClientItem> itemsInRange = new List<IClientItem>(10);
             Character charToRangeCheck = this.GetCharacter(id);
             Vector2 positionToCheck = charToRangeCheck.Position.ToVector2();
-            foreach (var groundItem in this.groundItems.Values)
+            foreach (int itemId in this.Items)
             {
-                float distance = Vector2.Distance(positionToCheck, groundItem.Position.ToVector2());
+                IClientItem clientItem = (IClientItem)this.GetItem(itemId);
+                if (!clientItem.Data.IsWorldItem)
+                {
+                    continue;
+                }
+
+                float distance = Vector2.Distance(positionToCheck, clientItem.Data.WorldLocation.ToVector2());
                 if (distance <= lootDistance)
                 {
-                    ClientGroundItem clientGroundItem = new ClientGroundItem();
-                    clientGroundItem.GroundItem = groundItem;
-                    clientGroundItem.Item = this.GetItem(groundItem.ItemId);
-                    itemsInRange.Add(clientGroundItem);
+                    itemsInRange.Add(clientItem);
                 }
             }
 
             return itemsInRange;
+        }
+
+        protected override IItemFactory GetItemFactory(ItemData.ItemIdentity identity)
+        {
+            return ClientItemFactory.Get(identity);
+        }
+
+        internal List<IClientItem> GetItemsOnGround(int currentMapId)
+        {
+            List<IClientItem> itemsonGround = new List<IClientItem>(10);
+            foreach (int itemId in this.Items)
+            {
+                IClientItem clientItem = (IClientItem)this.GetItem(itemId);
+                if (!clientItem.Data.IsWorldItem)
+                {
+                    continue;
+                }
+                
+                if (clientItem.Data.WorldMapID.Value == currentMapId)
+                {
+                    itemsonGround.Add(clientItem);
+                }
+            }
+
+            return itemsonGround;
         }
     }
 

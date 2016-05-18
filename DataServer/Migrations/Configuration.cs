@@ -1,8 +1,8 @@
 namespace DataServer.Migrations
 {
+    using Data;
     using LegendWorld.Data;
     using LegendWorld.Data.Abilities;
-    using LegendWorld.Data.Items;
     using Microsoft.Xna.Framework;
     using System;
     using System.Data.Entity;
@@ -31,35 +31,37 @@ namespace DataServer.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            context.Database.ExecuteSqlCommand("DELETE FROM Items");
-            context.Database.ExecuteSqlCommand("DELETE FROM GroundItems");
+            context.Database.ExecuteSqlCommand("DELETE FROM ItemDatas");
+            //context.Database.ExecuteSqlCommand("DELETE FROM GroundItems");
 
             Random rnd = new Random();
-            foreach (AbilityIdentity abilityId in Enum.GetValues(typeof(AbilityIdentity)))
+            foreach (CharacterPowerIdentity abilityId in Enum.GetValues(typeof(CharacterPowerIdentity)))
             {
-                if (abilityId == AbilityIdentity.DefaultAttack)
+                if (abilityId == CharacterPowerIdentity.DefaultAttack)
                     continue;
 
                 for (ushort i = 0; i < 10; i++)
                 {
-                    AbilityScrollItem item = new AbilityScrollItem();
+                    ItemData item = context.Items.Create(); // new ItemData();
                     //item.Id = itemId;
-                    item.Ability = abilityId;
-                    //itemId++;
+                    item.Identity = ItemData.ItemIdentity.PowerScoll;
+                    item.SubType = (int)abilityId;
+                    item.MoveTo(0, new Point(rnd.Next(1, 5000), rnd.Next(1, 5000)));
+                    item.Count = rnd.Next(1, 9);
                     var itemAdded = context.Items.Add(item);
                     //itemId++;
                 }
             }
             context.SaveChanges();
 
-            var itemList = context.Items.ToList();
-            foreach (Item item in itemList)
-            {
-                GroundItem groundItem = new GroundItem();
-                groundItem.ItemId = item.Id;
-                groundItem.Position = new Point(rnd.Next(1, 5000), rnd.Next(1, 5000));
-                context.GroundItems.AddOrUpdate(groundItem);
-            }
+            //var itemList = context.Items.ToList();
+            //foreach (ItemData item in itemList)
+            //{
+            //    GroundItem groundItem = new GroundItem();
+            //    groundItem.ItemId = item.Id;
+            //    groundItem.Position = new Point(rnd.Next(1, 5000), rnd.Next(1, 5000));
+            //    context.GroundItems.AddOrUpdate(groundItem);
+            //}
         }
     }
 }

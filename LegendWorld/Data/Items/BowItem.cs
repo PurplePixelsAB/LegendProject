@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
     public class BowItem : WeaponItem
     {
+        public BowItem()
+        {
+            this.Power = 70;
+            this.Speed = 75;
+            this.Weight = 2000;
+            this.IsTwoHanded = true;
+        }
     }
 }

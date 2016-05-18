@@ -4,14 +4,14 @@ namespace LegendClient.Screens
 {
     internal class ItemUsedEventArgs
     {
-        private Item item;
+        private IItem item;
 
-        public ItemUsedEventArgs(Item itemUsed)
+        public ItemUsedEventArgs(IItem itemUsed)
         {
             this.ItemUsed = itemUsed;
         }
 
-        public Item ItemUsed
+        public IItem ItemUsed
         {
             get
             {

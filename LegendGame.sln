@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataClient", "DataClient\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServer", "DataServer\DataServer.csproj", "{EFD8B09D-3B99-4820-849B-2C00CB202B7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{B3023368-0065-4EEE-ABA2-71643B1505BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,14 @@ Global
 		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|x86.ActiveCfg = Release|Any CPU
 		{EFD8B09D-3B99-4820-849B-2C00CB202B7B}.Release|x86.Build.0 = Release|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Debug|x86.Build.0 = Debug|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3023368-0065-4EEE-ABA2-71643B1505BD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

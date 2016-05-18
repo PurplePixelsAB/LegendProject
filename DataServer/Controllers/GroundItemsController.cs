@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using DataServer.Models;
 using LegendWorld.Data;
+using Data;
 
 namespace DataServer.Controllers
 {
@@ -19,7 +20,7 @@ namespace DataServer.Controllers
         private WorldDbContext db = new WorldDbContext();
 
         // GET: api/GroundItems
-        public IQueryable<GroundItem> GetGroundItems()
+        public IQueryable<ItemData> GetGroundItems()
         {
             return db.GroundItems;
         }

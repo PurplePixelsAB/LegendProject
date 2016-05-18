@@ -1,4 +1,5 @@
-﻿using Data.World;
+﻿using Data;
+using Data.World;
 using LegendWorld.Data.Abilities;
 using Network;
 using System;
@@ -10,19 +11,17 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
-    public class AbilityScrollItem : ConsumableItem //Consumable
+    public class PowerScrollItem : ConsumableItem //Consumable
     {
-        [DataMember]
-        public AbilityIdentity Ability { get { return (AbilityIdentity)base.StackCount; } set { base.StackCount = (int)value; } }
-        public AbilityScrollItem()
+        public CharacterPowerIdentity Ability { get { return (CharacterPowerIdentity)base.StackCount; } set { base.StackCount = (int)value; } }
+        public PowerScrollItem()
         {
-            this.Identity = ItemIdentity.AbilityScoll;
+            //this.Identity = ItemIdentity.AbilityScoll;
             this.Weight = 100;
         }
         public override bool OnUse(Character usedBy, WorldState worldState)
         {
-            if (usedBy.Teach(this.Ability))
+            if (usedBy.Learn(this.Ability))
             {
                 this.StackCount = 0;
                 return true;
@@ -33,7 +32,7 @@ namespace LegendWorld.Data.Items
 
         public override string ToString()
         {
-            return string.Format("{0}{1}", this.Ability, this.Identity);
+            return string.Format("{0}{1}", this.Ability, this.Data.Identity);
         }
     }
 }

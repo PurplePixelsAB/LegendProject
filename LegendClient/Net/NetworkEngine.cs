@@ -12,6 +12,7 @@ using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
 using DataClient;
 using LegendWorld.Data;
+using Data;
 
 namespace WindowsClient.Net
 {
@@ -76,26 +77,27 @@ namespace WindowsClient.Net
         {
             world.PlayerCharacter = new ClientCharacter(); //Todo: Get from DataServer
             world.PlayerCharacter.Id = playerCharacterId;
-            world.PlayerCharacter.InventoryBagId = 666;
+            //world.PlayerCharacter.InventoryBagId = 666;
             world.AddCharacter(world.PlayerCharacter);
-            world.AddItem(new BagItem() { Id = 666 });
+            //world.AddItem(new BagItem() { Id = 666 });
 
-            IEnumerable<Item> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
+            IEnumerable<ItemData> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
             if (items != null)
             {
-                foreach (Item item in items)
+                foreach (ItemData itemData in items)
                 {
+                    IItem item = world.CreateItem(itemData);
                     world.AddItem(item);
                 }
             }
-            IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(world.PlayerCharacter.CurrentMapId);
-            if (groundItems != null)
-            {
-                foreach (GroundItem item in groundItems)
-                {
-                    world.AddGroundItem(item);
-                }
-            }
+            //IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(world.PlayerCharacter.CurrentMapId);
+            //if (groundItems != null)
+            //{
+            //    foreach (GroundItem item in groundItems)
+            //    {
+            //        world.AddGroundItem(item);
+            //    }
+            //}
         }
         
         public void UnloadContent()
@@ -141,7 +143,7 @@ namespace WindowsClient.Net
         }
 
         PerformAbilityPacket performAbilityPacket;
-        internal void PerformAbility(ClientCharacter playerCharacter, AbilityIdentity abilityId)
+        internal void PerformAbility(ClientCharacter playerCharacter, CharacterPowerIdentity abilityId)
         {
             performAbilityPacket = new PerformAbilityPacket(playerCharacter.Id, abilityId); //Packets are sent on Update to reduce Spam
         }

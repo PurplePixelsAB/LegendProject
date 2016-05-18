@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
     public class BagItem : ContainerItem //Container
     {
         public BagItem()
         {
-            this.Identity = ItemIdentity.Bag;
+            this.Weight = 20;
         }
     }
 }

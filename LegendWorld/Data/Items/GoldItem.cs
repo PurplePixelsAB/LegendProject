@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
     public class GoldItem : StackableItem
     {
         public GoldItem()
         {
-            this.Identity = ItemIdentity.Gold;
+            //this.Identity = ItemIdentity.Gold;
             this.Weight = 1;
         }
     }

@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
     public class LeatherArmor : ArmorItem
     {
+        public LeatherArmor()
+        {
+            Armor = 70;
+            Weight = 5000;
+        }
     }
 }

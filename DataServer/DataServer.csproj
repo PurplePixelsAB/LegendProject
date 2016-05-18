@@ -210,28 +210,15 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
-    <Compile Include="Controllers\GroundItemsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
     <Compile Include="Controllers\PlayerSessionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201605061214529_InitialCreate.cs" />
-    <Compile Include="Migrations\201605061214529_InitialCreate.Designer.cs">
-      <DependentUpon>201605061214529_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605061301135_Initial.cs" />
-    <Compile Include="Migrations\201605061301135_Initial.Designer.cs">
-      <DependentUpon>201605061301135_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605070855342_GroundItem-Fix.cs" />
-    <Compile Include="Migrations\201605070855342_GroundItem-Fix.Designer.cs">
-      <DependentUpon>201605070855342_GroundItem-Fix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605081016240_CreatePlayerSession.cs" />
-    <Compile Include="Migrations\201605081016240_CreatePlayerSession.Designer.cs">
-      <DependentUpon>201605081016240_CreatePlayerSession.cs</DependentUpon>
+    <Compile Include="Migrations\201605171741211_Inital.cs" />
+    <Compile Include="Migrations\201605171741211_Inital.Designer.cs">
+      <DependentUpon>201605171741211_Inital.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -310,23 +297,18 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{B3023368-0065-4EEE-ABA2-71643B1505BD}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LegendWorld\World.csproj">
-      <Project>{3a3489ce-3b13-427f-a769-f2ae439f4c2d}</Project>
+      <Project>{3A3489CE-3B13-427F-A769-F2AE439F4C2D}</Project>
       <Name>World</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201605061214529_InitialCreate.resx">
-      <DependentUpon>201605061214529_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605061301135_Initial.resx">
-      <DependentUpon>201605061301135_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605070855342_GroundItem-Fix.resx">
-      <DependentUpon>201605070855342_GroundItem-Fix.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605081016240_CreatePlayerSession.resx">
-      <DependentUpon>201605081016240_CreatePlayerSession.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201605171741211_Inital.resx">
+      <DependentUpon>201605171741211_Inital.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

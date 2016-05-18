@@ -6,86 +6,65 @@ using Microsoft.Xna.Framework;
 using Network;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Data.World
 {
-    public class Character : ICanMove, INamable, IDamagable
+    public class Character : ICanMove, IDamagable
     {
+        private static Point defaultStartLocation = new Point(25, 25);
+
         public Character()
         {
             Stats = new Stats(this);
-            Abilities = new List<AbilityIdentity>();
+            Abilities = new List<CharacterPowerIdentity>();
 
-            Position = new Point(1, 1);
-            MovingToPosition = Position;
-            AimToPosition = new Point(25, 25);
-            Health = 75;
-            Energy = 75;
+            Position = Character.defaultStartLocation;
+            MovingToPosition = Character.defaultStartLocation;
+            AimToPosition = Character.defaultStartLocation;
+            Health = 75; //ToDo: Remove/100
+            Energy = 75; //ToDo: Remove/100
 
             CollitionArea = new CircleCollitionArea();
             CollitionArea.R = 20;
             CollitionArea.Position = this.Position;
             
-            //Stats.StatModify += Stats_StatModify;
-            Abilities.Add(AbilityIdentity.DefaultAttack);
+            //Abilities.Add(AbilityIdentity.DefaultAttack);
+            this.Learn(CharacterPowerIdentity.DefaultAttack);
         }
-
-        //private void Stats_StatModify(object sender, Stats.StatModifyEventArgs e)
-        //{
-        //    foreach (CharacterModifier modifier in this.Modifiers)
-        //    {
-        //        modifier.OnStatModify(e.Stat, e.NewValue, e.OldValue);
-        //    }
-        //}
-
+        
         public int Id { get; set; }
-
-
+        
         public int CurrentMapId { get; set; }
 
-        public string Name { get; set; }
-
+        [DataMember]
         public Stats Stats { get; set; }
 
-        //internal byte GetDamageFromPower(int abilityBasePower)
+        //private byte GetWeaponPower()
         //{
-        //    byte returnDamage = 0;
-        //    int weaponPower = this.GetWeaponPower();
+        //    if (this.LeftHand == null)
+        //        return 0;
 
-        //    int totalBasePower = weaponPower + abilityBasePower;
-        //    //int modifiedPower = 0;
-
-        //    //foreach (var modifier in this.Modifiers)
-        //    //{
-        //    //    modifiedPower += modifier.ModifyPower(totalBasePower);
-        //    //}
-
-        //    this.Modifiers.
-
-        //    returnDamage = (byte)MathHelper.Clamp(totalBasePower + modifiedPower, byte.MinValue, byte.MaxValue);
-        //    return returnDamage;
+        //    return this.LeftHand.Power;
         //}
 
-
-        private byte GetWeaponPower()
-        {
-            if (this.WeaponInHand == null)
-                return 0;
-
-            return this.WeaponInHand.Power;
-        }
-
+        [DataMember]
         public virtual Point Position { get; protected set; }
+        [DataMember]
         public Point MovingToPosition { get; protected set; }
+        [DataMember]
         public Point AimToPosition { get; protected set; }
 
+        [NotMapped]
         public bool IsMoving { get { return this.MovingToPosition != this.Position && !this.IsDead && this.MovingToPosition != null; } }
 
         public bool IsDead { get { return this.Health == 0; } }
 
+        [DataMember]
         public byte Health
         {
             get
@@ -103,6 +82,7 @@ namespace Data.World
                 }
             }
         }
+        [DataMember]
         public byte Energy
         {
             get
@@ -117,21 +97,35 @@ namespace Data.World
                 //this.OnEnergyChange(oldEnergy); //ToDo: Add to Stats as event.
             }
         }
+
+        [DataMember]
         public byte MaxHealth { get { return this.Stats.GetStat(StatIdentifier.HealthMax); } }
+        [DataMember]
         public byte MaxEnergy { get { return this.Stats.GetStat(StatIdentifier.EnergyMax); } }
 
+        [NotMapped]
         public CircleCollitionArea CollitionArea { get; set; }
 
-        //public BagItem Inventory { get; set; }
-        public int InventoryBagId { get; set; }
-
-        public List<AbilityIdentity> Abilities { get; set; }
+        [DataMember]
+        public BagItem Inventory { get; set; }
+        [DataMember]
+        public List<CharacterPowerIdentity> Abilities { get; set; }
+        [DataMember]
         public List<WeaponItem> Holster { get; set; }
+        [DataMember]
         public ArmorItem Armor { get; set; }
-        public WeaponItem WeaponInHand { get; set; }
+        [DataMember]
+        public WeaponItem LeftHand { get; set; }
+        [DataMember]
+        public WeaponItem RightHand { get; set; }
 
-        public PrepareAbility PrepareToPerform { get; set;  }
-        //public Ability Performing { get; set; }
+        [DataMember]
+        public double BusyDuration { get; internal set; }
+        [NotMapped]
+        public bool IsBusy { get { return this.BusyDuration > 0D; } }
+
+        [NotMapped]
+        public PrepareAbility PrepareToPerform { get; set; }
 
         public event EventHandler MoveToChanged;
         public virtual void SetMoveToPosition(Point mapPoint)
@@ -162,7 +156,8 @@ namespace Data.World
                 this.AimToChanged(this, new EventArgs());
         }
 
-        internal bool Teach(AbilityIdentity ability)
+        public event EventHandler AbilityLearning;
+        public bool Learn(CharacterPowerIdentity ability)
         {
             if (this.Abilities.Count >= 6)
                 return false;
@@ -171,16 +166,21 @@ namespace Data.World
                 return false;
 
             this.Abilities.Add(ability);
-
+            this.OnAbilityLearning(ability);
             return true;
         }
-
-        internal bool HasItemEquiped(ItemIdentity requiredItem)
+        protected virtual void OnAbilityLearning(CharacterPowerIdentity ability)
         {
-            if (this.Armor.Identity == requiredItem)
+            if (this.AbilityLearning != null)
+                this.AbilityLearning(this, new EventArgs());
+        }
+
+        internal bool HasItemEquiped(ItemData.ItemIdentity requiredItem)
+        {
+            if (this.Armor.Data.Identity == requiredItem)
                 return true;
 
-            if (this.Holster.Any(weap => weap.Identity == requiredItem))
+            if (this.Holster.Any(weap => weap.Data.Identity == requiredItem))
                 return true;
 
             return false;
@@ -241,13 +241,6 @@ namespace Data.World
             this.CollitionArea.Position = this.Position;
         }
 
-
-        //public bool IsVisible { get; set; }
-        public double BusyDuration { get; internal set; }
-        public bool IsBusy { get { return this.BusyDuration > 0D; } }
-
-        //public float MovementSpeed { get; internal set; }
-
         public event EventHandler<HealthChangedEventArgs> HealthChanged;
         private void OnHealthChange(byte oldHp)
         {
@@ -256,14 +249,6 @@ namespace Data.World
                 this.HealthChanged(this, new HealthChangedEventArgs() { PreviousHelth = oldHp });
             }
         }
-
-        //public void ApplyDamage(byte damageAmount)
-        //{
-        //    if (this.HasModifier(typeof(AbsorbDamageModifier)))
-        //    {
-        //        AbsorbDamageModifier absorbDamageModifier = (AbsorbDamageModifier)this.Modifiers.First(m => m is AbsorbDamageModifier);
-        //    }
-        //}
 
         public class HealthChangedEventArgs : EventArgs
         {

@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DataServer.Models;
-using LegendWorld.Data;
-using LegendWorld.Data.Items;
 using System.Runtime.Serialization;
+using Data;
 
 namespace DataServer.Controllers
 {
@@ -21,16 +20,16 @@ namespace DataServer.Controllers
         private WorldDbContext db = new WorldDbContext();
 
         // GET: api/Items
-        public IQueryable<Item> GetItems()
+        public IQueryable<ItemData> GetItems()
         {
             return db.Items;
         }
 
         // GET: api/Items/5
-        [ResponseType(typeof(Item))]
+        [ResponseType(typeof(ItemData))]
         public async Task<IHttpActionResult> GetItem(int id)
         {
-            Item item = await db.Items.FindAsync(id);
+            ItemData item = await db.Items.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -41,14 +40,14 @@ namespace DataServer.Controllers
 
         // PUT: api/Items/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutItem(int id, Item item)
+        public async Task<IHttpActionResult> PutItem(int id, ItemData item)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != item.Id)
+            if (id != item.ItemDataID)
             {
                 return BadRequest();
             }
@@ -75,8 +74,8 @@ namespace DataServer.Controllers
         }
 
         // POST: api/Items
-        [ResponseType(typeof(Item))]
-        public async Task<IHttpActionResult> PostItem(Item item)
+        [ResponseType(typeof(ItemData))]
+        public async Task<IHttpActionResult> PostItem(ItemData item)
         {
             if (!ModelState.IsValid)
             {
@@ -86,14 +85,14 @@ namespace DataServer.Controllers
             db.Items.Add(item);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
+            return CreatedAtRoute("DefaultApi", new { id = item.ItemDataID }, item);
         }
 
         // DELETE: api/Items/5
-        [ResponseType(typeof(Item))]
+        [ResponseType(typeof(ItemData))]
         public async Task<IHttpActionResult> DeleteItem(int id)
         {
-            Item item = await db.Items.FindAsync(id);
+            ItemData item = await db.Items.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -116,7 +115,7 @@ namespace DataServer.Controllers
 
         private bool ItemExists(int id)
         {
-            return db.Items.Count(e => e.Id == id) > 0;
+            return db.Items.Count(e => e.ItemDataID == id) > 0;
         }
     }
 }

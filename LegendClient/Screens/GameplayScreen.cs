@@ -16,6 +16,7 @@ using WindowsClient.World;
 using LegendClient.Screens;
 using LegendWorld.Data.Items;
 using LegendWorld.Data;
+using LegendClient.World.Items;
 
 namespace WindowsClient
 {
@@ -26,9 +27,9 @@ namespace WindowsClient
         private SpriteBatch spriteBatch;
         private Texture2D bodyTexture;
         private Texture2D headTexture;
-        private Texture2D leatherHoodTexture;
-        private Texture2D leatherArmorTexture;
-        private Texture2D bowTexture;
+        //private Texture2D leatherHoodTexture;
+        //private Texture2D leatherArmorTexture;
+        //private Texture2D bowTexture;
         private Texture2D backgroundTexture;
 
         private NetworkEngine network;
@@ -69,21 +70,29 @@ namespace WindowsClient
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
+            ClientItemFactory.Load(Data.ItemData.ItemIdentity.PowerScoll,
+                new ClientItemFactory<PowerScrollClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Scroll") });
+            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Gold,
+                new ClientItemFactory<GoldClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Gold") });
+            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bandage,
+                new ClientItemFactory<BandageClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bandage") });
+            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bag,
+                new ClientItemFactory<BagClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bag") });
+
             network.LoadContent(world);
             inventoryScreen.LoadContent(graphicsDevice);
 
             spriteBatch = new SpriteBatch(graphicsDevice);
             bodyTexture = Game.Content.Load<Texture2D>("Body");
             headTexture = Game.Content.Load<Texture2D>("Head");
-            leatherHoodTexture = Game.Content.Load<Texture2D>("LeatherHood");
-            leatherArmorTexture = Game.Content.Load<Texture2D>("LetherArmor");
-            bowTexture = Game.Content.Load<Texture2D>("BowSmall");
+            //leatherHoodTexture = Game.Content.Load<Texture2D>("LeatherHood");
+            //leatherArmorTexture = Game.Content.Load<Texture2D>("LetherArmor");
+            //bowTexture = Game.Content.Load<Texture2D>("BowSmall");
             backgroundTexture = Game.Content.Load<Texture2D>("GrassBackground");
             selectionTexture = Game.Content.Load<Texture2D>("Selection");
             damageSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             bigBushTexture = Game.Content.Load<Texture2D>("bigbush");
             hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
-            itemScrollTexture = Game.Content.Load<Texture2D>("Scroll");
 
             //generalMappings = Game.Content.Load<ActionKeyMapping[]>("DefaultKeys\\General");
             //for (int i = 0; i <= generalMappings.GetUpperBound(0); i++)
@@ -158,7 +167,7 @@ namespace WindowsClient
 
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            inventoryScreen.BaseContainer = new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+            inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
             inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
             inventoryScreen.Activate();
         }
@@ -170,7 +179,7 @@ namespace WindowsClient
                 if (consumable.Use(world.PlayerCharacter, world))
                 {
                     network.UseItem(consumable);
-                    inventoryScreen.BaseContainer = new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+                    inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
                     inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
                 }
             }
@@ -334,13 +343,18 @@ namespace WindowsClient
 
         private void DrawGroundItems(SpriteBatch spriteBatch)
         {
-            foreach (int itemId in world.GroundItems)
+            List<IClientItem> items = world.GetItemsOnGround(world.PlayerCharacter.CurrentMapId);
+            foreach (IClientItem item in items)
             {
-                GroundItem groundItem = world.GetGroundItem(itemId);
-                Point drawPosition = this.GetScreenPostion(groundItem.Position - itemScrollTexture.Bounds.Center);
+                //GroundItem groundItem = world.GetGroundItem(itemId);
+
+                //ToDo: ClientItem clientItem = (ClientItem)item;
+                // clientItem.WorldDrawPosition ...
+                // clientItem.Texture ...
+                Point drawPosition = this.GetScreenPostion(item.Data.WorldLocation - item.Texture.Bounds.Center);
                 //groundItem.Position.ToVector2() - (world.PlayerCharacter.OldDrawPosition * -1f) - itemScrollTexture.Bounds.Center.ToVector2(); 
                 //CenterScreen - (world.PlayerCharacter.Position - groundItem.Position).ToVector2();
-                spriteBatch.Draw(itemScrollTexture, new Rectangle(drawPosition, itemScrollTexture.Bounds.Size), Color.White);
+                spriteBatch.Draw(item.Texture, new Rectangle(drawPosition, item.Texture.Bounds.Size), Color.White);
             }
         }
 
@@ -438,7 +452,7 @@ namespace WindowsClient
         private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
         //private Texture2D bagTexture;
         private InventoryScreen inventoryScreen;
-        private Texture2D itemScrollTexture;
+        //private Texture2D itemScrollTexture;
 
         private Point GetScreenPostion(Point worldPostion)
         {

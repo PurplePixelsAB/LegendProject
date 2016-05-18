@@ -1,4 +1,5 @@
-﻿using LegendWorld.Data;
+﻿using Data;
+using LegendWorld.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace DataClient
     public class WorldWebDataContext
     {
         private const string itemsAddress = "API/Items/";
+        private const string charsAddress = "API/Characters/";
         private const string sessionAddress = "API/PlayerSessions/";
         private const string groundItemsAddress = "API/GroundItems/";
         private const string authAddress = "RCP/Auth/";
@@ -28,17 +30,17 @@ namespace DataClient
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public Item GetItem(int itemId)
+        public ItemData GetItem(int itemId)
         {
-            return this.Get<Item>(itemsAddress + itemId);
+            return this.Get<ItemData>(itemsAddress + itemId);
         }
-        public IEnumerable<Item> GetItems(int mapId)
+        public IEnumerable<ItemData> GetItems(int mapId)
         {
-            return this.Get<IEnumerable<Item>>(itemsAddress); // + "/all/" + mapId);
+            return this.Get<IEnumerable<ItemData>>(itemsAddress); // + "/all/" + mapId);
         }
-        public IEnumerable<GroundItem> GetGroundItems(int mapId)
+        public IEnumerable<ItemData> GetGroundItems(int mapId)
         {
-            return this.Get<IEnumerable<GroundItem>>(groundItemsAddress);
+            return this.Get<IEnumerable<ItemData>>(groundItemsAddress);
         }
 
         private TObject Get<TObject>(string requestAdress)
@@ -75,6 +77,8 @@ namespace DataClient
         {
             return this.Get<IEnumerable<SelectableCharacter>>(authAddress + "GetCharacterList/");
         }
+
+        //public Character
 
         public void EndSession(int sessionId)
         {

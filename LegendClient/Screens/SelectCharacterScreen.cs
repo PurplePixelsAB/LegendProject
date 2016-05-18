@@ -11,6 +11,7 @@ using LegendWorld.Data;
 using Engine.InputEngine;
 using Microsoft.Xna.Framework.Input;
 using WindowsClient;
+using Data;
 
 namespace LegendClient.Screens
 {

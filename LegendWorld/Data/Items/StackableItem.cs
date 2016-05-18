@@ -1,22 +1,22 @@
-﻿using System;
+﻿using Data;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace LegendWorld.Data.Items
 {
-    [DataContract]
-    public abstract class StackableItem : Item
+    public abstract class StackableItem : IItem
     {
         public StackableItem()
         {
             this.Category = ItemCategory.Stackable;
-            this.StackCount = 1;
         }
-
-        [DataMember]
-        public int StackCount { get; set; }
-
-        [NotMapped]
+        
+        public int StackCount { get { return this.Data.Count; } set { this.Data.Count = value; } }
+        
         public int StackWeight { get { return this.Weight * this.StackCount; } }
+        public ItemData Data { get; set; }
+        public ItemCategory Category { get; protected set; }
+        public int Weight { get; protected set; }
     }
 }

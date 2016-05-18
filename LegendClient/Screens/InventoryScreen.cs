@@ -25,8 +25,8 @@ namespace LegendClient.Screens
         private int currentItemIndex = 0;
         private bool isNavigatingBag = true;
 
-        public ClientBagItem BaseContainer { get; set; }
-        public List<ClientGroundItem> GroundItems { get; set; }
+        public BagClientItem BaseContainer { get; set; }
+        public List<IClientItem> GroundItems { get; set; }
 
         public InventoryScreen()
         {
@@ -71,13 +71,13 @@ namespace LegendClient.Screens
             spriteBatch.Draw(whitePixel, this.Game.GraphicsDevice.Viewport.Bounds, this.Game.GraphicsDevice.Viewport.Bounds, Color.Black * .8f, 0f, Vector2.Zero, SpriteEffects.None, 1f);
             spriteBatch.Draw(bagTexture, this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(), bagTexture.Bounds, Color.White, 0f, bagTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
 
-            if (this.BaseContainer != null && this.BaseContainer.ItemsInBag != null)
+            if (this.BaseContainer != null && this.BaseContainer.Items != null)
             {
                 Vector2 drawPosition = this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2() - bagTexture.Bounds.Center.ToVector2();
-                if (this.BaseContainer.ItemsInBag.Count > 0)
+                if (this.BaseContainer.Items.Count > 0)
                 {
                     int i = 0;
-                    foreach (Item bagItem in this.BaseContainer.ItemsInBag)
+                    foreach (IItem bagItem in this.BaseContainer.Items)
                     {
                         Color color = Color.White;
                         if (i == currentItemIndex && isNavigatingBag)
@@ -93,6 +93,7 @@ namespace LegendClient.Screens
                     spriteBatch.DrawString(itemSpriteFont, "Bag is Empty.", drawPosition, Color.White);
                 }
             }
+            
             if (this.GroundItems != null)
             {
                 Vector2 drawPosition = new Vector2(100f, this.Game.GraphicsDevice.Viewport.Bounds.Center.Y);
@@ -100,13 +101,13 @@ namespace LegendClient.Screens
                 if (this.GroundItems.Count > 0)
                 {
                     int i = 0;
-                    foreach (ClientGroundItem groundItem in this.GroundItems)
+                    foreach (IClientItem groundItem in this.GroundItems)
                     {
                         Color color = Color.White;
                         if (i == currentItemIndex && !isNavigatingBag)
                             color = Color.Red;
 
-                        spriteBatch.DrawString(itemSpriteFont, groundItem.Item.ToString(), drawPosition, color);
+                        spriteBatch.DrawString(itemSpriteFont, groundItem.ToString(), drawPosition, color);
                         drawPosition.Y += itemSpriteFont.LineSpacing;
                         i++;
                     }
@@ -147,13 +148,13 @@ namespace LegendClient.Screens
         {
             if (isNavigatingBag)
             {
-                if (currentItemIndex < this.BaseContainer.ItemsInBag.Count)
+                if (currentItemIndex < this.BaseContainer.Items.Count)
                 {
-                    var item = this.BaseContainer.ItemsInBag[currentItemIndex];
+                    var item = this.BaseContainer.Items[currentItemIndex];
                     if (item != null)
                         this.Use(item);
 
-                    if (currentItemIndex >= this.BaseContainer.ItemsInBag.Count && currentItemIndex > 0)
+                    if (currentItemIndex >= this.BaseContainer.Items.Count && currentItemIndex > 0)
                         currentItemIndex--;
                 }
             }
@@ -161,7 +162,7 @@ namespace LegendClient.Screens
             {
                 if (currentItemIndex < this.GroundItems.Count)
                 {
-                    var item = this.GroundItems[currentItemIndex].Item;
+                    var item = this.GroundItems[currentItemIndex];
                     if (item != null)
                         this.Use(item);
 
@@ -172,7 +173,7 @@ namespace LegendClient.Screens
         }
 
         public event EventHandler<ItemUsedEventArgs> ItemUsed;
-        private void Use(Item item)
+        private void Use(IItem item)
         {
             if (this.ItemUsed != null)
             {
@@ -190,7 +191,7 @@ namespace LegendClient.Screens
         {
             if (isNavigatingBag)
             {
-                if (this.BaseContainer.ItemsInBag.Count > currentItemIndex + 1)
+                if (this.BaseContainer.Items.Count > currentItemIndex + 1)
                     currentItemIndex++;
             }
             else

@@ -1,28 +1,25 @@
-﻿using LegendWorld.Data;
+﻿using LegendClient.World.Items;
+using LegendWorld.Data;
 using LegendWorld.Data.Items;
 using System.Collections.Generic;
 using WindowsClient.World;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Data;
 
 namespace LegendClient.Screens
 {
-    public class ClientBagItem
+    public class BagClientItem : BagItem, IClientItem
     {
-        public ClientBagItem(BagItem bagItem)
-        {
-            this.BagItem = bagItem;
-            this.ItemsInBag = new List<Item>(bagItem.Items.Count+1);
-        }
+        public Texture2D Texture { get; set; }
 
-        public BagItem BagItem { get; private set; }
-        public List<Item> ItemsInBag { get; private set; }
-
-        public void LoadItems(ClientWorldState world)
-        {
-            foreach (int itemId in BagItem.Items)
-            {
-                ItemsInBag.Add(world.GetItem(itemId));
-            }
-        }
+        //public void LoadItems(ClientWorldState world)
+        //{
+        //    foreach (int itemId in BagItem.Items)
+        //    {
+        //        ItemsInBag.Add(world.GetItem(itemId));
+        //    }
+        //}
 
         //public virtual string GetInventoryString()
         //{
