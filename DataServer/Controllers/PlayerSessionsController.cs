@@ -66,7 +66,7 @@ namespace DataServer.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != playerSession.Id)
+            if (id != playerSession.PlayerSessionID)
             {
                 return BadRequest();
             }
@@ -104,7 +104,7 @@ namespace DataServer.Controllers
             db.PlayerSessions.Add(playerSession);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = playerSession.Id }, playerSession);
+            return CreatedAtRoute("DefaultApi", new { id = playerSession.PlayerSessionID }, playerSession);
         }
 
         // DELETE: api/PlayerSessions/5
@@ -134,7 +134,7 @@ namespace DataServer.Controllers
 
         private bool PlayerSessionExists(int id)
         {
-            return db.PlayerSessions.Count(e => e.Id == id) > 0;
+            return db.PlayerSessions.Count(e => e.PlayerSessionID == id) > 0;
         }
     }
 }

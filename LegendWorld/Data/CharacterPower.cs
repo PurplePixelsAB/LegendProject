@@ -67,6 +67,9 @@ namespace LegendWorld.Data
             if (character.IsBusy)
                 return false;
 
+            if (character.IsDead)
+                return false;
+
             if (character.Energy < character.Stats.CalculateEnergyCost(this.EnergyCost))
                 return false;
 

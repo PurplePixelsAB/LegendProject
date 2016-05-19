@@ -13,13 +13,14 @@ using LegendWorld.Data.Items;
 using DataClient;
 using LegendWorld.Data;
 using Data;
+using LegendClient.Screens;
 
 namespace WindowsClient.Net
 {
     public class NetworkEngine
     {
         internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
-        internal bool CharacterSelected {  get { return playerCharacterId != -1; } }
+        internal bool CharacterSelected { get { return playerCharacterId != -1; } }
         internal uint Ticks { get; set; }
         public ClientWorldState WorldState { get; internal set; }
         public int SessionId { get; private set; }
@@ -73,13 +74,24 @@ namespace WindowsClient.Net
             }
         }
 
-        public void LoadContent(ClientWorldState world)
+        public bool LoadContent(ClientWorldState world)
         {
-            world.PlayerCharacter = new ClientCharacter(); //Todo: Get from DataServer
+            CharacterData playerCharData = dataContext.GetCharacter(playerCharacterId);
+            if (playerCharData == null)
+            {
+                worldServerClient.Disconnect();
+                return false;
+            }
+            world.PlayerCharacter = new ClientCharacter(playerCharData.WorldLocation); //Todo: Get from DataServer
             world.PlayerCharacter.Id = playerCharacterId;
-            //world.PlayerCharacter.InventoryBagId = 666;
+            world.PlayerCharacter.Health = playerCharData.Health;
+            world.PlayerCharacter.Energy = playerCharData.Energy;
+
+            ItemData inventoryItemData = dataContext.GetItem(playerCharData.InventoryID);
+            world.PlayerCharacter.Inventory = (BagClientItem)world.CreateItem(inventoryItemData);
+
             world.AddCharacter(world.PlayerCharacter);
-            //world.AddItem(new BagItem() { Id = 666 });
+            world.AddItem(world.PlayerCharacter.Inventory);
 
             IEnumerable<ItemData> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
             if (items != null)
@@ -90,16 +102,10 @@ namespace WindowsClient.Net
                     world.AddItem(item);
                 }
             }
-            //IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(world.PlayerCharacter.CurrentMapId);
-            //if (groundItems != null)
-            //{
-            //    foreach (GroundItem item in groundItems)
-            //    {
-            //        world.AddGroundItem(item);
-            //    }
-            //}
+
+            return true;
         }
-        
+
         public void UnloadContent()
         {
             worldServerClient.Disconnect();

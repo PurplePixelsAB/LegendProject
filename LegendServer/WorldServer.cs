@@ -9,6 +9,7 @@ using LegendWorld.Data;
 using LegendWorld.Data.Abilities;
 using LegendWorld.Data.Items;
 using DataClient;
+using LegendServer.Network;
 
 namespace UdpServer
 {
@@ -16,12 +17,12 @@ namespace UdpServer
     {
         private List<int>[] maptoCharacterRelations;
         private List<int>[] mapToGroundItems;
-        private WorldWebDataContext dataContext;
+        private ServerWorldDataContext dataContext;
 
 
-        public ServerWorldState() : base()
+        public ServerWorldState(ServerWorldDataContext serverWorldDataContext) : base()
         {
-            dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendServer.Properties.Settings.Default.DataServerAddress, LegendServer.Properties.Settings.Default.DataServerPort));
+            dataContext = serverWorldDataContext; //new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendServer.Properties.Settings.Default.DataServerAddress, LegendServer.Properties.Settings.Default.DataServerPort));
             int expectedMaxPlayers = 1000; //server.Statistics.PlayerPeak;
             int mapZones = 1; //maps.Count;
             characters = new Dictionary<int, Character>(expectedMaxPlayers);
@@ -32,6 +33,15 @@ namespace UdpServer
                 maptoCharacterRelations[i] = new List<int>(expectedMaxPlayers);
                 mapToGroundItems[i] = new List<int>(expectedMaxPlayers);
             }
+        }
+
+        internal ServerCharacter LoadCharacter(int characterID)
+        {
+            CharacterData characterData = dataContext.GetCharacter(characterID);
+            ServerCharacter serverCharacter = new ServerCharacter(characterData);
+            var bagItem = this.CreateItem(characterData.Inventory);
+            //serverCharacter.Inventory
+            return serverCharacter;
         }
 
         internal void LoadMapData(int mapId)
@@ -148,6 +158,8 @@ namespace UdpServer
         {
             NetState dcOwner = (NetState)sender;
             ServerCharacter character = (ServerCharacter)this.GetCharacter(dcOwner.WorldId);
+            dataContext.SaveCharacter(character.GetData());
+
             if (character != null)
                 this.RemoveCharacter(character);
             if (dcOwner.Id != -1)

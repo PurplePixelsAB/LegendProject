@@ -98,10 +98,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Screens\ItemUsedEventArgs.cs" />
+    <Compile Include="Screens\DisconnectedScreen.cs" />
     <Compile Include="Screens\SelectCharacterScreen.cs" />
     <Compile Include="World\Items\BandageClientItem.cs" />
     <Compile Include="World\ClientItemFactory.cs" />
-    <Compile Include="World\Items\ClientBagItem.cs" />
+    <Compile Include="World\Items\BagClientItem.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />

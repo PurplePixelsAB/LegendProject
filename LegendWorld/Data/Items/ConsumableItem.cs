@@ -17,6 +17,10 @@ namespace LegendWorld.Data.Items
         {
             if (character == null)
                 return false;
+            if (character.IsDead)
+                return false;
+            if (character.IsBusy)
+                return false;
 
             bool result = this.OnUse(character, worldState);
             if (result)

@@ -80,7 +80,8 @@ namespace Data
             Sword,
             Bow,
             PowerScoll,
-            Bandage
+            Bandage,
+            Corpse
         }
     }
 }

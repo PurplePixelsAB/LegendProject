@@ -7,13 +7,13 @@ namespace DataServer.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Inital : IMigrationMetadata
+    public sealed partial class CharacterInventoryFixes : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Inital));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CharacterInventoryFixes));
         
         string IMigrationMetadata.Id
         {
-            get { return "201605171741211_Inital"; }
+            get { return "201605181418042_CharacterInventoryFixes"; }
         }
         
         string IMigrationMetadata.Source

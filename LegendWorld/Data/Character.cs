@@ -16,32 +16,37 @@ namespace Data.World
 {
     public class Character : ICanMove, IDamagable
     {
-        private static Point defaultStartLocation = new Point(25, 25);
+        //private static Point defaultStartLocation = new Point(25, 25);
 
-        public Character()
+        public Character() : this(Point.Zero)
+        {
+        }
+        public Character(Point startPosition)
         {
             Stats = new Stats(this);
             Abilities = new List<CharacterPowerIdentity>();
 
-            Position = Character.defaultStartLocation;
-            MovingToPosition = Character.defaultStartLocation;
-            AimToPosition = Character.defaultStartLocation;
-            Health = 75; //ToDo: Remove/100
-            Energy = 75; //ToDo: Remove/100
+            Position = startPosition; // Character.defaultStartLocation;
+            MovingToPosition = startPosition; // Character.defaultStartLocation;
+            AimToPosition = startPosition; // Character.defaultStartLocation;
+            Health = 100; //ToDo: Remove/100
+            Energy = 100; //ToDo: Remove/100
 
             CollitionArea = new CircleCollitionArea();
             CollitionArea.R = 20;
             CollitionArea.Position = this.Position;
-            
+
             //Abilities.Add(AbilityIdentity.DefaultAttack);
             this.Learn(CharacterPowerIdentity.DefaultAttack);
         }
-        
+
+
+        //public CharacterData Data { get; set; }
+
         public int Id { get; set; }
         
         public int CurrentMapId { get; set; }
-
-        [DataMember]
+        
         public Stats Stats { get; set; }
 
         //private byte GetWeaponPower()
@@ -51,20 +56,17 @@ namespace Data.World
 
         //    return this.LeftHand.Power;
         //}
-
-        [DataMember]
+        
         public virtual Point Position { get; protected set; }
-        [DataMember]
-        public Point MovingToPosition { get; protected set; }
-        [DataMember]
-        public Point AimToPosition { get; protected set; }
 
-        [NotMapped]
-        public bool IsMoving { get { return this.MovingToPosition != this.Position && !this.IsDead && this.MovingToPosition != null; } }
+        public Point MovingToPosition { get; protected set; }
+
+        public Point AimToPosition { get; protected set; }
+        
+        public bool IsMoving { get { return this.MovingToPosition != this.Position && this.MovingToPosition != null; } }
 
         public bool IsDead { get { return this.Health == 0; } }
-
-        [DataMember]
+        
         public byte Health
         {
             get
@@ -82,7 +84,7 @@ namespace Data.World
                 }
             }
         }
-        [DataMember]
+
         public byte Energy
         {
             get
@@ -98,33 +100,32 @@ namespace Data.World
             }
         }
 
-        [DataMember]
+
         public byte MaxHealth { get { return this.Stats.GetStat(StatIdentifier.HealthMax); } }
-        [DataMember]
+
         public byte MaxEnergy { get { return this.Stats.GetStat(StatIdentifier.EnergyMax); } }
 
-        [NotMapped]
+
         public CircleCollitionArea CollitionArea { get; set; }
 
-        [DataMember]
-        public BagItem Inventory { get; set; }
-        [DataMember]
+
+
         public List<CharacterPowerIdentity> Abilities { get; set; }
-        [DataMember]
+
         public List<WeaponItem> Holster { get; set; }
-        [DataMember]
+
         public ArmorItem Armor { get; set; }
-        [DataMember]
+
         public WeaponItem LeftHand { get; set; }
-        [DataMember]
+
         public WeaponItem RightHand { get; set; }
 
-        [DataMember]
+
         public double BusyDuration { get; internal set; }
-        [NotMapped]
+
         public bool IsBusy { get { return this.BusyDuration > 0D; } }
 
-        [NotMapped]
+
         public PrepareAbility PrepareToPerform { get; set; }
 
         public event EventHandler MoveToChanged;

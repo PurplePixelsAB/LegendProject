@@ -19,10 +19,11 @@ namespace DataServer.Models
     
         public WorldDbContext() : base("name=WorldDbContext")
         {
+            Configuration.ProxyCreationEnabled = false;
         }
 
         public DbSet<ItemData> Items { get; set; }
-        //public DbSet<GroundItem> GroundItems { get; set; }
+        public DbSet<CharacterData> Characters { get; set; }
         public DbSet<PlayerSession> PlayerSessions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

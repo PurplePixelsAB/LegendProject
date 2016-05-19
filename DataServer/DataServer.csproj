@@ -210,15 +210,20 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\CharacterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ItemsController.cs" />
+    <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\PlayerSessionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201605171741211_Inital.cs" />
-    <Compile Include="Migrations\201605171741211_Inital.Designer.cs">
-      <DependentUpon>201605171741211_Inital.cs</DependentUpon>
+    <Compile Include="Migrations\201605180855370_Initial.cs" />
+    <Compile Include="Migrations\201605180855370_Initial.Designer.cs">
+      <DependentUpon>201605180855370_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605181418042_CharacterInventoryFixes.cs" />
+    <Compile Include="Migrations\201605181418042_CharacterInventoryFixes.Designer.cs">
+      <DependentUpon>201605181418042_CharacterInventoryFixes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -307,8 +312,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201605171741211_Inital.resx">
-      <DependentUpon>201605171741211_Inital.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201605180855370_Initial.resx">
+      <DependentUpon>201605180855370_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605181418042_CharacterInventoryFixes.resx">
+      <DependentUpon>201605181418042_CharacterInventoryFixes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

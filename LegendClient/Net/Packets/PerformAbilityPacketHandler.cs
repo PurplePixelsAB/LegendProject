@@ -20,9 +20,10 @@ namespace WindowsClient.Net.Packets
             ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(performAbilityPacket.CharacterId);
             if (mobileToUpdate == null)
             {
-                mobileToUpdate = new ClientCharacter();
-                mobileToUpdate.Id = performAbilityPacket.CharacterId;
-                worldState.AddCharacter(mobileToUpdate);
+                //mobileToUpdate = new ClientCharacter();
+                //mobileToUpdate.Id = performAbilityPacket.CharacterId;
+                //worldState.AddCharacter(mobileToUpdate);
+                return;
             }
             
             worldState.PerformAbility(performAbilityPacket.AbilityUsed, mobileToUpdate);

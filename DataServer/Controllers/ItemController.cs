@@ -15,7 +15,7 @@ using Data;
 
 namespace DataServer.Controllers
 {
-    public class ItemsController : ApiController
+    public class ItemController : ApiController
     {
         private WorldDbContext db = new WorldDbContext();
 

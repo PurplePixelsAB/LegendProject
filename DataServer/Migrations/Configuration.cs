@@ -32,7 +32,8 @@ namespace DataServer.Migrations
             //    );
             //
             context.Database.ExecuteSqlCommand("DELETE FROM ItemDatas");
-            //context.Database.ExecuteSqlCommand("DELETE FROM GroundItems");
+            context.Database.ExecuteSqlCommand("DELETE FROM PlayerSessions");
+            context.Database.ExecuteSqlCommand("DELETE FROM CharacterDatas");
 
             Random rnd = new Random();
             foreach (CharacterPowerIdentity abilityId in Enum.GetValues(typeof(CharacterPowerIdentity)))
@@ -52,6 +53,19 @@ namespace DataServer.Migrations
                     //itemId++;
                 }
             }
+            context.SaveChanges();
+
+            for (int i = 1; i < 10; i++)
+            {
+                CharacterData character = context.Characters.Create();
+                ItemData charInventory = context.Items.Create();
+                charInventory.Identity = ItemData.ItemIdentity.Bag;
+                var inventoryAdded = context.Items.Add(charInventory);
+                character.Name = "TempCharacter" + i;
+                character.Inventory = inventoryAdded;
+                context.Characters.Add(character);
+            }
+
             context.SaveChanges();
 
             //var itemList = context.Items.ToList();

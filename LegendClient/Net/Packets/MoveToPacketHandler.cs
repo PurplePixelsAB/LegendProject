@@ -20,9 +20,11 @@ namespace WindowsClient.Net.Packets
             ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(moveToPacket.MobileId);
             if (mobileToUpdate == null)
             {
-                mobileToUpdate = new ClientCharacter();
-                mobileToUpdate.Id = moveToPacket.MobileId;
-                worldState.AddCharacter(mobileToUpdate);
+                //mobileToUpdate = new ClientCharacter();
+                //mobileToUpdate.Id = moveToPacket.MobileId;
+                //worldState.AddCharacter(mobileToUpdate);
+
+                return;
             }
             
             mobileToUpdate.ServerMoveToRecived(new Point(moveToPacket.X, moveToPacket.Y));

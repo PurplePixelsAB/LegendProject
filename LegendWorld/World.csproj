@@ -64,6 +64,7 @@
     <Compile Include="Data\CollitionArea.cs" />
     <Compile Include="Data\IItemFactory.cs" />
     <Compile Include="Data\Item.cs" />
+    <Compile Include="Data\Items\CorpseItem.cs" />
     <Compile Include="Data\Items\BandageItem.cs" />
     <Compile Include="Data\Items\AbilityScrollItem.cs" />
     <Compile Include="Data\Items\ArmorItem.cs" />
@@ -97,8 +98,6 @@
     <Compile Include="Data\StatIdentifier.cs" />
     <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />
-    <Compile Include="Network\JsonCreationConverter.cs" />
-    <Compile Include="Network\Models\ItemModel.cs" />
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />
     <Compile Include="Network\Packets\AimToPacket.cs" />

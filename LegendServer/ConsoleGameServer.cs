@@ -1,4 +1,6 @@
-﻿using Network;
+﻿using DataClient;
+using LegendServer.Network;
+using Network;
 using Network.Packets;
 using System;
 using System.Collections.Generic;
@@ -20,11 +22,17 @@ namespace UdpServer
         private Task socketServerTask;
         private ServerWorldState worldState;
         private WorldPump worldPump;
+        private ServerWorldDataContext worldDataContext;
 
         internal ConsoleGameServer()
         {
         }
 
+        private void WaitOnKeyPress()
+        {
+            while (Console.Read() == 0)
+                Thread.Sleep(500);
+        }
 
         public void Start()
         {
@@ -36,45 +44,41 @@ namespace UdpServer
             ConsoleGameServer.WriteLine("LegendServer Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
             ConsoleGameServer.WriteLine("Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
 
-            //try
-            //{
-            //    ConsoleGameServer.WriteLine("Starting Data Connection...");
-            //    //ConsoleServer.SqlServer = new SqlServer();
-            //    //ConsoleServer.SqlServer.Start();
-            //}
-            //catch (Exception e)
-            //{
-            //    ConsoleGameServer.WriteLine("Starting Data Connection failed, general Exception occured:");
-            //    ConsoleGameServer.WriteLine(e.ToString());
-            //}
-            //finally
-            //{
-            //    ConsoleGameServer.WriteLine("Data Connection Successfull.");
-            //}
-
-            //try
-            //{
-            //    worldState = new WorldServer();
-            //    //worldServer.Load(dataServer);
-            //}
-            //catch (Exception e)
-            //{
-
-            //    throw;
-            //}
+            try
+            {
+                ConsoleGameServer.WriteLine("Starting Data Connection...");
+                worldDataContext = new ServerWorldDataContext(string.Format(@"http://{0}:{1}/", LegendServer.Properties.Settings.Default.DataServerAddress, LegendServer.Properties.Settings.Default.DataServerPort));
+                if (!worldDataContext.AuthServer(LegendServer.Properties.Settings.Default.DataServerUsername, LegendServer.Properties.Settings.Default.DataServerPassword))
+                {
+                    throw new Exception("Failed to auth with data server.");                    
+                }
+            }
+            catch (Exception e)
+            {
+                ConsoleGameServer.WriteLine("Starting Data Connection failed, general Exception occured:");
+                ConsoleGameServer.WriteLine(e.ToString());
+                this.WaitOnKeyPress();
+                return;
+            }
+            finally
+            {
+                ConsoleGameServer.WriteLine("Data Connection Successfull.");
+            }
 
             try
             {
                 ConsoleGameServer.WriteLine("Starting WorldServer...");
-                worldState = new ServerWorldState();
+                worldState = new ServerWorldState(worldDataContext);
                 worldPump = new WorldPump();
-                worldPump.State = worldState;
+                worldPump.State = worldState;                
                 worldServerTask = Task.Factory.StartNew(() => worldPump.Start());
             }
             catch (Exception se)
             {
                 ConsoleGameServer.WriteLine("Starting WorldServer failed:");
                 ConsoleGameServer.WriteLine(se.ToString());
+                this.WaitOnKeyPress();
+                return;
             }
             finally
             {
@@ -95,6 +99,8 @@ namespace UdpServer
             {
                 ConsoleGameServer.WriteLine("Starting SocketServer failed:");
                 ConsoleGameServer.WriteLine(se.ToString());
+                this.WaitOnKeyPress();
+                return;
             }
             finally
             {

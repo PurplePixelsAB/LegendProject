@@ -1,7 +1,5 @@
 ﻿using Data;
 using LegendWorld.Data.Items;
-using LegendWorld.Network;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

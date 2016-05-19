@@ -6,12 +6,19 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Network;
 using LegendWorld.Data;
+using LegendClient.Screens;
 
 namespace WindowsClient.World.Mobiles
 {
     public class ClientCharacter : Character
     {
         public Point DrawPosition { get; set; }
+        public BagClientItem Inventory { get; set; }
+
+        public ClientCharacter(Point startPosition) : base(startPosition)
+        {
+            this.DrawPosition = startPosition;
+        }
 
         public override void SetMoveToPosition(Point mapPoint)
         {

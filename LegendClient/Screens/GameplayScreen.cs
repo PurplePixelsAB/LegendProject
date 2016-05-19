@@ -31,6 +31,10 @@ namespace WindowsClient
         //private Texture2D leatherArmorTexture;
         //private Texture2D bowTexture;
         private Texture2D backgroundTexture;
+        private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
+        private InventoryScreen inventoryScreen;
+        private Texture2D bodyGhostTexture;
+        private Texture2D headGhostTexture;
 
         private NetworkEngine network;
         private ClientWorldState world;
@@ -79,12 +83,18 @@ namespace WindowsClient
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bag,
                 new ClientItemFactory<BagClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bag") });
 
-            network.LoadContent(world);
+            if (!network.LoadContent(world))
+            {
+                this.Disconnect("Failed to load world.");
+                return;
+            }
             inventoryScreen.LoadContent(graphicsDevice);
 
             spriteBatch = new SpriteBatch(graphicsDevice);
             bodyTexture = Game.Content.Load<Texture2D>("Body");
             headTexture = Game.Content.Load<Texture2D>("Head");
+            bodyGhostTexture = Game.Content.Load<Texture2D>("GhostBody");
+            headGhostTexture = Game.Content.Load<Texture2D>("GhostHead");
             //leatherHoodTexture = Game.Content.Load<Texture2D>("LeatherHood");
             //leatherArmorTexture = Game.Content.Load<Texture2D>("LetherArmor");
             //bowTexture = Game.Content.Load<Texture2D>("BowSmall");
@@ -167,6 +177,13 @@ namespace WindowsClient
 
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
+            if (world.PlayerCharacter == null)
+                return;
+            if (world.PlayerCharacter.Inventory == null)
+                return;
+            if (world.PlayerCharacter.IsDead)
+                return;
+
             inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
             inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
             inventoryScreen.Activate();
@@ -294,9 +311,10 @@ namespace WindowsClient
         public override void Update(GameTime gameTime)
         {
             network.Update();
-
             if (!this.IsConnected)
-                return;
+            {
+                this.Disconnect(string.Empty);
+            }
 
             worldPump.Update(gameTime);
             world.ClientUpdate(gameTime);
@@ -323,21 +341,24 @@ namespace WindowsClient
         //    return (float)Math.Atan2(direction.X, -direction.Y) + MathHelper.Pi;
         //}
 
+        public void Disconnect(string messageReson)
+        {
+            DisconnectedScreen screen = new DisconnectedScreen(messageReson);
+            screen.Initialize(this.Manager);
+            screen.Activate();
+            this.Close();
+        }
         public override void Draw(GameTime gameTime)
         {
+            if (!this.IsConnected)
+                return;
+
             spriteBatch.Begin();
-            if (this.IsConnected)
-            {
-                this.BaseDrawing(spriteBatch);
-                this.DrawGroundItems(spriteBatch);
-                this.DrawCharacters(spriteBatch);
-                this.DrawDamageEffect(spriteBatch, gameTime);
-                this.DrawHud(spriteBatch);
-            }
-            else
-            {
-                spriteBatch.DrawString(damageSpriteFont, "Disconnected, press ESC to exit Game.", CenterScreenVector2, Color.White);
-            }
+            this.BaseDrawing(spriteBatch);
+            this.DrawGroundItems(spriteBatch);
+            this.DrawCharacters(spriteBatch);
+            this.DrawDamageEffect(spriteBatch, gameTime);
+            this.DrawHud(spriteBatch);
             spriteBatch.End();
         }
 
@@ -449,10 +470,6 @@ namespace WindowsClient
                 this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue * -1f, offset);
             }
         }
-        private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
-        //private Texture2D bagTexture;
-        private InventoryScreen inventoryScreen;
-        //private Texture2D itemScrollTexture;
 
         private Point GetScreenPostion(Point worldPostion)
         {
@@ -465,10 +482,14 @@ namespace WindowsClient
             Vector2 centerBody = bodyTexture.Bounds.Center.ToVector2();
             centerBody.Y = 0f;
 
+            Texture2D bodyTextureToUse, headTextureToUse;
+
             foreach (ushort id in world.Characters)
             {
                 //if (id == world.PlayerCharacter.Id)
                 //    continue;
+                bodyTextureToUse = bodyTexture;
+                headTextureToUse = headTexture;
 
                 ClientCharacter charToDraw = (ClientCharacter)world.GetCharacter(id);
                 Vector2 charToDrawDirection = charToDraw.AimToPosition.ToVector2() - charToDraw.Position.ToVector2();
@@ -483,10 +504,16 @@ namespace WindowsClient
                 if (bodyRotationPosition.Y < 0f)
                     bodyRotationPosition.Y *= 10f;
 
+                if (charToDraw.IsDead)
+                {
+                    bodyTextureToUse = bodyGhostTexture;
+                    headTextureToUse = headGhostTexture;
+                }
+
                 //centerVector2 - (this.PlayerCharacter.Position - client.Position)
                 Vector2 clientScreenPostion = this.GetScreenPostion(charToDraw.DrawPosition).ToVector2();
-                spriteBatch.Draw(bodyTexture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
-                spriteBatch.Draw(headTexture, clientScreenPostion, null, Color.White, (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
+                spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
+                spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, Color.White, (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
             }
 
             //Vector2 start = world.PlayerCharacter.Position.ToVector2();

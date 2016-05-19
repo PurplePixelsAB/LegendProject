@@ -40,5 +40,23 @@ namespace LegendServer.Properties {
                 return ((int)(this["DataServerPort"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("guest")]
+        public string DataServerUsername {
+            get {
+                return ((string)(this["DataServerUsername"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("password")]
+        public string DataServerPassword {
+            get {
+                return ((string)(this["DataServerPassword"]));
+            }
+        }
     }
 }

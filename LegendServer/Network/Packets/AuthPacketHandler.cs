@@ -22,15 +22,22 @@ namespace UdpServer.Network.Packets
 
             if (session != null)
             {
-                if (netState.Address == sessionIPAddress || sessionIPAddress.Equals(IPAddress.IPv6Loopback))
+                if (netState.Address == sessionIPAddress || sessionIPAddress.Equals(IPAddress.IPv6Loopback) || sessionIPAddress.Equals(IPAddress.Loopback))
                 {
-                    ServerCharacter selectedChar = new ServerCharacter(); //ToDo: Get from DataContext
-                    selectedChar.Id = session.CharacterId;
-                    selectedChar.Owner = netState;
-                    selectedChar.Owner.Id = session.Id;
-                    selectedChar.Owner.WorldId = selectedChar.Id;
-                    worldState.AddCharacter(selectedChar);
-                    netState.WriteConsole("Session confirmed, character: {0} selected.", selectedChar.Id);
+                    netState.Id = session.PlayerSessionID;
+                    ServerCharacter selectedChar = worldState.LoadCharacter(session.CharacterID);
+                    if (selectedChar != null)
+                    {
+                        selectedChar.Owner = netState;
+                        selectedChar.Owner.WorldId = selectedChar.Id;
+                        worldState.AddCharacter(selectedChar);
+                        netState.WriteConsole("Session confirmed, character: {0} selected.", selectedChar.Id);
+                    }
+                    else
+                    {
+                        netState.WriteConsole("AUTHERROR: Invalid characterID: {0}.", session.CharacterID);
+                        netState.Dispose();
+                    }
                 }
                 else
                 {
