@@ -4,6 +4,7 @@ using LegendWorld.Data;
 using Network;
 using LegendClient.World.Items;
 using Microsoft.Xna.Framework.Graphics;
+using LegendWorld.Data.Items;
 
 namespace WindowsClient.World
 {
@@ -28,11 +29,24 @@ namespace WindowsClient.World
             return this.CreateClientItem(itemData);
         }
 
-        public TItem CreateClientItem(ItemData itemData)
+        protected virtual TItem CreateClientItem(ItemData itemData)
         {
             TItem returnItem = new TItem();
             returnItem.Data = itemData;
             returnItem.Texture = this.Texture;
+            return returnItem;
+        }
+    }
+
+    internal class ArmorClientItemFactory<TItem> : ClientItemFactory<TItem> where TItem : IArmorClientItem, new()
+    {
+        public Texture2D HeadTexture { get; internal set; }
+
+        protected override TItem CreateClientItem(ItemData itemData)
+        {
+            TItem returnItem = base.CreateClientItem(itemData);
+            returnItem.HeadTexture = this.HeadTexture;
+
             return returnItem;
         }
     }

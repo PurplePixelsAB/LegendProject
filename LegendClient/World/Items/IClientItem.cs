@@ -12,4 +12,8 @@ namespace LegendClient.World.Items
     {
         Texture2D Texture { get; set; }
     }
+    public interface IArmorClientItem : IClientItem
+    {
+        Texture2D HeadTexture { get; set; }
+    }
 }

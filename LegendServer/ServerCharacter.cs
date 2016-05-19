@@ -22,16 +22,17 @@ namespace UdpServer
         }
         internal CharacterData GetData()
         {
-            CharacterData characterData = new CharacterData();
-            characterData.CharacterDataID = this.Id;
-            characterData.Energy = this.Energy;
-            characterData.Health = this.Health;
-            characterData.MapID = this.CurrentMapId;
-            characterData.WorldX = this.Position.X;
-            characterData.WorldY = this.Position.Y;
+            //CharacterData characterData = new CharacterData();
+            //characterData.CharacterDataID = this.Id;
+            //characterData.InventoryID = this.
+            LatestData.Energy = this.Energy;
+            LatestData.Health = this.Health;
+            LatestData.MapID = this.CurrentMapId;
+            LatestData.WorldX = this.Position.X;
+            LatestData.WorldY = this.Position.Y;
 
-            this.LatestData = characterData;
-            return characterData;
+            //this.LatestData = characterData;
+            return LatestData;
         }
     }
 }

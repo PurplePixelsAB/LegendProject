@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    public class ClothArmorItem : ArmorItem
+    public class DaggerItem : WeaponItem
     {
-        public ClothArmorItem()
+        public DaggerItem()
         {
-            Armor = 20;
-            Weight = 700;
+            this.Weight = 5000;
+            this.Power = 60;
+            this.Speed = 175;
+            this.IsTwoHanded = false;
         }
     }
 }

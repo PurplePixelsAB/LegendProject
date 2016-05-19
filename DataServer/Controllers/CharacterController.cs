@@ -68,6 +68,10 @@ namespace DataServer.Controllers
                     throw;
                 }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
             return StatusCode(HttpStatusCode.NoContent);
         }

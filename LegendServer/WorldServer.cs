@@ -38,10 +38,22 @@ namespace UdpServer
         internal ServerCharacter LoadCharacter(int characterID)
         {
             CharacterData characterData = dataContext.GetCharacter(characterID);
-            ServerCharacter serverCharacter = new ServerCharacter(characterData);
-            var bagItem = this.CreateItem(characterData.Inventory);
-            //serverCharacter.Inventory
-            return serverCharacter;
+            if (characterData != null)
+            {
+                ServerCharacter serverCharacter = new ServerCharacter(characterData);
+                characterData.Inventory = dataContext.GetItem(characterData.InventoryID);
+                if (characterData.Inventory != null)
+                {
+                    var inventoryBagItem = this.CreateItem(characterData.Inventory);
+                    this.AddItem(inventoryBagItem);
+
+                    return serverCharacter;
+                }
+                else
+                    return null;
+            }
+            else
+                return null;
         }
 
         internal void LoadMapData(int mapId)

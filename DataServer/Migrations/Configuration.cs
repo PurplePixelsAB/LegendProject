@@ -55,6 +55,25 @@ namespace DataServer.Migrations
             }
             context.SaveChanges();
 
+            foreach (ItemData.ItemIdentity itemID in Enum.GetValues(typeof(ItemData.ItemIdentity)))
+            {
+                if (itemID == ItemData.ItemIdentity.PowerScoll || itemID == ItemData.ItemIdentity.Corpse)
+                    continue;
+
+                for (ushort i = 0; i < 10; i++)
+                {
+                    ItemData item = context.Items.Create();
+                    item.Identity = itemID; // ItemData.ItemIdentity.PowerScoll;
+                    //item.SubType = (int)abilityId;
+                    item.MoveTo(0, new Point(rnd.Next(1, 5000), rnd.Next(1, 5000)));
+                    item.Count = rnd.Next(1, 9);
+                    var itemAdded = context.Items.Add(item);
+                    //itemId++;
+                }
+
+                context.SaveChanges();
+            }
+
             for (int i = 1; i < 10; i++)
             {
                 CharacterData character = context.Characters.Create();

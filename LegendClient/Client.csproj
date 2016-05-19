@@ -107,9 +107,16 @@
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
     <Compile Include="World\ClientWorldState.cs" />
+    <Compile Include="World\Items\BowClientItem.cs" />
+    <Compile Include="World\Items\ClothClientItem.cs" />
+    <Compile Include="World\Items\CorpseClientItem.cs" />
     <Compile Include="World\Items\IClientItem.cs" />
     <Compile Include="World\Items\GoldClientItem.cs" />
+    <Compile Include="World\Items\LeatherArmorClientItem.cs" />
+    <Compile Include="World\Items\PlateArmorClientItem.cs" />
     <Compile Include="World\Items\PowerScrollClientItem.cs" />
+    <Compile Include="World\Items\DaggerClientItem.cs" />
+    <Compile Include="World\Items\SwordClientItem.cs" />
     <Compile Include="World\Mobiles\ClientCharacter.cs" />
   </ItemGroup>
   <ItemGroup>

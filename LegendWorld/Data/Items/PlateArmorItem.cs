@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    public class LeatherArmor : ArmorItem
+    public class PlateArmorItem : ArmorItem
     {
-        public LeatherArmor()
+        public PlateArmorItem()
         {
-            Armor = 70;
-            Weight = 5000;
+            Armor = 125;
+            Weight = 27000;
         }
     }
 }
