@@ -72,12 +72,10 @@ namespace WindowsClient.World
             }
         }
 
-        float lootDistance = 20f;
         internal List<IClientItem> GroundItemsInRange(int id)
         {
             List<IClientItem> itemsInRange = new List<IClientItem>(10);
             Character charToRangeCheck = this.GetCharacter(id);
-            Vector2 positionToCheck = charToRangeCheck.Position.ToVector2();
             foreach (int itemId in this.Items)
             {
                 IClientItem clientItem = (IClientItem)this.GetItem(itemId);
@@ -86,8 +84,8 @@ namespace WindowsClient.World
                     continue;
                 }
 
-                float distance = Vector2.Distance(positionToCheck, clientItem.Data.WorldLocation.ToVector2());
-                if (distance <= lootDistance)
+                //float distance = Vector2.Distance(positionToCheck, clientItem.Data.WorldLocation.ToVector2());
+                if (charToRangeCheck.IsPositionInRange(clientItem.Data.WorldLocation))
                 {
                     itemsInRange.Add(clientItem);
                 }

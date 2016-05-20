@@ -13,11 +13,10 @@ namespace DataClient
 {
     public class WorldWebDataContext
     {
-        private const string itemsAddress = "API/Item/"; 
+        protected const string itemsAddress = "API/Item/"; 
         protected const string characterAddress = "API/Character/";
-        private const string sessionAddress = "API/PlayerSessions/";
-        private const string groundItemsAddress = "API/GroundItems/";
-        private const string authAddress = "RCP/Auth/";
+        protected const string sessionAddress = "API/PlayerSessions/";
+        protected const string authAddress = "RCP/Auth/";
         private HttpClient httpClient;
 
         public WorldWebDataContext(string serverAdress)
@@ -38,10 +37,10 @@ namespace DataClient
         {
             return this.Get<IEnumerable<ItemData>>(itemsAddress); // + "/all/" + mapId);
         }
-        public IEnumerable<ItemData> GetGroundItems(int mapId)
-        {
-            return this.Get<IEnumerable<ItemData>>(groundItemsAddress);
-        }
+        //public IEnumerable<ItemData> GetGroundItems(int mapId)
+        //{
+        //    return this.Get<IEnumerable<ItemData>>(groundItemsAddress);
+        //}
 
         private TObject Get<TObject>(string requestAdress)
         {

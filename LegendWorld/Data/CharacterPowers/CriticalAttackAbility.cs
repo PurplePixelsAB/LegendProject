@@ -20,7 +20,7 @@ namespace LegendWorld.Data.Abilities
             this.EnergyCost = 60;
         }
 
-        public override CollitionArea GetAbilityEffectArea()
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new SelfCollitionArea();
         }
@@ -33,7 +33,7 @@ namespace LegendWorld.Data.Abilities
             return base.CanBePerformedBy(character);
         }
 
-        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
             abilityPerformedTo.Stats.Modifiers.Add(new DoublePowerModifier());
         }

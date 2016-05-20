@@ -35,6 +35,11 @@ namespace UdpServer
             }
         }
 
+        internal void SaveItem(IItem itemToUse)
+        {
+            dataContext.SaveItem(itemToUse.Data);
+        }
+
         internal ServerCharacter LoadCharacter(int characterID)
         {
             CharacterData characterData = dataContext.GetCharacter(characterID);
@@ -46,6 +51,7 @@ namespace UdpServer
                 {
                     var inventoryBagItem = this.CreateItem(characterData.Inventory);
                     this.AddItem(inventoryBagItem);
+                    serverCharacter.InventoryData = characterData.Inventory;
 
                     return serverCharacter;
                 }

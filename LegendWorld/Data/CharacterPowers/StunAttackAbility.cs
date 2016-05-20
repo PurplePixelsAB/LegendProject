@@ -23,12 +23,12 @@ namespace LegendWorld.Data.Abilities
             this.StunDuration = 10000;
         }
 
-        public override CollitionArea GetAbilityEffectArea()
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new ConeCollitionArea() { Range = 20, Fov = 30 };
         }
 
-        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
             abilityPerformedTo.Stats.Modifiers.Add(new StunnedModifier(this.StunDuration));
         }

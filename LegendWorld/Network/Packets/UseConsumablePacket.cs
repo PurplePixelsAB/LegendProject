@@ -16,19 +16,20 @@ namespace Network.Packets
         {
 
         }
-        public UseItemPacket(ushort itemId, ushort mobileId) : this()
+        public UseItemPacket(int itemId, int mobileId) : this()
         {
             this.ItemId = itemId;
+            this.MobileId = mobileId;
         }
 
-        public UInt16 ItemId { get; set; }
-        public UInt16 MobileId { get; set; }
+        public Int32 ItemId { get; set; }
+        public Int32 MobileId { get; set; }
 
         public override void OnReadBuffer(PacketReader packetReader)
         {
             base.OnReadBuffer(packetReader);
-            this.ItemId = packetReader.ReadUInt16();
-            this.MobileId = packetReader.ReadUInt16();
+            this.ItemId = packetReader.ReadInt32();
+            this.MobileId = packetReader.ReadInt32();
 
         }
         public override void OnWriteBuffer(PacketWriter packetWriter)

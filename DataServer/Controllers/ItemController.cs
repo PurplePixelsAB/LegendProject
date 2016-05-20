@@ -20,10 +20,15 @@ namespace DataServer.Controllers
         private WorldDbContext db = new WorldDbContext();
 
         // GET: api/Items
-        public IQueryable<ItemData> GetItems()
+        public IQueryable<ItemData> GetItems()//(int mapID)
         {
-            return db.Items;
+            return db.Items; //.Where(i => i.WorldMapID == mapID);
         }
+
+        //public IQueryable<ItemData> GetContainerItems(int containerID)
+        //{
+        //    return db.Items.Where(i => i.ContainerID == containerID);
+        //}
 
         // GET: api/Items/5
         [ResponseType(typeof(ItemData))]

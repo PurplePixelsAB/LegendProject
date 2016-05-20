@@ -2,16 +2,20 @@
 using Data.World;
 using System.Runtime.Serialization;
 using Network;
+using Data;
 
 namespace LegendWorld.Data.Items
 {
-    public abstract class ConsumableItem : StackableItem
+    public abstract class ConsumableItem : IItem
     {
         public ConsumableItem()
         {
             this.Category = ItemCategory.Consumable;
         }
         public abstract bool OnUse(Character usedBy, WorldState worldState);
+        public ItemData Data { get; set; }
+        public ItemCategory Category { get; protected set; }
+        public int Weight { get; protected set; }
 
         public bool Use(Character character, WorldState worldState)
         {
@@ -25,12 +29,20 @@ namespace LegendWorld.Data.Items
             bool result = this.OnUse(character, worldState);
             if (result)
             {
-                this.StackCount--;
-                if (this.StackCount <= 0)
+                this.Data.Count--;
+                if (this.Data.Count <= 0)
                     worldState.RemoveItem(this);
             }
 
             return result;
+        }
+        public override string ToString()
+        {
+            if (this.Data.Count > 0)
+                return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
+
+            return string.Format("{0}", this.Data.Identity);
+
         }
     }
 }

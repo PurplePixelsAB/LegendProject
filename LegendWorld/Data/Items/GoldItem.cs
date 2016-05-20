@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data.Items
 {
-    public class GoldItem : StackableItem
+    public class GoldItem : OtherItem
     {
         public GoldItem()
         {

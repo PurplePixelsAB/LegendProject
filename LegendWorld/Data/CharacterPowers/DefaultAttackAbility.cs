@@ -19,7 +19,7 @@ namespace LegendWorld.Data.Abilities
         {
             this.Duration = 2000;
             this.PrepareTime = 0;
-            this.EnergyCost = 40;
+            this.EnergyCost = 5;
             //this.Area = new ConeCollitionArea();
             //this.Area.Range = 20;
         }
@@ -37,21 +37,37 @@ namespace LegendWorld.Data.Abilities
             }
         }
 
-        public override CollitionArea GetAbilityEffectArea()
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character performedBy)
         {
-            return new ConeCollitionArea() { Range = 20, Fov = 90 };
+            if (performedBy.RightHand == null && performedBy.LeftHand == null)
+                return new ConeCollitionArea() { Range = 20, Fov = 90 };
+            else if (performedBy.RightHand.Data.Identity == ItemData.ItemIdentity.Bow)
+            {
+                ArrowColltionArea arrowColltionArea = new ArrowColltionArea(this, performedBy);
+                worldState.Projectiles.Add(arrowColltionArea);
+                return arrowColltionArea;
+            }
+            else
+                return new ConeCollitionArea() { Range = performedBy.RightHand.SwingRange, Fov = performedBy.RightHand.SwingFov };
         }
 
-        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            byte attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
-            byte damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
-            abilityPerformedTo.Health -= damageTaken;
+                byte attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
+                byte damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
+                abilityPerformedTo.Health -= damageTaken;
         }
 
         internal override void PerformBy(WorldState worldState, Character character)
         {
             base.PerformBy(worldState, character);
+            //if (character.RightHand != null)
+            //{
+            //    if (character.IsEquiped(ItemData.ItemIdentity.Bow))
+            //    {
+            //        worldState.ShootArrow(character, character.RightHand);
+            //    }
+            //}
         }
 
         //public int Prepare { get; private set; }

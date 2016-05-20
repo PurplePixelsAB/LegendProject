@@ -21,5 +21,16 @@ namespace LegendWorld.Data.Items
         public ItemData Data { get; set; }
         public ItemCategory Category { get; protected set; }
         public int Weight { get; protected set; }
+        public int SwingRange { get; protected set; }
+        public int SwingFov { get; protected set; }
+
+        public override string ToString()
+        {
+            if (this.Data.Count > 0)
+                return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
+
+            return string.Format("{0}", this.Data.Identity);
+
+        }
     }
 }

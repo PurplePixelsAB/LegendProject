@@ -41,5 +41,13 @@ namespace LegendWorld.Data.Items
         //{
         //    this.RemoveItem((ushort)itemToRemove.Id);
         //}
+        public override string ToString()
+        {
+            if (this.Data.Count > 0)
+                return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
+
+            return string.Format("{0}", this.Data.Identity);
+
+        }
     }
 }

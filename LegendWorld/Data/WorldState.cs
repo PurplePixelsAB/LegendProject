@@ -27,6 +27,7 @@ namespace Network
         {
             CharacterPower.Load();
 
+            this.Projectiles = new List<ArrowColltionArea>(30);
             //ushort itemId = 1;
             //foreach (AbilityIdentity abilityId in Enum.GetValues(typeof(AbilityIdentity)))
             //{
@@ -72,6 +73,19 @@ namespace Network
                 return;
 
             items.Remove(item.Data.ItemDataID);
+            if (item.Data.ContainerID.HasValue)
+            {
+                ContainerItem container = (ContainerItem)this.GetItem(item.Data.ContainerID.Value);
+                if (container != null)
+                {
+                    if (container.Items.Contains(item))
+                        container.Items.Remove(item);
+                }
+            }
+            item.Data.ContainerID = null;
+            item.Data.WorldMapID = null;
+            item.Data.WorldX = null;
+            item.Data.WorldY = null;
             //int groundItemIdToRemove = -1;
             //foreach (var groundItem in groundItems.Values)
             //{
@@ -84,6 +98,14 @@ namespace Network
             //    groundItems.Remove(groundItemIdToRemove);
 
         }
+
+        //internal void ShootArrow(Character character, WeaponItem rightHand)
+        //{
+        //    ArrowProjectile projectile = new ArrowProjectile();
+        //    projectile.Position = character.Position;
+        //    projectile.Target = character.AimToPosition;
+        //    this.Projectiles.Add(projectile);
+        //}
 
         public IItem CreateItem(ItemData itemData)
         {
@@ -125,6 +147,9 @@ namespace Network
 
         protected Dictionary<int, Character> characters = new Dictionary<int, Character>();
         public Dictionary<int, Character>.KeyCollection Characters { get { return characters.Keys; } }
+
+        public List<ArrowColltionArea> Projectiles { get; private set; }
+
         public virtual Character GetCharacter(int id)
         {
             if (characters.ContainsKey(id))
@@ -184,6 +209,28 @@ namespace Network
                     nextRegendTick = (gameTime.TotalGameTime + baseRegenTick).Ticks;
                 }
             }
+
+            List<ArrowColltionArea> toRemove = new List<ArrowColltionArea>();
+            foreach (ArrowColltionArea projectile in this.Projectiles)
+            {
+                Vector2 start = projectile.Position.ToVector2();
+                Vector2 newPosition = start;
+                Vector2 end = projectile.Target.ToVector2();
+                float distance = Vector2.Distance(start, end);
+                Vector2 direction = Vector2.Normalize(end - start);
+
+                newPosition += direction * projectile.Speed;
+                if (Vector2.Distance(start, newPosition) >= distance)
+                {
+                    newPosition = end;
+                    toRemove.Add(projectile);
+                }
+
+                projectile.Position = newPosition.ToPoint();
+                projectile.GetProjectileAffected(this);
+            }
+            foreach (var item in toRemove)
+                this.Projectiles.Remove(item);
         }
 
         public virtual bool PerformAbility(CharacterPower ability, Character character)

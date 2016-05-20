@@ -13,7 +13,7 @@ namespace LegendWorld.Data.Items
 {
     public class PowerScrollItem : ConsumableItem //Consumable
     {
-        public CharacterPowerIdentity Ability { get { return (CharacterPowerIdentity)base.StackCount; } set { base.StackCount = (int)value; } }
+        public CharacterPowerIdentity Ability { get { return (CharacterPowerIdentity)base.Data.SubType; } set { base.Data.SubType = (int)value; } }
         public PowerScrollItem()
         {
             //this.Identity = ItemIdentity.AbilityScoll;
@@ -23,7 +23,7 @@ namespace LegendWorld.Data.Items
         {
             if (usedBy.Learn(this.Ability))
             {
-                this.StackCount = 0;
+                //this.StackCount = 0;
                 return true;
             }
 
@@ -32,7 +32,11 @@ namespace LegendWorld.Data.Items
 
         public override string ToString()
         {
-            return string.Format("{0}{1}", this.Ability, this.Data.Identity);
+            if (this.Data.Count > 0)
+                return string.Format("{1} {0} of {2}", this.Data.Identity, this.Data.Count, this.Ability);
+
+            return string.Format("{0} of {1}", this.Data.Identity, this.Ability);
+
         }
     }
 }

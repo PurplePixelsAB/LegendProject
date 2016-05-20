@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendWorld.Data.Abilities;
 
 namespace LegendWorld.Data
 {
@@ -28,6 +29,52 @@ namespace LegendWorld.Data
         public override List<Character> GetAffected(WorldState world, Character performer)
         {
             return new List<Character>();
+        }
+    }
+    public class ArrowColltionArea : CircleCollitionArea
+    {
+        private CharacterPower defaultAttackAbility;
+        private Character performedBy;
+        
+        public Point Target { get; set; }
+        public float Speed { get; internal set; }
+
+        public ArrowColltionArea(DefaultAttackAbility defaultAttackAbility, Character performedBy)
+        {
+            this.defaultAttackAbility = defaultAttackAbility;
+            this.performedBy = performedBy;
+            this.Target = this.performedBy.AimToPosition;
+            this.Position = this.performedBy.Position;
+            this.Speed = 50f;
+        }
+
+        public override List<Character> GetAffected(WorldState world, Character performer)
+        {
+            return new List<Character>();
+        }
+        public void GetProjectileAffected(WorldState world)
+        {
+            //List<Character> returnList = new List<Character>();
+            if (Position == null || Position == Point.Zero)
+                return;
+            if (R == 0)
+                return;
+
+            foreach (ushort characterId in world.Characters)
+            {
+                if (performedBy.Id == characterId)
+                    continue;
+
+                Character checkCollitionVersus = world.GetCharacter(characterId);
+                if (Contains(checkCollitionVersus.CollitionArea))
+                {
+                    world.Projectiles.Remove(this);
+                    defaultAttackAbility.PerformTo(world, checkCollitionVersus, performedBy);
+                    //returnList.Add(checkCollitionVersus);
+                }
+            }
+
+            //return returnList;
         }
     }
 
@@ -170,6 +217,13 @@ namespace LegendWorld.Data
             var radius = this.R + collitionArea.R;
             var deltaX = this.Position.X - collitionArea.Position.X;
             var deltaY = this.Position.Y - collitionArea.Position.Y;
+            return deltaX * deltaX + deltaY * deltaY <= radius * radius;
+        }
+        public bool Contains(Point collitionPoint)
+        {
+            var radius = this.R;
+            var deltaX = this.Position.X - collitionPoint.X;
+            var deltaY = this.Position.Y - collitionPoint.Y;
             return deltaX * deltaX + deltaY * deltaY <= radius * radius;
         }
     }

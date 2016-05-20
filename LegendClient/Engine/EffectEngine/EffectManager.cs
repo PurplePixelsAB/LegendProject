@@ -10,27 +10,27 @@ using Engine.EffectEngine.Particles;
 
 namespace Engine.EffectEngine
 {
-    public class EffectManager : LegendaryComponent
+    public class EffectManager //: LegendaryComponent
     {
-        internal EffectManager(LegendaryManager manager) : base(manager)
+        internal EffectManager()//(LegendaryManager manager) : base(manager)
         {
         }
 
-        public SpriteSheet EffectSheet { get { return particleEffectSheet; } set { particleEffectSheet = value; } }
-        public SpriteSheet LoadEffectSheet(string SpriteSheetContentPath)
-        {
-            particleEffectSheet = new SpriteSheet(Manager.Game.Content.Load<SpriteSheetData>(SpriteSheetContentPath));
-            return particleEffectSheet;
-        }
-        private SpriteSheet particleEffectSheet;
+        //public SpriteSheet EffectSheet { get { return particleEffectSheet; } set { particleEffectSheet = value; } }
+        //public SpriteSheet LoadEffectSheet(string SpriteSheetContentPath)
+        //{
+        //    particleEffectSheet = new SpriteSheet(Manager.Game.Content.Load<SpriteSheetData>(SpriteSheetContentPath));
+        //    return particleEffectSheet;
+        //}
+        //private SpriteSheet particleEffectSheet;
 
-        public SpriteSheet LightSheet { get { return lightSheet; } set { lightSheet = value; } }
-        public SpriteSheet LoadLightSheet(string SpriteSheetContentPath)
-        {
-            lightSheet = new SpriteSheet(Manager.Game.Content.Load<SpriteSheetData>(SpriteSheetContentPath));
-            return lightSheet;
-        }
-        private SpriteSheet lightSheet;
+        //public SpriteSheet LightSheet { get { return lightSheet; } set { lightSheet = value; } }
+        //public SpriteSheet LoadLightSheet(string SpriteSheetContentPath)
+        //{
+        //    lightSheet = new SpriteSheet(Manager.Game.Content.Load<SpriteSheetData>(SpriteSheetContentPath));
+        //    return lightSheet;
+        //}
+        //private SpriteSheet lightSheet;
 
         private RenderTarget2D lightSourceMap;
 

@@ -2,6 +2,7 @@
 using Data;
 using Data.World;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace UdpServer
 {
@@ -9,16 +10,23 @@ namespace UdpServer
     {
         public NetState Owner { get; set; }
         public CharacterData LatestData { get; set; }
+        public bool HasChanged { get; set; }
 
-        public ServerCharacter(CharacterData characterData)
+        public ServerCharacter(CharacterData characterData) : base(characterData.CharacterDataID)
         {
             this.LatestData = characterData;
-            this.Id = this.LatestData.CharacterDataID;
+            //this.Id = this.LatestData.CharacterDataID;
             this.Position = this.LatestData.WorldLocation;
             this.AimToPosition = this.Position;
             this.MovingToPosition = this.Position;
             this.Health = this.LatestData.Health;
             this.Energy = this.LatestData.Energy;
+            foreach (var pwr in this.LatestData.Powers)
+            {
+                this.Powers.Add(pwr.Power);
+            }
+
+            //this.Powers = this.LatestData.Powers.Select(pwr => pwr.Power).ToList();
         }
         internal CharacterData GetData()
         {
@@ -31,8 +39,14 @@ namespace UdpServer
             LatestData.WorldX = this.Position.X;
             LatestData.WorldY = this.Position.Y;
 
-            //this.LatestData = characterData;
             return LatestData;
+        }
+        
+        protected override void OnPowerLearning(CharacterPowerIdentity power)
+        {
+            //base.OnPowerLearning(power);
+            this.LatestData.Powers.Add(new CharacterPowerLearned() { Power = power });
+            HasChanged = true;
         }
     }
 }

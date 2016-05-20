@@ -23,7 +23,7 @@ namespace LegendWorld.Data.Abilities
 
         public byte NewMax { get; private set; }
 
-        public override CollitionArea GetAbilityEffectArea()
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new SelfCollitionArea();
         }

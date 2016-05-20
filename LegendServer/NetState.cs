@@ -1,4 +1,5 @@
-﻿using Network;
+﻿using LegendWorld.Network.Packets;
+using Network;
 using Network.Packets;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,13 @@ namespace UdpServer
 
             NetState.Instances.Add(this);
         }
+
+        internal void SendError(int v1, string v2)
+        {
+            ErrorPacket errorPacket = new ErrorPacket(v1, v2);
+            this.Send(errorPacket);
+        }
+
         private AsyncCallback OnReceive, OnSend;
         private bool disposed = false;
 

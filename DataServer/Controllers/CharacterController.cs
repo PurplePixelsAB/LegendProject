@@ -51,6 +51,22 @@ namespace DataServer.Controllers
                 return BadRequest();
             }
 
+            List<int> previousIds = db.Characters.AsNoTracking().FirstOrDefault(chr => chr.CharacterDataID == id).Powers.Select(pwr => pwr.CharacterPowerLearnedID).ToList();
+            List<int> currentIds = characterData.Powers.Select(pwr => pwr.CharacterPowerLearnedID).ToList();
+            List<int> deletedIds = previousIds.Except(currentIds).ToList();
+            foreach (var deletedId in deletedIds)
+            {
+                CharacterPowerLearned characterPowerLearned = characterData.Powers.Single(od => od.CharacterPowerLearnedID == deletedId);
+                db.Entry(characterPowerLearned).State = EntityState.Deleted;
+            }
+
+            foreach (CharacterPowerLearned power in characterData.Powers)
+            {
+                if (power.CharacterPowerLearnedID == 0)
+                    db.Entry(power).State = EntityState.Added;
+                else
+                    db.Entry(power).State = EntityState.Modified;
+            }
             db.Entry(characterData).State = EntityState.Modified;
 
             try

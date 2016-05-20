@@ -17,6 +17,7 @@ namespace Data
         {
             this.Health = 100;
             this.Energy = 100;
+            this.Powers = new List<CharacterPowerLearned>();
         }            
 
         [Key]
@@ -44,7 +45,7 @@ namespace Data
         public byte Energy { get; set; }
 
         [DataMember]
-        public virtual List<int> Powers { get; set; }
+        public virtual List<CharacterPowerLearned> Powers { get; set; }
 
         [DataMember]
         [ForeignKey("Inventory")]
@@ -80,5 +81,11 @@ namespace Data
 
         [DataMember]
         public virtual ItemData RightHand { get; set; }
+    }
+
+    public class CharacterPowerLearned
+    {
+        public int CharacterPowerLearnedID { get; set; }
+        public CharacterPowerIdentity Power { get; set; }
     }
 }

@@ -225,6 +225,10 @@
     <Compile Include="Migrations\201605181418042_CharacterInventoryFixes.Designer.cs">
       <DependentUpon>201605181418042_CharacterInventoryFixes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605191732576_CharacterPowers.cs" />
+    <Compile Include="Migrations\201605191732576_CharacterPowers.Designer.cs">
+      <DependentUpon>201605191732576_CharacterPowers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -317,6 +321,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605181418042_CharacterInventoryFixes.resx">
       <DependentUpon>201605181418042_CharacterInventoryFixes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605191732576_CharacterPowers.resx">
+      <DependentUpon>201605191732576_CharacterPowers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

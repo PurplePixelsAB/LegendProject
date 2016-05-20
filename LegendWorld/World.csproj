@@ -41,6 +41,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Data\ArrowProjectile.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseEnergyRegenAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseHealthRegenAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseMaxEnergyAbility.cs" />
@@ -76,7 +77,7 @@
     <Compile Include="Data\Items\LeatherArmorItem.cs" />
     <Compile Include="Data\Items\ConsumableItem.cs" />
     <Compile Include="Data\Items\PlateArmorItem.cs" />
-    <Compile Include="Data\Items\StackableItem.cs" />
+    <Compile Include="Data\Items\OtherItem.cs" />
     <Compile Include="Data\Items\DaggerItem.cs" />
     <Compile Include="Data\Items\SwordItem.cs" />
     <Compile Include="Data\Items\WeaponItem.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />
     <Compile Include="Network\Packets\AimToPacket.cs" />
+    <Compile Include="Network\Packets\ErrorPacket.cs" />
     <Compile Include="Network\Packets\MoveToPacket.cs" />
     <Compile Include="Network\Packets\PacketIdentity.cs" />
     <Compile Include="Network\PacketReader.cs" />

@@ -17,6 +17,8 @@ using LegendClient.Screens;
 using LegendWorld.Data.Items;
 using LegendWorld.Data;
 using LegendClient.World.Items;
+using Data;
+using LegendClient.Effects;
 
 namespace WindowsClient
 {
@@ -36,9 +38,13 @@ namespace WindowsClient
         private Texture2D bodyGhostTexture;
         private Texture2D headGhostTexture;
 
+        private Queue<DamageTextEffect> DamageTextEffectList = new Queue<DamageTextEffect>();
+        private Texture2D bigBushTexture;
+
         private NetworkEngine network;
         private ClientWorldState world;
         private WorldPump worldPump;
+        private EffectManager effectManager;
         private Texture2D selectionTexture;
         private SpriteFont damageSpriteFont;
 
@@ -61,8 +67,14 @@ namespace WindowsClient
             worldPump = new WorldPump();
             worldPump.State = world;
 
+            effectManager = new EffectManager();
+            effectManager.UseDayNightCycle = true;
+            effectManager.DayColor = Color.White;
+            effectManager.NightColor = Color.DarkBlue;
+
             inventoryScreen = new InventoryScreen();
             inventoryScreen.ItemUsed += InventoryScreen_ItemUsed;
+            inventoryScreen.Player = world.PlayerCharacter;
         }
 
         public override void Initialize(ScreenManager screenManager)
@@ -89,7 +101,7 @@ namespace WindowsClient
                 new ClientItemFactory<SwordClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Sword") });
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Dagger,
                 new ClientItemFactory<DaggerClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Dagger") });
-            
+
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.LeatherArmor,
                 new ArmorClientItemFactory<LeatherArmorClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/LeatherArmor"), HeadTexture = Game.Content.Load<Texture2D>("Items/LeatherHead") });
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.PlateArmor,
@@ -117,6 +129,9 @@ namespace WindowsClient
             damageSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             bigBushTexture = Game.Content.Load<Texture2D>("bigbush");
             hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
+            arrowTexture = Game.Content.Load<Texture2D>("ArrowProjectile");
+
+            effectManager.LoadContent(graphicsDevice, Game.Content);
 
             //generalMappings = Game.Content.Load<ActionKeyMapping[]>("DefaultKeys\\General");
             //for (int i = 0; i <= generalMappings.GetUpperBound(0); i++)
@@ -187,6 +202,19 @@ namespace WindowsClient
             actionKeyMappingToggleFlullscreen.PrimaryMod = Keys.LeftControl;
             actionKeyMappingToggleFlullscreen.ActionTriggered += ActionKeyMappingToggleFlullscreen_ActionTriggered;
             Input.Actions.Add(actionKeyMappingToggleFlullscreen);
+
+            ActionKeyMapping actionKeyMappingGameMenu = new ActionKeyMapping();
+            actionKeyMappingGameMenu.Id = 42;
+            actionKeyMappingGameMenu.Primary = Keys.Escape;
+            actionKeyMappingGameMenu.ActionTriggered += this.ActionKeyMappingOpenGameMenu;
+            Input.Actions.Add(actionKeyMappingGameMenu);
+        }
+
+        private void ActionKeyMappingOpenGameMenu(object sender, ActionTriggeredEventArgs e)
+        {
+            GameMenuScreen menuScreen = new GameMenuScreen();
+            menuScreen.Initialize(this.Manager);
+            menuScreen.Show();
         }
 
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
@@ -198,20 +226,41 @@ namespace WindowsClient
             if (world.PlayerCharacter.IsDead)
                 return;
 
+            inventoryScreen.Player = world.PlayerCharacter;
             inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
             inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
             inventoryScreen.Activate();
         }
         private void InventoryScreen_ItemUsed(object sender, ItemUsedEventArgs e)
         {
-            if (e.ItemUsed.Category == LegendWorld.Data.ItemCategory.Consumable)
+            if (e.IsWorldItem)
             {
-                ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
-                if (consumable.Use(world.PlayerCharacter, world))
+                if (world.PlayerCharacter.Pickup(e.ItemUsed))
                 {
-                    network.UseItem(consumable);
-                    inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+                    network.UseItem(world.PlayerCharacter.Id, e.ItemUsed);
                     inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+                }
+            }
+            else
+            {
+                if (e.ItemUsed.Category == ItemCategory.Consumable)
+                {
+                    ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
+                    if (consumable.Use(world.PlayerCharacter, world))
+                    {
+                        network.UseItem(world.PlayerCharacter.Id, consumable);
+                        inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+                        inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+                    }
+                }
+                if (e.ItemUsed.Category == ItemCategory.Armor || e.ItemUsed.Category == ItemCategory.Weapon)
+                {
+                    if (world.PlayerCharacter.Equip(e.ItemUsed))
+                    {
+                        network.UseItem(world.PlayerCharacter.Id, e.ItemUsed);
+                        inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+                        inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+                    }
                 }
             }
         }
@@ -249,9 +298,6 @@ namespace WindowsClient
             DamageTextEffectList.Enqueue(dmgEfx);
         }
 
-        private Queue<DamageTextEffect> DamageTextEffectList = new Queue<DamageTextEffect>();
-        private Texture2D bigBushTexture;
-
         private void AddDamageIndicator(ClientCharacter clientCharacter, int damageAmount)
         {
             var dmgEfx = new DamageTextEffect();
@@ -264,14 +310,25 @@ namespace WindowsClient
 
         private void actionKeyMappingAbility_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
-            var abilityIndex = e.Action.Id - 11;
-            if (world.PlayerCharacter.Abilities.Count > abilityIndex)
-            {
-                var abilityId = world.PlayerCharacter.Abilities[abilityIndex];
+            var abilityIndex = e.Action.Id - 12;
 
-                if (world.PerformAbility(abilityId, world.PlayerCharacter))
+            if (abilityIndex == -1)
+            {
+                if (world.PerformAbility(CharacterPowerIdentity.DefaultAttack, world.PlayerCharacter))
                 {
-                    network.PerformAbility(world.PlayerCharacter, abilityId);
+                    network.PerformAbility(world.PlayerCharacter, CharacterPowerIdentity.DefaultAttack);
+                }
+            }
+            else
+            {
+                if (world.PlayerCharacter.Powers.Count > abilityIndex)
+                {
+                    CharacterPowerIdentity abilityId = world.PlayerCharacter.Powers[abilityIndex];
+
+                    if (world.PerformAbility(abilityId, world.PlayerCharacter))
+                    {
+                        network.PerformAbility(world.PlayerCharacter, abilityId);
+                    }
                 }
             }
         }
@@ -289,6 +346,7 @@ namespace WindowsClient
         private long lastMovementClickTicks;
         private TimeSpan doubleClickSpeed = new TimeSpan(0, 0, 0, 0, 200);
         private Texture2D hudbarTexture;
+        private Texture2D arrowTexture;
 
         private void ActionButtonMappingMoveTo_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
@@ -324,7 +382,7 @@ namespace WindowsClient
 
         public override void Update(GameTime gameTime)
         {
-            network.Update();
+            network.Update(gameTime);
             if (!this.IsConnected)
             {
                 this.Disconnect(string.Empty);
@@ -333,6 +391,7 @@ namespace WindowsClient
             worldPump.Update(gameTime);
             world.ClientUpdate(gameTime);
             movementBodyBobEffect.Update(gameTime);
+            effectManager.Update(gameTime);
         }
 
         //public void UpdateRandomBodyMovement(GameTime gameTime)
@@ -367,13 +426,30 @@ namespace WindowsClient
             if (!this.IsConnected)
                 return;
 
+            effectManager.CreateLightMap(Game.GraphicsDevice, spriteBatch, gameTime);
+
             spriteBatch.Begin();
             this.BaseDrawing(spriteBatch);
             this.DrawGroundItems(spriteBatch);
             this.DrawCharacters(spriteBatch);
-            this.DrawDamageEffect(spriteBatch, gameTime);
-            this.DrawHud(spriteBatch);
+            this.DrawProjectiles(spriteBatch);
             spriteBatch.End();
+
+            // effectManager.Draw(spriteBatch, gameTime);
+
+            spriteBatch.Begin();
+            this.DrawDamageEffect(spriteBatch, gameTime);
+            this.DrawHud(spriteBatch, gameTime);
+            spriteBatch.End();
+        }
+
+        private void DrawProjectiles(SpriteBatch spriteBatch)
+        {
+            foreach (var arrow in world.Projectiles)
+            {
+                Vector2 arrowDirection = arrow.Target.ToVector2() - arrow.Position.ToVector2();
+                spriteBatch.Draw(arrowTexture, this.GetScreenPostion(arrow.Position).ToVector2(), null, Color.White, (float)world.VectorToRadian(arrowDirection), arrowTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+            }
         }
 
         private void DrawGroundItems(SpriteBatch spriteBatch)
@@ -393,7 +469,30 @@ namespace WindowsClient
             }
         }
 
-        private void DrawHud(SpriteBatch spriteBatch)
+        private void DrawHud(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            this.DrawCharacterStatusBar(spriteBatch, gameTime);
+            this.DrawCharacterIndicators(spriteBatch, gameTime);
+            this.DrawServerMessages(spriteBatch, gameTime);
+
+            //Draw Mouse Pointer
+            spriteBatch.Draw(selectionTexture, Mouse.GetState().Position.ToVector2(), selectionTexture.Bounds, Color.White, 0f, selectionTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+        }
+
+        public void DrawCharacterIndicators(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            Vector2 centerSelection = selectionTexture.Bounds.Center.ToVector2();
+            //Point screenCenter = new Point(960, 540);
+            Point drawAimLocation = centerScreen - (world.PlayerCharacter.DrawPosition - world.PlayerCharacter.AimToPosition); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
+            spriteBatch.Draw(selectionTexture, new Rectangle(drawAimLocation, selectionTexture.Bounds.Size), selectionTexture.Bounds, Color.Blue, 0f, centerSelection, SpriteEffects.None, 1f);
+
+            if (world.PlayerCharacter.Position != world.PlayerCharacter.MovingToPosition)
+            {
+                Point drawMoveToLocation = centerScreen - (world.PlayerCharacter.DrawPosition - world.PlayerCharacter.MovingToPosition); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
+                spriteBatch.Draw(selectionTexture, new Rectangle(drawMoveToLocation, selectionTexture.Bounds.Size), selectionTexture.Bounds, Color.Cyan, 0f, centerSelection, SpriteEffects.None, 1f);
+            }
+        }
+        public void DrawCharacterStatusBar(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Rectangle sourceSize = hudbarTexture.Bounds;
 
@@ -412,38 +511,19 @@ namespace WindowsClient
             Rectangle energySize = sourceSize;
             energySize.Width = energyBasedWidth;
             spriteBatch.Draw(hudbarTexture, energyDrawPosition, energySize, Color.Orange);
-
-            //foreach (int id in world.Characters)
-            //{
-            //    ClientCharacter charToDraw = (ClientCharacter)world.GetCharacter(id);
-            //    Rectangle sourceSize = hudbarTexture.Bounds;
-            //    int healthBasedWidth = (int)(sourceSize.Width * ((float)charToDraw.Health / (float)charToDraw.MaxHealth));
-            //    sourceSize.Width = healthBasedWidth;
-            //    spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, Color.White);
-            //    spriteBatch.Draw(hudbarTexture, charToDraw.DrawPosition, sourceSize, Color.DarkGreen);
-            //}
-
-            Vector2 centerSelection = selectionTexture.Bounds.Center.ToVector2();
-            //Point screenCenter = new Point(960, 540);
-            Point drawAimLocation = centerScreen - (world.PlayerCharacter.DrawPosition - world.PlayerCharacter.AimToPosition); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
-            spriteBatch.Draw(selectionTexture, new Rectangle(drawAimLocation, selectionTexture.Bounds.Size), selectionTexture.Bounds, Color.Blue, 0f, centerSelection, SpriteEffects.None, 1f);
-
-            if (world.PlayerCharacter.Position != world.PlayerCharacter.MovingToPosition)
-            {
-                Point drawMoveToLocation = centerScreen - (world.PlayerCharacter.DrawPosition - world.PlayerCharacter.MovingToPosition); //new Vector2(world.PlayerCharacter.Position.X - world.PlayerCharacter.AimToPosition.X, world.PlayerCharacter.Position.Y - world.PlayerCharacter.AimToPosition.Y);
-                spriteBatch.Draw(selectionTexture, new Rectangle(drawMoveToLocation, selectionTexture.Bounds.Size), selectionTexture.Bounds, Color.Cyan, 0f, centerSelection, SpriteEffects.None, 1f);
-            }
-
-            //DrawWindow
-            //if (inventory != null)
-            //{
-            //    inventory.Draw
-            //    spriteBatch.Draw(inventory.BackgroundTexture, inventory.Location, inventory.BackgroundTexture.Bounds, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
-            //}
-
-
-            spriteBatch.Draw(selectionTexture, Mouse.GetState().Position.ToVector2(), selectionTexture.Bounds, Color.Black, 0f, centerSelection, 1f, SpriteEffects.None, 1f);
         }
+        private void DrawServerMessages(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            var messages = network.GetServerMessages();
+            Vector2 drawLocation = new Vector2();
+            Vector2 lineDistance = new Vector2(0f, damageSpriteFont.LineSpacing + 2);
+            foreach (var msg in messages)
+            {
+                spriteBatch.DrawString(damageSpriteFont, msg.Message, drawLocation, Color.Red);
+                drawLocation += lineDistance;
+            }
+        }
+
         private void DrawDamageEffect(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var queue = DamageTextEffectList;
@@ -527,7 +607,22 @@ namespace WindowsClient
                 //centerVector2 - (this.PlayerCharacter.Position - client.Position)
                 Vector2 clientScreenPostion = this.GetScreenPostion(charToDraw.DrawPosition).ToVector2();
                 spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
+                if (charToDraw.Armor != null)
+                {
+                    IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
+                    spriteBatch.Draw(armorItem.Texture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
+                }
                 spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, Color.White, (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
+                if (charToDraw.Armor != null)
+                {
+                    IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
+                    spriteBatch.Draw(armorItem.HeadTexture, clientScreenPostion, null, Color.White, (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
+                }
+                if (charToDraw.RightHand != null)
+                {
+                    IClientItem weaponItem = (IClientItem)charToDraw.RightHand;
+                    spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition, null, Color.White, 0f, centerBody, 1f, SpriteEffects.None, 1f);
+                }
             }
 
             //Vector2 start = world.PlayerCharacter.Position.ToVector2();

@@ -15,6 +15,7 @@ namespace LegendWorld.Data.Modifiers
         {
             base.Duration = null;
             base.IsUsed = false;
+            base.EffectName = "TestEffect1";
         }
 
         public override void Update(GameTime gameTime, Character character)

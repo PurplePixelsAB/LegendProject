@@ -35,12 +35,12 @@ namespace LegendWorld.Data.Abilities
             }
         }
 
-        public override CollitionArea GetAbilityEffectArea()
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new ConeCollitionArea() { Range = 20, Fov = 30 };
         }
 
-        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
             byte attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
             byte damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);

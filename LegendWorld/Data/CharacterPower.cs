@@ -61,7 +61,7 @@ namespace LegendWorld.Data
 
         public virtual bool CanBePerformedBy(Character character)
         {
-            if (!character.Abilities.Contains(this.Id))
+            if (!character.Powers.Contains(this.Id) && Id != CharacterPowerIdentity.DefaultAttack)
                 return false;
 
             if (character.IsBusy)
@@ -95,17 +95,20 @@ namespace LegendWorld.Data
             //abilityPerformedBy.Performing = this;
             abilityPerformedBy.BusyDuration += this.Duration; 
             abilityPerformedBy.Energy -= abilityPerformedBy.Stats.CalculateEnergyCost(this.EnergyCost);
-            var affectedCharacters = this.GetAbilityEffectArea().GetAffected(worldState, abilityPerformedBy);
+            var affectedCharacters = this.GetAbilityEffectArea(worldState, abilityPerformedBy).GetAffected(worldState, abilityPerformedBy);
             foreach (Character affectedChar in affectedCharacters)
             {
                 this.PerformTo(worldState, affectedChar, abilityPerformedBy);
             }
         }
 
-        protected virtual void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal virtual void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
 
         }
-        public abstract CollitionArea GetAbilityEffectArea();
+        public virtual CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
+        {
+            return new NoneColltionArea();
+        }
     }
 }

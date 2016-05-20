@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Network;
 using LegendWorld.Data;
 using LegendClient.Screens;
+using Data;
 
 namespace WindowsClient.World.Mobiles
 {
@@ -15,7 +16,7 @@ namespace WindowsClient.World.Mobiles
         public Point DrawPosition { get; set; }
         public BagClientItem Inventory { get; set; }
 
-        public ClientCharacter(Point startPosition) : base(startPosition)
+        public ClientCharacter(int id, Point startPosition) : base(id, startPosition)
         {
             this.DrawPosition = startPosition;
         }
@@ -52,6 +53,16 @@ namespace WindowsClient.World.Mobiles
         internal void ServerAimToRecived(Point point)
         {
             this.AimToPosition = point;
+        }
+
+        public override bool Pickup(IItem itemUsed)
+        {
+            if (base.Pickup(itemUsed))
+            {
+                this.Inventory.Items.Add(itemUsed);
+                return true;
+            }
+            return false;
         }
     }
 }

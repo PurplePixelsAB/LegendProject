@@ -15,6 +15,8 @@ namespace LegendWorld.Data.Items
             this.Power = 60;
             this.Speed = 175;
             this.IsTwoHanded = false;
+            this.SwingRange = 40;
+            this.SwingFov = 90;
         }
     }
 }

@@ -10,6 +10,8 @@ namespace LegendWorld.Data.Modifiers
         public double? Duration { get; internal set; }
         public bool IsUsed { get; protected set; }
 
+        public string EffectName { get; protected set; }
+
         public abstract void Update(GameTime gameTime, Character character);
         
         public virtual byte Modify(Character character, StatIdentifier stat, byte newValue, byte oldValue)

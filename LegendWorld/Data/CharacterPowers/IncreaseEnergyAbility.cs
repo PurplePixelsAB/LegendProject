@@ -23,12 +23,12 @@ namespace LegendWorld.Data.Abilities
 
         public float EnergyModifier { get; private set; }
 
-        public override CollitionArea GetAbilityEffectArea()
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new SelfCollitionArea();
         }
 
-        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
             abilityPerformedTo.Stats.Modifiers.Add(new EnergyCostModifier(this.EnergyModifier));
         }

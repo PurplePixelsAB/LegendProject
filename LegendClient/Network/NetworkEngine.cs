@@ -14,11 +14,13 @@ using DataClient;
 using LegendWorld.Data;
 using Data;
 using LegendClient.Screens;
+using LegendWorld.Network.Packets;
 
 namespace WindowsClient.Net
 {
     public class NetworkEngine
     {
+        Queue<ServerMessage> serverMessages = new Queue<ServerMessage>(10);
         internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
         internal bool CharacterSelected { get { return playerCharacterId != -1; } }
         internal uint Ticks { get; set; }
@@ -33,7 +35,7 @@ namespace WindowsClient.Net
         public NetworkEngine()
         {
             dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendClient.Properties.Settings.Default.DataServerAddress, LegendClient.Properties.Settings.Default.DataServerPort));
-            clientPacketHandlers = new ClientPacketHandler[byte.MaxValue];
+            clientPacketHandlers = new ClientPacketHandler[byte.MaxValue+1];
             clientPacketHandlers[(byte)PacketIdentity.StatsChanged] = new StatsChangedPacketHandler();
             PacketFactory.Register(PacketIdentity.StatsChanged, () => new StatsChangedPacket());
             clientPacketHandlers[(byte)PacketIdentity.MoveTo] = new MoveToPacketHandler();
@@ -42,6 +44,8 @@ namespace WindowsClient.Net
             PacketFactory.Register(PacketIdentity.AimTo, () => new AimToPacket());
             clientPacketHandlers[(byte)PacketIdentity.PerformAbility] = new PerformAbilityPacketHandler();
             PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
+            clientPacketHandlers[(byte)PacketIdentity.Error] = new ErrorPacketHandler();
+            PacketFactory.Register(PacketIdentity.Error, () => new ErrorPacket());
             worldServerClient = new SocketClient();
             worldServerClient.ProcessPacket += SocketClient_ProcessPacket;
         }
@@ -51,6 +55,7 @@ namespace WindowsClient.Net
         {
             Packet packet = (Packet)sender;
             ClientPacketHandler handler = this.GetHandler(packet.PacketId);
+            handler.Network = this;
             handler.Handle(packet, this.WorldState);
         }
 
@@ -82,13 +87,13 @@ namespace WindowsClient.Net
                 worldServerClient.Disconnect();
                 return false;
             }
-            world.PlayerCharacter = new ClientCharacter(playerCharData.WorldLocation); //Todo: Get from DataServer
-            world.PlayerCharacter.Id = playerCharacterId;
+            world.PlayerCharacter = new ClientCharacter(playerCharacterId, playerCharData.WorldLocation);
+            //world.PlayerCharacter.Id = playerCharacterId;
             world.PlayerCharacter.Health = playerCharData.Health;
             world.PlayerCharacter.Energy = playerCharData.Energy;
 
-            ItemData inventoryItemData = dataContext.GetItem(playerCharData.InventoryID);
-            world.PlayerCharacter.Inventory = (BagClientItem)world.CreateItem(inventoryItemData);
+            world.PlayerCharacter.InventoryData = dataContext.GetItem(playerCharData.InventoryID);
+            world.PlayerCharacter.Inventory = (BagClientItem)world.CreateItem(world.PlayerCharacter.InventoryData);
 
             world.AddCharacter(world.PlayerCharacter);
             world.AddItem(world.PlayerCharacter.Inventory);
@@ -96,10 +101,24 @@ namespace WindowsClient.Net
             IEnumerable<ItemData> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
             if (items != null)
             {
+                List<IItem> hasContainerItem = new List<IItem>();
                 foreach (ItemData itemData in items)
                 {
                     IItem item = world.CreateItem(itemData);
+
+                    if (item.Data.ContainerID.HasValue)
+                    {
+                        hasContainerItem.Add(item);
+                    }
+
                     world.AddItem(item);
+                }
+
+                foreach (IItem item in hasContainerItem)
+                {
+                    ContainerItem containerItem = (ContainerItem)world.GetItem(item.Data.ContainerID.Value);
+                    if (containerItem != null)
+                        containerItem.Items.Add(item);
                 }
             }
 
@@ -111,7 +130,7 @@ namespace WindowsClient.Net
             worldServerClient.Disconnect();
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             if (!this.ConnectedToWorld)
                 return;
@@ -134,6 +153,27 @@ namespace WindowsClient.Net
                 performAbilityPacket = null;
                 worldServerClient.Send(toSendPacket);
             }
+
+            lock (serverMessages)
+            {
+                if (serverMessages.Count > 0)
+                {
+                    var queue = serverMessages;
+                    serverMessages = new Queue<ServerMessage>(queue.Count);
+                    while (queue.Count > 0)
+                    {
+                        ServerMessage message = queue.Dequeue();
+                        message.Duration -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (message.Duration > 0D)
+                            serverMessages.Enqueue(message);
+                    }
+                }
+            }
+        }
+
+        internal List<ServerMessage> GetServerMessages()
+        {
+            return serverMessages.ToList();
         }
 
         private MoveToPacket moveToPacket;
@@ -154,10 +194,10 @@ namespace WindowsClient.Net
             performAbilityPacket = new PerformAbilityPacket(playerCharacter.Id, abilityId); //Packets are sent on Update to reduce Spam
         }
 
-        internal void UseItem(ConsumableItem consumable)
+        internal void UseItem(int characterId, IItem itemToUse)
         {
-            UseItemPacket useConsumablePacket = new UseItemPacket();
-            worldServerClient.Send(useConsumablePacket);
+            UseItemPacket useItemPacket = new UseItemPacket(itemToUse.Data.ItemDataID, characterId);
+            worldServerClient.Send(useItemPacket);
         }
 
         //public void SendInputUpdate(ClientCharacter clientCharacter)
@@ -171,7 +211,11 @@ namespace WindowsClient.Net
 
         //    socketClient.Send(inputPacket);
         //}
-
+        
+        internal void AddServerError(int code, string message)
+        {
+            serverMessages.Enqueue(new ServerMessage(code, message));
+        }
         internal void SelectCharacter(int selectedCharacterId)
         {
             this.playerCharacterId = selectedCharacterId;

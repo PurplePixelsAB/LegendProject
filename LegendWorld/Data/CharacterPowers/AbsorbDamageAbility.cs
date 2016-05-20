@@ -18,16 +18,32 @@ namespace LegendWorld.Data.Abilities
             this.Duration = 0;
             this.PrepareTime = 0;
             this.EnergyCost = 0;
+            this.Enabled = false;
+            this.Modifier = new AbsorbDamageModifier();
         }
-        
-        public override CollitionArea GetAbilityEffectArea()
+
+        public bool Enabled { get; private set; }
+        public AbsorbDamageModifier Modifier { get; private set; }
+
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new SelfCollitionArea();
         }
 
-        protected override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
+        internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Stats.Modifiers.Add(new AbsorbDamageModifier());
+            if (!this.Enabled)
+            {
+                this.Enabled = true;
+                if (!abilityPerformedTo.Stats.Modifiers.Contains(this.Modifier))
+                    abilityPerformedTo.Stats.Modifiers.Add(this.Modifier);
+            }
+            else
+            {
+                this.Enabled = false;
+                if (abilityPerformedTo.Stats.Modifiers.Contains(this.Modifier))
+                    abilityPerformedTo.Stats.Modifiers.Remove(this.Modifier);
+            }
         }
 
         internal override void PerformBy(WorldState worldState, Character character)

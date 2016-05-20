@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using LegendWorld.Data.Items;
 using LegendWorld.Data;
 using LegendClient.World.Items;
+using WindowsClient.World.Mobiles;
 
 namespace LegendClient.Screens
 {
@@ -27,6 +28,7 @@ namespace LegendClient.Screens
 
         public BagClientItem BaseContainer { get; set; }
         public List<IClientItem> GroundItems { get; set; }
+        public ClientCharacter Player { get; set; }
 
         public InventoryScreen()
         {
@@ -83,7 +85,14 @@ namespace LegendClient.Screens
                         if (i == currentItemIndex && isNavigatingBag)
                             color = Color.Red;
 
-                        spriteBatch.DrawString(itemSpriteFont, bagItem.ToString(), drawPosition, color);
+                        string listText = bagItem.ToString();
+                        if (this.Player != null)
+                        {
+                            if (this.Player.IsEquiped(bagItem))
+                                listText += " (Equiped)";
+                        }
+
+                        spriteBatch.DrawString(itemSpriteFont, listText, drawPosition, color);
                         drawPosition.Y += itemSpriteFont.LineSpacing;
                         i++;
                     }
@@ -93,7 +102,7 @@ namespace LegendClient.Screens
                     spriteBatch.DrawString(itemSpriteFont, "Bag is Empty.", drawPosition, Color.White);
                 }
             }
-            
+
             if (this.GroundItems != null)
             {
                 Vector2 drawPosition = new Vector2(100f, this.Game.GraphicsDevice.Viewport.Bounds.Center.Y);
@@ -152,7 +161,7 @@ namespace LegendClient.Screens
                 {
                     var item = this.BaseContainer.Items[currentItemIndex];
                     if (item != null)
-                        this.Use(item);
+                        this.Use(item, false);
 
                     if (currentItemIndex >= this.BaseContainer.Items.Count && currentItemIndex > 0)
                         currentItemIndex--;
@@ -164,7 +173,7 @@ namespace LegendClient.Screens
                 {
                     var item = this.GroundItems[currentItemIndex];
                     if (item != null)
-                        this.Use(item);
+                        this.Use(item, true);
 
                     if (currentItemIndex >= this.GroundItems.Count && currentItemIndex > 0)
                         currentItemIndex--;
@@ -173,11 +182,11 @@ namespace LegendClient.Screens
         }
 
         public event EventHandler<ItemUsedEventArgs> ItemUsed;
-        private void Use(IItem item)
+        private void Use(IItem item, bool isWorldItem)
         {
             if (this.ItemUsed != null)
             {
-                this.ItemUsed(this, new ItemUsedEventArgs(item));
+                this.ItemUsed(this, new ItemUsedEventArgs(item, isWorldItem));
             }
         }
 

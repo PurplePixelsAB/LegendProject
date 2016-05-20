@@ -6,10 +6,13 @@ namespace LegendClient.Screens
     {
         private IItem item;
 
-        public ItemUsedEventArgs(IItem itemUsed)
+        public ItemUsedEventArgs(IItem itemUsed, bool isWorldItem)
         {
             this.ItemUsed = itemUsed;
+            this.IsWorldItem = isWorldItem;
         }
+
+        public bool IsWorldItem { get; private set; }
 
         public IItem ItemUsed
         {
@@ -18,10 +21,11 @@ namespace LegendClient.Screens
                 return item;
             }
 
-            set
+            private set
             {
                 item = value;
             }
         }
+
     }
 }
