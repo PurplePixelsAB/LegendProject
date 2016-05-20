@@ -106,7 +106,7 @@ namespace LegendWorld.Data
             if (direction == Vector2.Zero)
                 return Vector2.Zero;
 
-            Vector2 movement = direction * ((float)this.GetStat(StatIdentifier.MovementSpeed) * .2f);
+            Vector2 movement = direction * ((float)this.GetStat(StatIdentifier.MovementSpeed) * .1f);
             return movement;
         }
         internal byte CalculateEnergyCost(byte baseEnergyCost)

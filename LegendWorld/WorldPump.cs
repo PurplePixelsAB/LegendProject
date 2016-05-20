@@ -8,7 +8,7 @@ namespace Network
 {
     public class WorldPump
     {
-        public readonly static int Interval = 100;
+        public readonly static int Interval = 50;
 
         private TimeSpan updateIntervalTimeSpan;
         private long lastUpdateTicks;
