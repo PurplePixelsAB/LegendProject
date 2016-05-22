@@ -103,7 +103,7 @@ namespace UdpServer
                 else
                     Dispose();
             }
-            catch
+            catch (Exception ex)
             {
                 Dispose();
             }

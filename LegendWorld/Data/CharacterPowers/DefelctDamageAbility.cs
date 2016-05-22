@@ -13,7 +13,7 @@ namespace LegendWorld.Data.Abilities
 {
     public class DeflectDamageAbility : CharacterPower
     {
-        public DeflectDamageAbility() : base(CharacterPowerIdentity.Deflect)
+        public DeflectDamageAbility() : base(CharacterPowerIdentity.DeflectDamage)
         {
             this.Duration = 0;
             this.PrepareTime = 0;

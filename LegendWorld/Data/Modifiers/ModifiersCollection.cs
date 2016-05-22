@@ -14,8 +14,9 @@ namespace LegendWorld.Data.Modifiers
         Queue<CharacterModifier> durationRunOutModifiers = new Queue<CharacterModifier>(10);
         public virtual void Update(GameTime gameTime, Character character)
         {
-            foreach (var modifier in this)
+            for (int i = 0; i < this.Capacity; i++)//foreach (var modifier in this)
             {
+                var modifier = this[i];
                 modifier.Update(gameTime, character);
                 if (modifier.Duration.HasValue)
                 {

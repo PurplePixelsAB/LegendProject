@@ -13,7 +13,7 @@ namespace LegendWorld.Data.Abilities
 {
     public class AbsorbDamageAbility : CharacterPower
     {
-        public AbsorbDamageAbility() : base(CharacterPowerIdentity.DamageToEnergy) //ToDo: Requires Shield?
+        public AbsorbDamageAbility() : base(CharacterPowerIdentity.AbsorbDamage) //ToDo: Requires Shield?
         {
             this.Duration = 0;
             this.PrepareTime = 0;

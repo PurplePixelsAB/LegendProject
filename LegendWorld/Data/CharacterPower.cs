@@ -22,6 +22,7 @@ namespace LegendWorld.Data
         public static void Load()
         {
             CharacterPower.Register(new DefaultAttackAbility());
+            CharacterPower.Register(new HardAttackAbility());
             CharacterPower.Register(new CriticalAttackAbility());
             CharacterPower.Register(new StunAttackAbility());
             CharacterPower.Register(new SlowingAttackAbility());
@@ -34,6 +35,17 @@ namespace LegendWorld.Data
             CharacterPower.Register(new DeflectDamageAbility());
             CharacterPower.Register(new ShortSpeedBurstAbility());
             CharacterPower.Register(new IncreaseSpeedAbility());
+            CharacterPower.Register(new IncreaseMaxHealthAbility());
+            CharacterPower.Register(new IncreaseMaxHealthAbility());
+            CharacterPower.Register(new IncreaseHealthRegenAbility());
+            CharacterPower.Register(new IncreaseEnergyRegenAbility());
+            CharacterPower.Register(new StealthAbility());
+            CharacterPower.Register(new IncreaseSwordPowerAbility());
+            CharacterPower.Register(new IncreaseBowPowerAbility());
+            CharacterPower.Register(new IncreaseDaggerPowerAbility());
+            CharacterPower.Register(new IncreasePlateArmorAbility());
+            CharacterPower.Register(new IncreaseLeatherArmorAbility());
+
         }
         public static CharacterPower Get(CharacterPowerIdentity id)
         {

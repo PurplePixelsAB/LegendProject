@@ -9,11 +9,11 @@ using Network;
 
 namespace LegendWorld.Data.Modifiers
 {
-    public class SpeedModifier : CharacterModifier
+    public class TimedSpeedModifier : CharacterModifier
     {
-        public SpeedModifier(float amount) : base()
+        public TimedSpeedModifier(int duration, float amount) : base()
         {
-            base.Duration = null;
+            base.Duration = duration;
             this.Amount = amount;
             base.IsUsed = false;
         }

@@ -43,10 +43,15 @@
   <ItemGroup>
     <Compile Include="Data\AffectedByPowerEventArgs.cs" />
     <Compile Include="Data\ArrowProjectile.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseDaggerPowerAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseLeatherArmorAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreasePlateArmorAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseEnergyRegenAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseHealthRegenAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseMaxEnergyAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseMaxHealthAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseBowPowerAbility.cs" />
+    <Compile Include="Data\CharacterPowers\IncreaseSwordPowerAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseSpeedAbility.cs" />
     <Compile Include="Data\CharacterPowers\StealthAbility.cs" />
     <Compile Include="Data\CharacterPowers\ShortSpeedBurstAbility.cs" />
@@ -95,8 +100,10 @@
     <Compile Include="Data\Modifiers\EnergyCostModifier.cs" />
     <Compile Include="Data\Modifiers\ModifiersCollection.cs" />
     <Compile Include="Data\Modifiers\MaxHealthModifier.cs" />
-    <Compile Include="Data\Modifiers\SpeedModifier.cs" />
+    <Compile Include="Data\Modifiers\ArmorDefenceModifier.cs" />
+    <Compile Include="Data\Modifiers\WeaponPowerModifier.cs" />
     <Compile Include="Data\Modifiers\TimedSpeedModifier.cs" />
+    <Compile Include="Data\Modifiers\SpeedModifier.cs" />
     <Compile Include="Data\Modifiers\AbsorbDamageModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />

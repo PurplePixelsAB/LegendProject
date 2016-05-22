@@ -316,9 +316,9 @@ namespace WindowsClient
                     break;
                 case CharacterPowerIdentity.Meditation:
                     break;
-                case CharacterPowerIdentity.DamageToEnergy:
+                case CharacterPowerIdentity.AbsorbDamage:
                     break;
-                case CharacterPowerIdentity.Deflect:
+                case CharacterPowerIdentity.DeflectDamage:
                     break;
                 case CharacterPowerIdentity.ShortSpeedBurst:
                     break;
@@ -660,34 +660,39 @@ namespace WindowsClient
                 }
 
                 var distance = Vector2.Distance(world.PlayerCharacter.Position.ToVector2(), charToDraw.DrawPosition.ToVector2());
+                float visibility = charToDraw.Stats.GetVisibility(distance);
 
-                //Draw Body
-                Vector2 clientScreenPostion = this.GetScreenPostion(charToDraw.DrawPosition).ToVector2();
-                spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White,
-                    0f, centerBody, 1f, SpriteEffects.None, 1f);
-                if (charToDraw.Armor != null)
+                if (visibility > 0f)
                 {
-                    IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
-                    spriteBatch.Draw(armorItem.Texture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White,
-                        0f, new Vector2(armorItem.Texture.Bounds.Center.X, 0f), 1f, SpriteEffects.None, 1f);
-                }
+                    Color visibilityColor = Color.White * visibility;
+                    //Draw Body
+                    Vector2 clientScreenPostion = this.GetScreenPostion(charToDraw.DrawPosition).ToVector2();
+                    spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, visibilityColor,
+                        0f, centerBody, 1f, SpriteEffects.None, 1f);
+                    if (charToDraw.Armor != null)
+                    {
+                        IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
+                        spriteBatch.Draw(armorItem.Texture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, visibilityColor,
+                            0f, new Vector2(armorItem.Texture.Bounds.Center.X, 0f), 1f, SpriteEffects.None, 1f);
+                    }
 
-                //Draw Head
-                spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, Color.White,
-                    (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
-                if (charToDraw.Armor != null)
-                {
-                    IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
-                    spriteBatch.Draw(armorItem.HeadTexture, clientScreenPostion, null, Color.White,
+                    //Draw Head
+                    spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, visibilityColor,
                         (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
-                }
+                    if (charToDraw.Armor != null)
+                    {
+                        IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
+                        spriteBatch.Draw(armorItem.HeadTexture, clientScreenPostion, null, visibilityColor,
+                            (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
+                    }
 
-                //Draw Weapons
-                if (charToDraw.RightHand != null)
-                {
-                    IClientItem weaponItem = (IClientItem)charToDraw.RightHand;
-                    spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition + new Vector2(-weaponItem.Texture.Bounds.Width, weaponItem.Texture.Bounds.Center.Y * .5f), null, Color.White,
-                        -.5f, weaponItem.Texture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+                    //Draw Weapons
+                    if (charToDraw.RightHand != null)
+                    {
+                        IClientItem weaponItem = (IClientItem)charToDraw.RightHand;
+                        spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition + new Vector2(-weaponItem.Texture.Bounds.Width, weaponItem.Texture.Bounds.Center.Y * .5f), null, visibilityColor,
+                            -.5f, weaponItem.Texture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+                    }
                 }
             }
 

@@ -18,8 +18,8 @@ namespace Data
         DecreaseDuration, //Decrease duration of DefaultAttack
         IncreaseDuration, //Increase duration of DefaultAttack
         Meditation, //Increase EnergyRegen active use
-        DamageToEnergy, //Absorb dmg to energy
-        Deflect, //Deflect abilities
+        AbsorbDamage, //Absorb dmg to energy
+        DeflectDamage, //Deflect abilities
         ShortSpeedBurst,
         IncreaseSpeed,
         IncreaseMaxHealth, //More health
@@ -27,13 +27,14 @@ namespace Data
         IncreaseHealthRegen, //More hp regen
         IncreaseEnergyRegen, //More en regen
         Stealth,
+        IncreaseSwordPower, //Increase dmg of all attacks with sword
+        IncreaseBowPower, //Increase dmg of all attacks with bow
+        IncreaseDaggerPower, //Increase dmg of all attacks with dagger
+        IncreasePlateArmor,
+        IncreaseLeatherArmor,
         //Comeplete
 
         //ToDo
-        IncreaseSwordPower, //Increase dmg of all attacks with sword
-        IncreaseBowPower, //Increase dmg of all attacks with bow
-        IncreasePlateArmor,
-        IncreaseLeatherArmor,
         IncreaseMaxWeight, //Carry more/faster
         Interrupt, //Interrupt abilites
     }

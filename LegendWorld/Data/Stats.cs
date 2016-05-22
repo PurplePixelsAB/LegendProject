@@ -70,6 +70,24 @@ namespace LegendWorld.Data
         {
             return this.GetModdedStatByFactor(StatIdentifier.Power, power);
         }
+        public float GetVisibility(float distance)
+        {
+            if (distance == 0f)
+                distance = 1f;
+
+            float visibleDistance = 40f;
+            float farDistance = 1500f;
+            float minVisibility = 0f;
+
+            if (distance <= visibleDistance)
+                minVisibility = .3f;
+
+            var invertedVisibility = this.GetStatFactor(StatIdentifier.Visibility);
+            var distanceLerpValue = MathHelper.Clamp((farDistance * invertedVisibility) / distance, 0f, 1f);
+            var lerpVisibility = MathHelper.Lerp(minVisibility, 1f, distanceLerpValue);
+
+            return lerpVisibility;
+        }
 
         public void Modify(StatIdentifier statId, int modifyAmount)
         {

@@ -117,7 +117,7 @@ namespace WindowsClient.Net
                 packet.WriteBuffer();
                 socket.Send(packet.Buffer, packet.Size, SocketFlags.None);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Disconnect();
             }
