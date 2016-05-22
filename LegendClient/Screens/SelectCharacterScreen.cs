@@ -26,7 +26,7 @@ namespace LegendClient.Screens
         private int selectedIndex = 0;
         private Vector2 fontSizeVector;
 
-        public SelectCharacterScreen(NetworkEngine networkEngine)
+        public SelectCharacterScreen(NetworkEngine networkEngine) //ToDo: Create character option
         {
             network = networkEngine;
         }
@@ -37,7 +37,7 @@ namespace LegendClient.Screens
             characterSpriteFont = Game.Content.Load<SpriteFont>("Damage");
             fontSizeVector = new Vector2(0f, characterSpriteFont.LineSpacing);
             //network = new NetworkEngine();
-            characters = network.GetCharacters();
+            characters = network.GetSelectableCharacter();
 
             ActionKeyMapping actionKeyMappingUp = new ActionKeyMapping();
             actionKeyMappingUp.Id = 40;
@@ -82,7 +82,7 @@ namespace LegendClient.Screens
             if (characters == null)
                 return;
 
-            network.SelectCharacter(characters[selectedIndex].CharacterId);
+            network.SelectCharacter(characters[selectedIndex]);
             GameplayScreen screenToLoad = new GameplayScreen(network);
             LoadingScreen loadingScreen = new LoadingScreen(screenToLoad);
             loadingScreen.Initialize(this.Manager);
@@ -104,12 +104,13 @@ namespace LegendClient.Screens
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
+            spriteBatch.DrawString(characterSpriteFont, "Select Character:", centerScreen.ToVector2() + (fontSizeVector * -1), Color.White);
             if (characters != null)
             {
                 int drawIndex = 0;
                 foreach (var selChar in characters)
                 {
-                    spriteBatch.DrawString(characterSpriteFont, selChar.Name, centerScreen.ToVector2() + (fontSizeVector * drawIndex), drawIndex != selectedIndex ? Color.DimGray : Color.White);
+                    spriteBatch.DrawString(characterSpriteFont, selChar.Name, centerScreen.ToVector2() + (fontSizeVector * drawIndex), drawIndex != selectedIndex ? Color.Red : Color.White);
                     drawIndex++;
                 }
             }

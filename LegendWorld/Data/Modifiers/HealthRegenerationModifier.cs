@@ -22,7 +22,7 @@ namespace LegendWorld.Data.Modifiers
 
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.HealthRegeneration, this.HealthRegeneration);
+            character.Stats.Set(StatIdentifier.HealthRegeneration, this.HealthRegeneration);
         }
     }
 }

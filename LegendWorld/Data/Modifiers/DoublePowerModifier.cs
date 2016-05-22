@@ -18,7 +18,7 @@ namespace LegendWorld.Data.Modifiers
 
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.Power, 2f);
+            character.Stats.Factor(StatIdentifier.Power, 2f);
         }
 
         //internal override int ModifyPower(int power)

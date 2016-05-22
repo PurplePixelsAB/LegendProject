@@ -22,20 +22,21 @@ namespace WindowsClient.Net
     {
         Queue<ServerMessage> serverMessages = new Queue<ServerMessage>(10);
         internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
-        internal bool CharacterSelected { get { return playerCharacterId != -1; } }
+        internal bool CharacterSelected { get { return playerSelectableCharacter != null; } }
         internal uint Ticks { get; set; }
         public ClientWorldState WorldState { get; internal set; }
         public int SessionId { get; private set; }
 
-        private int playerCharacterId = -1;
+        private SelectableCharacter playerSelectableCharacter = null;
         private WorldWebDataContext dataContext;
         private SocketClient worldServerClient;
         private ClientPacketHandler[] clientPacketHandlers;
 
         public NetworkEngine()
         {
+            
             dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendClient.Properties.Settings.Default.DataServerAddress, LegendClient.Properties.Settings.Default.DataServerPort));
-            clientPacketHandlers = new ClientPacketHandler[byte.MaxValue+1];
+            clientPacketHandlers = new ClientPacketHandler[byte.MaxValue + 1];
             clientPacketHandlers[(byte)PacketIdentity.StatsChanged] = new StatsChangedPacketHandler();
             PacketFactory.Register(PacketIdentity.StatsChanged, () => new StatsChangedPacket());
             clientPacketHandlers[(byte)PacketIdentity.MoveTo] = new MoveToPacketHandler();
@@ -44,6 +45,8 @@ namespace WindowsClient.Net
             PacketFactory.Register(PacketIdentity.AimTo, () => new AimToPacket());
             clientPacketHandlers[(byte)PacketIdentity.PerformAbility] = new PerformAbilityPacketHandler();
             PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
+            clientPacketHandlers[(byte)PacketIdentity.UseItem] = new UseItemPacketHandler();
+            PacketFactory.Register(PacketIdentity.UseItem, () => new UseItemPacket());
             clientPacketHandlers[(byte)PacketIdentity.Error] = new ErrorPacketHandler();
             PacketFactory.Register(PacketIdentity.Error, () => new ErrorPacket());
             worldServerClient = new SocketClient();
@@ -81,24 +84,13 @@ namespace WindowsClient.Net
 
         public bool LoadContent(ClientWorldState world)
         {
-            CharacterData playerCharData = dataContext.GetCharacter(playerCharacterId);
-            if (playerCharData == null)
+            if (!this.CharacterSelected)
             {
                 worldServerClient.Disconnect();
                 return false;
             }
-            world.PlayerCharacter = new ClientCharacter(playerCharacterId, playerCharData.WorldLocation);
-            //world.PlayerCharacter.Id = playerCharacterId;
-            world.PlayerCharacter.Health = playerCharData.Health;
-            world.PlayerCharacter.Energy = playerCharData.Energy;
-
-            world.PlayerCharacter.InventoryData = dataContext.GetItem(playerCharData.InventoryID);
-            world.PlayerCharacter.Inventory = (BagClientItem)world.CreateItem(world.PlayerCharacter.InventoryData);
-
-            world.AddCharacter(world.PlayerCharacter);
-            world.AddItem(world.PlayerCharacter.Inventory);
-
-            IEnumerable<ItemData> items = dataContext.GetItems(world.PlayerCharacter.CurrentMapId);
+            //CharacterData playerCharData = dataContext.GetCharacter(playerSelectableCharacter);
+            IEnumerable<ItemData> items = dataContext.GetItems(playerSelectableCharacter.MapId);
             if (items != null)
             {
                 List<IItem> hasContainerItem = new List<IItem>();
@@ -120,6 +112,46 @@ namespace WindowsClient.Net
                     if (containerItem != null)
                         containerItem.Items.Add(item);
                 }
+            }
+
+
+            //world.PlayerCharacter = new ClientCharacter(playerCharacterId, playerCharData.WorldLocation);
+            ////world.PlayerCharacter.Id = playerCharacterId;
+            //world.PlayerCharacter.Health = playerCharData.Health;
+            //world.PlayerCharacter.Energy = playerCharData.Energy;
+
+            //world.PlayerCharacter.InventoryData = dataContext.GetItem(playerCharData.InventoryID);
+            //world.PlayerCharacter.Inventory = (BagClientItem)world.CreateItem(world.PlayerCharacter.InventoryData);
+
+            //world.AddCharacter(world.PlayerCharacter);
+            //world.AddItem(world.PlayerCharacter.Inventory);
+
+            IEnumerable<CharacterData> onlineCharacters = dataContext.GetCharacters(playerSelectableCharacter.MapId);
+            if (onlineCharacters != null)
+            {
+                foreach (CharacterData charData in onlineCharacters)
+                {
+                    ClientCharacter character = world.CreateCharacter(charData); //, dataContext.GetItem(charData.InventoryID)); //new ClientCharacter(charData.CharacterDataID, charData.WorldLocation);
+                    ////world.PlayerCharacter.Id = playerCharacterId;
+                    //character.Health = playerCharData.Health;
+                    //character.Energy = playerCharData.Energy;
+
+                    //character.InventoryData = dataContext.GetItem(charData.InventoryID);
+                    //if (character.InventoryData != null)
+                    //    character.Inventory = (BagClientItem)world.CreateItem(character.InventoryData);
+                    if (character.Id == playerSelectableCharacter.CharacterId)
+                        world.PlayerCharacter = character;
+
+                    if (character != null)
+                        world.AddCharacter(character);
+                    //world.AddItem(character.Inventory);
+                }
+            }
+
+            if (world.PlayerCharacter == null)
+            {
+                worldServerClient.Disconnect();
+                return false;
             }
 
             return true;
@@ -169,6 +201,19 @@ namespace WindowsClient.Net
                     }
                 }
             }
+
+            if (WorldState.MissingCharacters.Count > 0)
+            {
+                List<int> charIdToCheck = WorldState.MissingCharacters;
+                WorldState.MissingCharacters = new List<int>(10);
+
+                foreach (int charID in charIdToCheck)
+                {
+                    CharacterData charData = dataContext.GetCharacter(charID);
+                    ClientCharacter character = WorldState.CreateCharacter(charData); //, dataContext.GetItem(charData.InventoryID));
+                    WorldState.AddCharacter(character);
+                }
+            }
         }
 
         internal List<ServerMessage> GetServerMessages()
@@ -211,20 +256,20 @@ namespace WindowsClient.Net
 
         //    socketClient.Send(inputPacket);
         //}
-        
+
         internal void AddServerError(int code, string message)
         {
             serverMessages.Enqueue(new ServerMessage(code, message));
         }
-        internal void SelectCharacter(int selectedCharacterId)
+        internal void SelectCharacter(SelectableCharacter selectedCharacter)
         {
-            this.playerCharacterId = selectedCharacterId;
-            this.SessionId = dataContext.CreateSession(selectedCharacterId);
+            this.playerSelectableCharacter = selectedCharacter;
+            this.SessionId = dataContext.CreateSession(selectedCharacter.CharacterId);
         }
-        internal List<SelectableCharacter> GetCharacters()
+        internal List<SelectableCharacter> GetSelectableCharacter()
         {
             List<SelectableCharacter> returnList = new List<SelectableCharacter>(3);
-            var charList = dataContext.GetCharacters();
+            var charList = dataContext.GetSelectableCharacter();
             if (charList != null)
             {
                 returnList.AddRange(charList);

@@ -33,8 +33,8 @@ namespace UdpServer
             //CharacterData characterData = new CharacterData();
             //characterData.CharacterDataID = this.Id;
             //characterData.InventoryID = this.
-            LatestData.Energy = this.Energy;
-            LatestData.Health = this.Health;
+            LatestData.Energy = (byte)this.Energy;
+            LatestData.Health = (byte)this.Health;
             LatestData.MapID = this.CurrentMapId;
             LatestData.WorldX = this.Position.X;
             LatestData.WorldY = this.Position.Y;

@@ -21,8 +21,13 @@ namespace DataServer
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
+                name: "AuthRcpApiNoId",
+                routeTemplate: "rcp/{controller}/{action}",
+                defaults: new { Controller = "Auth" }
+            );
+            config.Routes.MapHttpRoute(
                 name: "AuthRcpApi",
-                routeTemplate: "rcp/Auth/{action}/{id}",
+                routeTemplate: "rcp/{controller}/{action}/{id}",
                 defaults: new { Controller = "Auth", id = RouteParameter.Optional }
             );
             config.Routes.MapHttpRoute(

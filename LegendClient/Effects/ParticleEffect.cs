@@ -11,7 +11,7 @@ namespace LegendClient.Effects
     {
         public string Sprite { get; set; }
         public Vector2 Position { get; set; }
-        public LightSource EffectLight { get; set; }
+        //public LightSource EffectLight { get; set; }
 
         public float Size { get; set; }
         public float Spread { get; set; }
@@ -25,7 +25,7 @@ namespace LegendClient.Effects
         protected float BirthTime = 0;
         private bool IsCreated = false;
 
-        public void Create(EffectManager manager, GameTime gameTime)
+        internal void Create(EffectManager manager, GameTime gameTime)
         {
             if (IsCreated)
                 throw new Exception("Effect already created.");
@@ -36,10 +36,10 @@ namespace LegendClient.Effects
             for (int i = 0; i < Particles; i++)
                 AddParticle(gameTime);
 
-            Manager.Effects.Add(this);
+            //Manager.AddEffect(this);
 
-            if (EffectLight != null)
-                Manager.LightSources.Add(EffectLight);
+            //if (EffectLight != null)
+            //    Manager.LightSources.Add(EffectLight);
 
             IsCreated = true;
         }
@@ -47,15 +47,30 @@ namespace LegendClient.Effects
         {
             if (Manager != null)
             {
-                Manager.Effects.Remove(this);
-                if (EffectLight != null)
-                    Manager.LightSources.Remove(EffectLight);
+                Manager.RemoveEffect(this);
+                //if (EffectLight != null)
+                //    Manager.LightSources.Remove(EffectLight);
 
                 ParticleList.Clear();
             }
         }
 
         internal abstract void AddParticle(GameTime gameTime);
-        internal abstract void Update(GameTime gameTime);
+        internal virtual void Update(GameTime gameTime)
+        {
+            if (this.MaxAge > 0f)
+            {
+                float now = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                for (int i = ParticleList.Count - 1; i >= 0; i--)
+                {
+                    float timeAlive = now - this.BirthTime;
+
+                    if (timeAlive > this.MaxAge)
+                    {
+                        ParticleList.RemoveAt(i);
+                    }
+                }
+            }
+        }
     }
 }

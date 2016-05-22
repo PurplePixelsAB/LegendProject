@@ -24,24 +24,24 @@ namespace LegendWorld.Data.Modifiers
             //    character.Stats.Modifiers.Remove(this);
         }
 
-        public override byte Modify(Character character, StatIdentifier stat, byte newValue, byte oldValue)
+        public override int Modify(Character character, StatIdentifier stat, int newValue, int oldValue)
         {
             if (stat == StatIdentifier.Health && newValue < oldValue)
             {
-                byte damageToAbsorb = 0;
+                int damageToAbsorb = 0;
                 int maxAbsorbAmount = character.Energy;
                 int damageAmount = oldValue - newValue;
                 if (damageAmount < maxAbsorbAmount)
                 {
-                    damageToAbsorb = (byte)MathHelper.Clamp(damageAmount, byte.MinValue, byte.MaxValue);
+                    damageToAbsorb = MathHelper.Clamp(damageAmount, byte.MinValue, byte.MaxValue);
                     character.Energy -= damageToAbsorb;
                     return oldValue;
                 }
 
-                damageToAbsorb = (byte)MathHelper.Clamp(maxAbsorbAmount, byte.MinValue, byte.MaxValue);
+                damageToAbsorb = MathHelper.Clamp(maxAbsorbAmount, byte.MinValue, byte.MaxValue);
                 character.Energy -= damageToAbsorb;
 
-                byte returnHealth = (byte)MathHelper.Clamp(newValue + damageToAbsorb, byte.MinValue, byte.MaxValue);
+                int returnHealth = MathHelper.Clamp(newValue + damageToAbsorb, byte.MinValue, byte.MaxValue);
                 return returnHealth;
             }
             else

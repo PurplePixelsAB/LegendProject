@@ -41,12 +41,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Data\AffectedByPowerEventArgs.cs" />
     <Compile Include="Data\ArrowProjectile.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseEnergyRegenAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseHealthRegenAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseMaxEnergyAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseMaxHealthAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseSpeedAbility.cs" />
+    <Compile Include="Data\CharacterPowers\StealthAbility.cs" />
     <Compile Include="Data\CharacterPowers\ShortSpeedBurstAbility.cs" />
     <Compile Include="Data\CharacterPowers\DefelctDamageAbility.cs" />
     <Compile Include="Data\CharacterPowers\AbsorbDamageAbility.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Data\Items\SwordItem.cs" />
     <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemCategory.cs" />
+    <Compile Include="Data\Modifiers\DecreaseVisibilityModifier.cs" />
     <Compile Include="Data\Modifiers\DeflectDamageModifier.cs" />
     <Compile Include="Data\Modifiers\CharacterModifier.cs" />
     <Compile Include="Data\Modifiers\DurationModifier.cs" />
@@ -97,6 +100,7 @@
     <Compile Include="Data\Modifiers\AbsorbDamageModifier.cs" />
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
+    <Compile Include="Data\PerformsPowerEventArgs.cs" />
     <Compile Include="Data\StatIdentifier.cs" />
     <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />

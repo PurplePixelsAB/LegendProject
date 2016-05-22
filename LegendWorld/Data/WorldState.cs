@@ -155,7 +155,7 @@ namespace Network
             if (characters.ContainsKey(id))
             {
                 return characters[id];
-            }
+            }            
 
             return null;
         }
@@ -227,7 +227,9 @@ namespace Network
                 }
 
                 projectile.Position = newPosition.ToPoint();
-                projectile.GetProjectileAffected(this);
+                if (projectile.GetProjectileAffected(this))
+                    toRemove.Add(projectile);
+
             }
             foreach (var item in toRemove)
                 this.Projectiles.Remove(item);

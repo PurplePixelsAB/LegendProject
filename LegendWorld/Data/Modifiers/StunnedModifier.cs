@@ -19,7 +19,7 @@ namespace LegendWorld.Data.Modifiers
 
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.MovementSpeed, 0f);
+            character.Stats.Factor(StatIdentifier.MovementSpeed, 0f);
             character.BusyDuration = base.Duration.Value;
         }
     }

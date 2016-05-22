@@ -32,7 +32,7 @@ namespace UdpServer.Network.Packets
                     if (serverCharacter.Pickup(itemToUse))
                     {
                         worldState.SaveItem(itemToUse);
-                        this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket, worldState);
+                        this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);
                     }
                 }
                 else
@@ -43,31 +43,31 @@ namespace UdpServer.Network.Packets
                         if (consumable.Use(serverCharacter, worldState))
                         {
                             worldState.SaveItem(itemToUse);
-                            this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket, worldState);
+                            this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);
                         }
                     }
                     if (itemToUse.Category == ItemCategory.Armor || itemToUse.Category == ItemCategory.Weapon)
                     {
                         if (serverCharacter.Equip(itemToUse))
                         {
-                            this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket, worldState);
+                            this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);
                         }
                     }
                 }
             }
         }
 
-        private void OnSuccessfulUse(int mapId, UseItemPacket incomingPacket, ServerWorldState worldState)
+        private void OnSuccessfulUse(int mapId, int mobileId, int itemId, ServerWorldState worldState)
         {
             foreach (int characterId in worldState.GetMapCharacters(mapId))
             {
-                if (characterId == incomingPacket.MobileId)
+                if (characterId == mobileId)
                     continue;
 
                 ServerCharacter characterToUpdate = ((ServerCharacter)worldState.GetCharacter(characterId));
                 NetState clientSendTo = characterToUpdate.Owner;
 
-                clientSendTo.Send(incomingPacket);
+                clientSendTo.Send(new UseItemPacket(itemId, mobileId));
             }
         }
     }

@@ -26,6 +26,7 @@ namespace Data
         IncreaseMaxEnergy, //More energy
         IncreaseHealthRegen, //More hp regen
         IncreaseEnergyRegen, //More en regen
+        Stealth,
         //Comeplete
 
         //ToDo

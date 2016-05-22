@@ -19,6 +19,7 @@ using LegendWorld.Data;
 using LegendClient.World.Items;
 using Data;
 using LegendClient.Effects;
+using LegendClient.World.Mobiles;
 
 namespace WindowsClient
 {
@@ -70,7 +71,7 @@ namespace WindowsClient
             effectManager = new EffectManager();
             effectManager.UseDayNightCycle = true;
             effectManager.DayColor = Color.White;
-            effectManager.NightColor = Color.DarkBlue;
+            effectManager.NightColor = new Color(.2f, .2f, .4f);//Color.DarkBlue;
 
             inventoryScreen = new InventoryScreen();
             inventoryScreen.ItemUsed += InventoryScreen_ItemUsed;
@@ -274,13 +275,89 @@ namespace WindowsClient
         private void World_CharacterAdded(object sender, NewCharacterEventArgs e)
         {
             e.Character.HealthChanged += Character_HealthChanged;
+            e.Character.PerformsPower += Character_PerformsPower;
+            e.Character.AffectedByPower += Character_AffectedByPower;
         }
+
+        private void Character_AffectedByPower(object sender, AffectedByPowerEventArgs e)
+        {
+            if (sender == null)
+                return;
+            CharacterPower power = (CharacterPower)sender;
+        }
+
+        private void Character_PerformsPower(object sender, PerformsPowerEventArgs e)
+        {
+            if (sender == null)
+                return;
+            CharacterPower power = e.CharacterPower;
+            ClientCharacter character = (ClientCharacter)sender;
+
+            switch (power.Id)
+            {
+                case CharacterPowerIdentity.DefaultAttack:
+                    effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemData.ItemIdentity.Bow)));
+                    break;
+                case CharacterPowerIdentity.HardAttack:
+                    break;
+                case CharacterPowerIdentity.CriticalAttack:
+                    break;
+                case CharacterPowerIdentity.StunAttack:
+                    break;
+                case CharacterPowerIdentity.SlowingAttack:
+                    break;
+                case CharacterPowerIdentity.DecreaseEnergyCost:
+                    break;
+                case CharacterPowerIdentity.IncreaseEnergyCost:
+                    break;
+                case CharacterPowerIdentity.DecreaseDuration:
+                    break;
+                case CharacterPowerIdentity.IncreaseDuration:
+                    break;
+                case CharacterPowerIdentity.Meditation:
+                    break;
+                case CharacterPowerIdentity.DamageToEnergy:
+                    break;
+                case CharacterPowerIdentity.Deflect:
+                    break;
+                case CharacterPowerIdentity.ShortSpeedBurst:
+                    break;
+                case CharacterPowerIdentity.IncreaseSpeed:
+                    break;
+                case CharacterPowerIdentity.IncreaseMaxHealth:
+                    break;
+                case CharacterPowerIdentity.IncreaseMaxEnergy:
+                    break;
+                case CharacterPowerIdentity.IncreaseHealthRegen:
+                    break;
+                case CharacterPowerIdentity.IncreaseEnergyRegen:
+                    break;
+                case CharacterPowerIdentity.Stealth:
+                    break;
+                case CharacterPowerIdentity.IncreaseSwordPower:
+                    break;
+                case CharacterPowerIdentity.IncreaseBowPower:
+                    break;
+                case CharacterPowerIdentity.IncreasePlateArmor:
+                    break;
+                case CharacterPowerIdentity.IncreaseLeatherArmor:
+                    break;
+                case CharacterPowerIdentity.IncreaseMaxWeight:
+                    break;
+                case CharacterPowerIdentity.Interrupt:
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void Character_HealthChanged(object sender, Character.HealthChangedEventArgs e)
         {
             ClientCharacter clientCharacter = (ClientCharacter)sender;
             if (clientCharacter.Health <= e.PreviousHelth) //Damage
             {
                 this.AddDamageIndicator(clientCharacter, e.PreviousHelth - clientCharacter.Health);
+                effectManager.AddEffect(new BloodEffect(clientCharacter.DrawPosition));
             }
             else //Healing
             {
@@ -435,7 +512,7 @@ namespace WindowsClient
             this.DrawProjectiles(spriteBatch);
             spriteBatch.End();
 
-            // effectManager.Draw(spriteBatch, gameTime);
+            effectManager.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin();
             this.DrawDamageEffect(spriteBatch, gameTime);
@@ -541,29 +618,7 @@ namespace WindowsClient
             }
         }
 
-        public class MovementBodyBobEffect
-        {
-            //float lerp = 0f;
-            float lerpSpeed = .01f;
 
-            public Vector2 PositioinBob { get; set; }
-            public Vector2 BobValue { get; set; }
-
-            public MovementBodyBobEffect()
-            {
-                BobValue = new Vector2(0f, 2f);
-                PositioinBob = new Vector2(0f, 0f);
-            }
-
-
-            public void Update(GameTime gameTime)
-            {
-                double msElapsed = gameTime.TotalGameTime.Milliseconds;
-                var offset = (float)Math.Sin(msElapsed * lerpSpeed);
-
-                this.PositioinBob = Vector2.Lerp(this.BobValue, this.BobValue * -1f, offset);
-            }
-        }
 
         private Point GetScreenPostion(Point worldPostion)
         {
@@ -604,25 +659,26 @@ namespace WindowsClient
                     headTextureToUse = headGhostTexture;
                 }
 
-                //centerVector2 - (this.PlayerCharacter.Position - client.Position)
+                var distance = Vector2.Distance(world.PlayerCharacter.Position.ToVector2(), charToDraw.DrawPosition.ToVector2());
+
                 //Draw Body
                 Vector2 clientScreenPostion = this.GetScreenPostion(charToDraw.DrawPosition).ToVector2();
-                spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 
+                spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White,
                     0f, centerBody, 1f, SpriteEffects.None, 1f);
                 if (charToDraw.Armor != null)
                 {
                     IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
-                    spriteBatch.Draw(armorItem.Texture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White, 
+                    spriteBatch.Draw(armorItem.Texture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, Color.White,
                         0f, new Vector2(armorItem.Texture.Bounds.Center.X, 0f), 1f, SpriteEffects.None, 1f);
                 }
 
                 //Draw Head
-                spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, Color.White, 
+                spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, Color.White,
                     (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
                 if (charToDraw.Armor != null)
                 {
                     IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
-                    spriteBatch.Draw(armorItem.HeadTexture, clientScreenPostion, null, Color.White, 
+                    spriteBatch.Draw(armorItem.HeadTexture, clientScreenPostion, null, Color.White,
                         (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
                 }
 
@@ -630,7 +686,7 @@ namespace WindowsClient
                 if (charToDraw.RightHand != null)
                 {
                     IClientItem weaponItem = (IClientItem)charToDraw.RightHand;
-                    spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition + new Vector2(-weaponItem.Texture.Bounds.Width, weaponItem.Texture.Bounds.Center.Y * .5f), null, Color.White, 
+                    spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition + new Vector2(-weaponItem.Texture.Bounds.Width, weaponItem.Texture.Bounds.Center.Y * .5f), null, Color.White,
                         -.5f, weaponItem.Texture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
                 }
             }

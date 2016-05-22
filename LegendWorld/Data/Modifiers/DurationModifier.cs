@@ -19,8 +19,8 @@ namespace LegendWorld.Data.Modifiers
         
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.EnergyCost, this.Amount);
-            character.Stats.Modify(StatIdentifier.Speed, this.Amount);
+            character.Stats.Factor(StatIdentifier.EnergyCost, this.Amount);
+            character.Stats.Factor(StatIdentifier.Speed, this.Amount);
         }
     }
 }

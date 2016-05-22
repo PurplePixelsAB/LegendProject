@@ -18,6 +18,19 @@ namespace LegendClient.Effects
             Effects = new List<ParticleEffect>();
         }
 
+        internal void AddEffect(ParticleEffect particleEffect)
+        {
+            this.newEffects.Enqueue(particleEffect);
+        }
+
+        internal void RemoveEffect(ParticleEffect particleEffect)
+        {
+            if (!this.Effects.Contains(particleEffect))
+                return;
+
+            this.Effects.Remove(particleEffect);
+        }
+
         //public SpriteSheet EffectSheet { get { return particleEffectSheet; } set { particleEffectSheet = value; } }
         //public SpriteSheet LoadEffectSheet(string SpriteSheetContentPath)
         //{
@@ -39,7 +52,8 @@ namespace LegendClient.Effects
         internal Random Random { get; private set; }
 
         internal List<LightSource> LightSources { get; set; }
-        internal List<ParticleEffect> Effects { get; set; }
+        private List<ParticleEffect> Effects { get; set; }
+        private Queue<ParticleEffect> newEffects = new Queue<ParticleEffect>(30);
 
         public bool UseDayNightCycle { get; set; }
         public enum CycleState
@@ -73,6 +87,9 @@ namespace LegendClient.Effects
             effectTextures.Add("StrongRound", content.Load<Texture2D>("Lights/StrongRoundLight"));
             effectTextures.Add("Star", content.Load<Texture2D>("Lights/StarLight"));
             effectTextures.Add("Cross", content.Load<Texture2D>("Lights/CrossLight"));
+            effectTextures.Add("Swing", content.Load<Texture2D>("Swing")); 
+            effectTextures.Add("BloodSplatter01", content.Load<Texture2D>("BloodSplatter01")); 
+
         }
         protected internal void UnloadContent()
         {
@@ -88,6 +105,13 @@ namespace LegendClient.Effects
 
         protected internal void Update(GameTime gameTime)
         {
+            while(newEffects.Count > 0)
+            {
+                var effect = newEffects.Dequeue();
+                effect.Create(this, gameTime);
+                this.Effects.Add(effect);
+            }
+
             for (int i = Effects.Count - 1; i >= 0; i--)
             {
                 Effects[i].Update(gameTime);
@@ -119,8 +143,8 @@ namespace LegendClient.Effects
                     Particle particle = effect.ParticleList[i];
                     Texture2D textureToDraw = effectTextures[effect.Sprite];
                     Rectangle sourceRectangle = textureToDraw.Bounds; //particleEffectSheet.GetSourceRectangle(effect.Sprite);
-                    Vector2 origin = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
-                    spriteBatch.Draw(textureToDraw, particle.Position, sourceRectangle, particle.ModColor, i, origin, particle.Scaling, SpriteEffects.None, 1);
+                    Vector2 origin = sourceRectangle.Center.ToVector2(); //new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
+                    spriteBatch.Draw(textureToDraw, particle.Position + new Vector2(20f, 20f), sourceRectangle, particle.Color, particle.Rotation, origin, particle.Scale, SpriteEffects.None, 1);
                 }
             }
             spriteBatch.End();

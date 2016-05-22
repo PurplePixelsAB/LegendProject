@@ -42,21 +42,14 @@ namespace DataClient
         //    return this.Get<IEnumerable<ItemData>>(groundItemsAddress);
         //}
 
-        private TObject Get<TObject>(string requestAdress)
+        protected TObject Get<TObject>(string requestAdress)
         {
             TObject returnObject = default(TObject);
             HttpResponseMessage response = httpClient.GetAsync(requestAdress).Result;
             if (response.IsSuccessStatusCode)
             {
                 string strJson = response.Content.ReadAsStringAsync().Result;
-                //Deserialize to strongly typed class i.e., RootObject
                 returnObject = JsonConvert.DeserializeObject<TObject>(strJson);
-                //string content = response.Content.ReadAsStringAsync().Result;
-                //returnObject = response.Content.ReadAsAsync<TObject>().Result;
-                //if (!string.IsNullOrEmpty(content))
-                //{
-
-                //}
             }
 
             return returnObject;
@@ -79,21 +72,18 @@ namespace DataClient
             return this.Get<int>(authAddress + "CreateSession/" + characterId);
         }
 
-        public IEnumerable<SelectableCharacter> GetCharacters()
+        public IEnumerable<SelectableCharacter> GetSelectableCharacter()
         {
             return this.Get<IEnumerable<SelectableCharacter>>(authAddress + "GetCharacterList/");
-        }
-
-        //public Character
-
-        public void EndSession(int sessionId)
-        {
-            var result = this.Get<object>(authAddress + "EndSession/" + sessionId); ;
         }
 
         public CharacterData GetCharacter(int characterId)
         {
             return this.Get<CharacterData>(characterAddress + characterId);
+        }
+        public IEnumerable<CharacterData> GetCharacters(int mapId)
+        {
+            return this.Get<IEnumerable<CharacterData>>(characterAddress); // + mapId);
         }
     }
 }

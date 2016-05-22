@@ -38,14 +38,14 @@ namespace WindowsClient.World.Mobiles
             {
                 if (this.Health != health.Value)
                 {
-                    this.Stats.Modify(StatIdentifier.Health, health.Value);
+                    this.Stats.Set(StatIdentifier.Health, health.Value);
                 }
             }
             if (energy.HasValue)
             {
                 if (this.Energy != energy.Value)
                 {
-                    this.Stats.Modify(StatIdentifier.Energy, energy.Value);
+                    this.Stats.Set(StatIdentifier.Energy, energy.Value);
                 }
             }
         }

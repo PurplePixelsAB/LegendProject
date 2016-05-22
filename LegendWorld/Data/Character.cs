@@ -68,9 +68,9 @@ namespace Data.World
 
         public bool IsMoving { get { return this.MovingToPosition != this.Position && this.MovingToPosition != null; } }
 
-        public bool IsDead { get { return this.Health == 0; } }
+        public bool IsDead { get { return this.Health <= 0; } }
 
-        public byte Health
+        public int Health
         {
             get
             {
@@ -82,13 +82,13 @@ namespace Data.World
                 var oldHp = this.Stats.GetStat(StatIdentifier.Health); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
                 if (oldHp != value)
                 {
-                    this.Stats.Modify(StatIdentifier.Health, value);
+                    this.Stats.Set(StatIdentifier.Health, value);
                     this.OnHealthChange(oldHp);
                 }
             }
         }
 
-        public byte Energy
+        public int Energy
         {
             get
             {
@@ -98,20 +98,38 @@ namespace Data.World
             set
             {
                 //var oldEnergy = this.Stats.GetStat(StatIdentifier.Energy); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
-                this.Stats.Modify(StatIdentifier.Energy, value);
+                this.Stats.Set(StatIdentifier.Energy, value);
                 //this.OnEnergyChange(oldEnergy); //ToDo: Add to Stats as event.
             }
         }
 
 
-        public byte MaxHealth { get { return this.Stats.GetStat(StatIdentifier.HealthMax); } }
+        public int MaxHealth { get { return this.Stats.GetStat(StatIdentifier.HealthMax); } }
 
-        public byte MaxEnergy { get { return this.Stats.GetStat(StatIdentifier.EnergyMax); } }
+        public int MaxEnergy { get { return this.Stats.GetStat(StatIdentifier.EnergyMax); } }
 
 
         public CircleCollitionArea CollitionArea { get; set; }
 
+        public event EventHandler<PerformsPowerEventArgs> PerformsPower;
+        internal virtual void OnPerformsPower(CharacterPower characterPower)
+        {
+            if (this.PerformsPower != null)
+            {
+                PerformsPowerEventArgs eventArgs = new PerformsPowerEventArgs(characterPower);
+                this.PerformsPower(this, eventArgs);
+            }
+        }
 
+        public event EventHandler<AffectedByPowerEventArgs> AffectedByPower;
+        internal void OnAffectedByPower(CharacterPower characterPower, Character abilityPerformedBy)
+        {
+            if (this.AffectedByPower != null)
+            {
+                AffectedByPowerEventArgs eventArgs = new AffectedByPowerEventArgs(characterPower, abilityPerformedBy);
+                this.AffectedByPower(this, eventArgs);
+            }
+        }
 
         public List<CharacterPowerIdentity> Powers { get; set; }
 
@@ -125,6 +143,7 @@ namespace Data.World
 
 
         public double BusyDuration { get; internal set; }
+
 
         public bool IsBusy { get { return this.BusyDuration > 0D; } }
 
@@ -336,7 +355,7 @@ namespace Data.World
         }
 
         public event EventHandler<HealthChangedEventArgs> HealthChanged;
-        private void OnHealthChange(byte oldHp)
+        private void OnHealthChange(int oldHp)
         {
             if (this.HealthChanged != null)
             {
@@ -350,7 +369,7 @@ namespace Data.World
             {
             }
 
-            public byte PreviousHelth { get; set; }
+            public int PreviousHelth { get; set; }
         }
 
         public class MoveToMapPointValidatingEventArgs : EventArgs

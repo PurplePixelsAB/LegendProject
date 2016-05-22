@@ -14,7 +14,7 @@ namespace LegendWorld.Data.Modifiers
 
         public abstract void Update(GameTime gameTime, Character character);
         
-        public virtual byte Modify(Character character, StatIdentifier stat, byte newValue, byte oldValue)
+        public virtual int Modify(Character character, StatIdentifier stat, int newValue, int oldValue)
         {
             return newValue;
         }

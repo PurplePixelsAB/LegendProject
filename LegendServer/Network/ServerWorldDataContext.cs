@@ -17,9 +17,21 @@ namespace LegendServer.Network
         {
         }
 
+        internal void EndSession(int sessionId)
+        {
+            var result = this.Get<object>(authAddress + "EndSession/" + sessionId); ;
+        }
+
+        private void ResetSessions()
+        {
+            var result = this.Get<object>(authAddress + "ResetSessions/");
+        }
+
         internal bool AuthServer(string dataServerUsername, string dataServerPassword)
         {
-            return true; //ToDo: Login to DataServer.
+            //ToDo: Login to DataServer
+            this.ResetSessions();
+            return true; 
         }
 
         //internal WorldState LoadWorldState()

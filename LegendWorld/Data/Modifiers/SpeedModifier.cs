@@ -22,7 +22,7 @@ namespace LegendWorld.Data.Modifiers
 
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Modify(StatIdentifier.MovementSpeed, this.Amount);
+            character.Stats.Factor(StatIdentifier.MovementSpeed, this.Amount);
         }
     }
 }

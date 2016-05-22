@@ -22,7 +22,7 @@ namespace LegendWorld.Data.Modifiers
 
         }
 
-        public override byte Modify(Character character, StatIdentifier stat, byte newValue, byte oldValue)
+        public override int Modify(Character character, StatIdentifier stat, int newValue, int oldValue)
         {
             if (stat == StatIdentifier.Health && newValue < oldValue && !this.IsUsed)
             {

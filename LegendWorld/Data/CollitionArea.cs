@@ -46,19 +46,20 @@ namespace LegendWorld.Data
             this.Target = this.performedBy.AimToPosition;
             this.Position = this.performedBy.Position;
             this.Speed = 50f;
+            this.R = 10;
         }
 
         public override List<Character> GetAffected(WorldState world, Character performer)
         {
             return new List<Character>();
         }
-        public void GetProjectileAffected(WorldState world)
+        public bool GetProjectileAffected(WorldState world)
         {
             //List<Character> returnList = new List<Character>();
             if (Position == null || Position == Point.Zero)
-                return;
+                return false;
             if (R == 0)
-                return;
+                return false;
 
             foreach (ushort characterId in world.Characters)
             {
@@ -68,12 +69,14 @@ namespace LegendWorld.Data
                 Character checkCollitionVersus = world.GetCharacter(characterId);
                 if (Contains(checkCollitionVersus.CollitionArea))
                 {
-                    world.Projectiles.Remove(this);
+                    //world.Projectiles.Remove(this);
                     defaultAttackAbility.PerformTo(world, checkCollitionVersus, performedBy);
                     //returnList.Add(checkCollitionVersus);
+                    return true;
                 }
             }
 
+            return false;
             //return returnList;
         }
     }

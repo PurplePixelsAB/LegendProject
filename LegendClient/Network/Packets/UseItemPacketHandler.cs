@@ -21,6 +21,12 @@ namespace WindowsClient.Net.Packets
             UseItemPacket incomingPacket = (UseItemPacket)packet;
             ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(incomingPacket.MobileId);
             IItem itemToUse = worldState.GetItem(incomingPacket.ItemId);
+
+            if (mobileToUpdate == null)
+            {
+                worldState.MissingCharacters.Add(incomingPacket.MobileId);
+            }
+
             if (mobileToUpdate != null && itemToUse != null)
             {
                 if (itemToUse.Data.IsWorldItem)

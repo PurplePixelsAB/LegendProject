@@ -18,6 +18,7 @@ namespace LegendWorld.Data
         Power,
         Armor,
         Speed,
-        MovementSpeed
+        MovementSpeed,
+        Visibility
     }
 }

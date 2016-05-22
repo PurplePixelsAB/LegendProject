@@ -82,7 +82,7 @@ namespace WindowsClient.Net
                 else
                     Disconnect();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Disconnect();
             }

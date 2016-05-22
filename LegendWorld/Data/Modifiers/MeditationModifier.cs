@@ -30,7 +30,7 @@ namespace LegendWorld.Data.Modifiers
             float lerpAmount = elapstedTime / timeToMaxAmount.Ticks;
             float modAmount = MathHelper.Lerp(this.StartAmount, this.EndAmount, lerpAmount);
 
-            character.Stats.Modify(StatIdentifier.EnergyRegeneration, modAmount);
+            character.Stats.Factor(StatIdentifier.EnergyRegeneration, modAmount);
         }
     }
 }

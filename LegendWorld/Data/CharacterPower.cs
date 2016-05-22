@@ -95,6 +95,7 @@ namespace LegendWorld.Data
             //abilityPerformedBy.Performing = this;
             abilityPerformedBy.BusyDuration += this.Duration; 
             abilityPerformedBy.Energy -= abilityPerformedBy.Stats.CalculateEnergyCost(this.EnergyCost);
+            abilityPerformedBy.OnPerformsPower(this);
             var affectedCharacters = this.GetAbilityEffectArea(worldState, abilityPerformedBy).GetAffected(worldState, abilityPerformedBy);
             foreach (Character affectedChar in affectedCharacters)
             {
@@ -104,7 +105,7 @@ namespace LegendWorld.Data
 
         internal virtual void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-
+            abilityPerformedTo.OnAffectedByPower(this, abilityPerformedBy);
         }
         public virtual CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {

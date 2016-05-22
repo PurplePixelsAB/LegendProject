@@ -74,6 +74,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Effects\EffectManager.cs" />
+    <Compile Include="Effects\BloodEffect.cs" />
+    <Compile Include="Effects\SwingEffect.cs" />
     <Compile Include="Effects\TestEffect.cs" />
     <Compile Include="Effects\ExplosionEffect.cs" />
     <Compile Include="Effects\LightSource.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="World\Items\DaggerClientItem.cs" />
     <Compile Include="World\Items\SwordClientItem.cs" />
     <Compile Include="World\Mobiles\ClientCharacter.cs" />
+    <Compile Include="World\Mobiles\MovementBodyBobEffect.cs" />
     <Compile Include="World\ServerMessage.cs" />
   </ItemGroup>
   <ItemGroup>

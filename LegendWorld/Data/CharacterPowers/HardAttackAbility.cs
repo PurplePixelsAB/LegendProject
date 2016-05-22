@@ -42,8 +42,8 @@ namespace LegendWorld.Data.Abilities
 
         internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            byte attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
-            byte damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
+            int attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
+            int damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
             abilityPerformedTo.Health -= damageTaken;
         }
 

@@ -17,7 +17,7 @@ namespace LegendWorld.Data.Abilities
 
         public DefaultAttackAbility() : base(CharacterPowerIdentity.DefaultAttack)
         {
-            this.Duration = 2000;
+            this.Duration = 1000;
             this.PrepareTime = 0;
             this.EnergyCost = 5;
             //this.Area = new ConeCollitionArea();
@@ -53,8 +53,8 @@ namespace LegendWorld.Data.Abilities
 
         internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-                byte attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
-                byte damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
+            int attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
+            int damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
                 abilityPerformedTo.Health -= damageTaken;
         }
 

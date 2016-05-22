@@ -9,6 +9,9 @@ namespace Data
         public int CharacterId { get; set; }
 
         [DataMember]
+        public int MapId { get; set; }
+
+        [DataMember]
         public string Name { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace DataServer.Controllers
         // GET: api/Character
         public IQueryable<CharacterData> GetCharacters()
         {
-            return db.Characters;
+            return db.Characters.Where(chr => db.PlayerSessions.Any(ps => ps.CharacterID == chr.CharacterDataID));
         }
 
         // GET: api/Character/5

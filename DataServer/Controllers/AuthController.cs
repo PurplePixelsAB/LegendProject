@@ -56,27 +56,43 @@ namespace DataServer.Controllers
 
             return Ok();
         }
+        [HttpGet]
+        public async Task<IHttpActionResult> ResetSessions() //WorldServer ONLY
+        {
+            int result = await db.Database.ExecuteSqlCommandAsync("DELETE FROM [dbo].[PlayerSessions]");
+            //foreach (var session in db.PlayerSessions.ToList())
+            //{
+            //    db.PlayerSessions.Remove(session);
+            //    result = await db.SaveChangesAsync();
+            //}
 
+            return Ok(result);
+        }
+
+        [HttpGet]
         public async Task<IHttpActionResult> GetCharacterList()
         {
             //Random rnd = new Random(); //ToDo, Create a character table and connect it to authentication.
 
-            CharacterData characterData = await this.GetTempCharacter();
+            List<CharacterData> characterList = await this.GetTempCharacter();
 
-            return Ok(new SelectableCharacter[] {
-                new SelectableCharacter() { CharacterId = characterData.CharacterDataID, Name = characterData.Name } }.ToList());
+            return Ok(characterList.Select(characterData => new SelectableCharacter() { CharacterId = characterData.CharacterDataID, Name = characterData.Name, MapId = characterData.MapID }));
+
+            //return Ok(new SelectableCharacter[] {
+            //    new SelectableCharacter() { CharacterId = characterData.CharacterDataID, Name = characterData.Name, MapId = characterData.MapID } }.ToList());
         }
 
-        private async Task<CharacterData> GetTempCharacter()
+        private async Task<List<CharacterData>> GetTempCharacter()
         {
-            CharacterData returnCharacter = await db.Characters.FirstOrDefaultAsync(c => !db.PlayerSessions.Any(ps => ps.CharacterID == c.CharacterDataID));
-            if (returnCharacter == null)
+            List<CharacterData> returnCharacter = db.Characters.Where(c => !db.PlayerSessions.Any(ps => ps.CharacterID == c.CharacterDataID)).Take(3).ToList();
+            while (returnCharacter.Count < 3)
             {
-                returnCharacter = db.Characters.Create();
-                returnCharacter.Name = "TempCharacter" + await db.Characters.CountAsync();
+                CharacterData addCharacter = db.Characters.Create();
+                addCharacter.Name = "TempCharacter" + await db.Characters.CountAsync();
 
-                db.Characters.Add(returnCharacter);
+                addCharacter = db.Characters.Add(addCharacter);
                 int result = await db.SaveChangesAsync();
+                returnCharacter.Add(addCharacter);
             }
 
             return returnCharacter;

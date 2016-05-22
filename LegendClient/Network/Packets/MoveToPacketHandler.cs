@@ -16,18 +16,15 @@ namespace WindowsClient.Net.Packets
     {
         protected override void OnHandle(IPacket packet, ClientWorldState worldState)
         {
-            MoveToPacket moveToPacket = (MoveToPacket)packet;
-            ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(moveToPacket.MobileId);
+            MoveToPacket incomingPacket = (MoveToPacket)packet;
+            ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(incomingPacket.MobileId);
             if (mobileToUpdate == null)
             {
-                //mobileToUpdate = new ClientCharacter();
-                //mobileToUpdate.Id = moveToPacket.MobileId;
-                //worldState.AddCharacter(mobileToUpdate);
-
+                worldState.MissingCharacters.Add(incomingPacket.MobileId);
                 return;
             }
             
-            mobileToUpdate.ServerMoveToRecived(new Point(moveToPacket.X, moveToPacket.Y));
+            mobileToUpdate.ServerMoveToRecived(new Point(incomingPacket.X, incomingPacket.Y));
         }
     }
 }

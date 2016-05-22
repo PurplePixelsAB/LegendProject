@@ -18,8 +18,8 @@ namespace LegendClient.Effects
 
             //particle.BirthTime = (float)gameTime.TotalGameTime.TotalMilliseconds;
             //particle.MaxAge = MaxAge;
-            particle.Scaling = 0.25f;
-            particle.ModColor = Color.White;
+            particle.Scale = 0.25f;
+            particle.Color = Color.White;
 
             float particleDistance = (float)Manager.Random.NextDouble() * this.Spread; //Size;
             Vector2 displacement = new Vector2(particleDistance, 0);
@@ -51,11 +51,11 @@ namespace LegendClient.Effects
                     particle.Position = 0.5f * particle.Accelaration * relAge * relAge + particle.Direction * relAge + this.Position; //particle.OrginalPosition;
 
                     float invAge = 1.0f - relAge;
-                    particle.ModColor = new Color(new Vector4(invAge, invAge, invAge, invAge));
+                    particle.Color = new Color(new Vector4(invAge, invAge, invAge, invAge));
 
                     Vector2 positionFromCenter = particle.Position - this.Position; //particle.OrginalPosition;
                     float distance = positionFromCenter.Length();
-                    particle.Scaling = ((50.0f + distance) / 200.0f) * this.Size;
+                    particle.Scale = ((50.0f + distance) / 200.0f) * this.Size;
 
                     ParticleList[i] = particle;
                 }

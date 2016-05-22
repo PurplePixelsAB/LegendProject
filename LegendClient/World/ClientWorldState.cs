@@ -9,16 +9,22 @@ using System.Text;
 using WindowsClient.World.Mobiles;
 using LegendWorld.Data;
 using LegendClient.World.Items;
+using LegendClient.Screens;
+using LegendWorld.Data.Items;
 
 namespace WindowsClient.World
 {
     public class ClientWorldState : WorldState
     {
-
+        public ClientWorldState() : base()
+        {
+            this.MissingCharacters = new List<int>(30);
+        }
         //private byte swingDmg = 24;
 
         //public IEnumerable<ushort> Characters { get { return base.characters.Keys; } }
         internal ClientCharacter PlayerCharacter { get; set; }
+        public List<int> MissingCharacters { get; set; }
 
         protected override WorldMap GetCharactersMap(Character character)
         {
@@ -45,7 +51,7 @@ namespace WindowsClient.World
         {
             Vector2 centerVector2 = new Vector2(960f, 540f);
             float lerpAmount = (float)(gameTime.ElapsedGameTime.TotalMilliseconds / WorldPump.Interval);
-            
+
             if (this.PlayerCharacter.Position != PlayerCharacter.DrawPosition)
             {
                 Vector2 drawPosition = Vector2.Lerp(PlayerCharacter.DrawPosition.ToVector2(), this.PlayerCharacter.Position.ToVector2(), lerpAmount);
@@ -109,7 +115,7 @@ namespace WindowsClient.World
                 {
                     continue;
                 }
-                
+
                 if (clientItem.Data.WorldMapID.Value == currentMapId)
                 {
                     itemsonGround.Add(clientItem);
@@ -117,6 +123,34 @@ namespace WindowsClient.World
             }
 
             return itemsonGround;
+        }
+
+        internal ClientCharacter CreateCharacter(CharacterData charData) //, ItemData inventoryData)
+        {
+            ClientCharacter character = new ClientCharacter(charData.CharacterDataID, charData.WorldLocation);
+            character.Health = charData.Health;
+            character.Energy = charData.Energy;
+            foreach (var power in charData.Powers)
+                character.Learn(power.Power);
+
+            if (charData.RightHandID.HasValue)
+                character.RightHand = (WeaponItem)this.GetItem(charData.RightHandID.Value);
+            if (charData.LeftHandID.HasValue)
+                character.LeftHand = (WeaponItem)this.GetItem(charData.RightHandID.Value);
+            if (charData.ArmorID.HasValue)
+                character.Armor = (ArmorItem)this.GetItem(charData.RightHandID.Value);
+
+            BagClientItem inventory = (BagClientItem)this.GetItem(charData.InventoryID);
+
+
+            character.InventoryData = inventory.Data; //inventoryData; //dataContext.GetItem(charData.InventoryID);
+            if (character.InventoryData != null)
+                character.Inventory = inventory; //(BagClientItem)this.CreateItem(character.InventoryData);
+
+            //world.AddCharacter(character);
+            //this.AddItem(character.Inventory);
+
+            return character;
         }
     }
 

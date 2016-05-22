@@ -12,8 +12,8 @@ namespace LegendWorld.Data
     public class Stats
     {
         public static StatIdentifier[] All = (StatIdentifier[])Enum.GetValues(typeof(StatIdentifier));
-        private Dictionary<StatIdentifier, byte> baseStats;
-        private Dictionary<StatIdentifier, byte> modStats;
+        private Dictionary<StatIdentifier, int> baseStats;
+        private Dictionary<StatIdentifier, int> modStats;
         private Character character;
 
         public ModifiersCollection Modifiers { get; set; }
@@ -21,8 +21,8 @@ namespace LegendWorld.Data
         public Stats(Character attachedCharacter)
         {
             character = attachedCharacter;
-            baseStats = new Dictionary<StatIdentifier, byte>(Stats.All.Length);
-            modStats = new Dictionary<StatIdentifier, byte>(Stats.All.Length);
+            baseStats = new Dictionary<StatIdentifier, int>(Stats.All.Length);
+            modStats = new Dictionary<StatIdentifier, int>(Stats.All.Length);
             byte defaultValue = 100;
             foreach (StatIdentifier stat in Stats.All)
             {
@@ -43,9 +43,9 @@ namespace LegendWorld.Data
         }
 
         //public event EventHandler<StatModifyEventArgs> StatModify;
-        protected virtual byte OnStatModify(Character character, StatIdentifier statToModify, byte newValue, byte oldValue)
+        protected virtual int OnStatModify(Character character, StatIdentifier statToModify, int newValue, int oldValue)
         {
-            byte returnValue = newValue;
+            int returnValue = newValue;
             foreach (CharacterModifier modifier in this.Modifiers)
             {
                 returnValue = modifier.Modify(character, statToModify, returnValue, oldValue);
@@ -54,15 +54,19 @@ namespace LegendWorld.Data
             return returnValue;
         }
 
-        internal byte CalculateDamageTaken(byte attackersPower)
+        internal int CalculateDamageTaken(int attackersPower)
         {
-            byte armor = this.GetStat(StatIdentifier.Armor);
-            byte damageTaken = (byte)MathHelper.Clamp(attackersPower - armor, 1, 255);
+            int defenderArmor = 0;
+            if (character.Armor != null)
+                defenderArmor = (int)character.Armor.Armor;
+
+            int armor = this.GetModdedStatByFactor(StatIdentifier.Armor, defenderArmor);
+            int damageTaken = (int)MathHelper.Clamp(attackersPower - armor, 1, 255);
 
             return damageTaken;
         }
 
-        internal byte CalculateAbilityPower(byte power)
+        internal int CalculateAbilityPower(int power)
         {
             return this.GetModdedStatByFactor(StatIdentifier.Power, power);
         }
@@ -71,19 +75,19 @@ namespace LegendWorld.Data
         {
             int baseValue = (int)baseStats[statId];
             int modValue = baseValue + modifyAmount;
-            byte clampedModValue = (byte)MathHelper.Clamp(modValue, byte.MinValue, byte.MaxValue);
-            this.Modify(statId, clampedModValue);
+            int clampedModValue = MathHelper.Clamp(modValue, byte.MinValue, byte.MaxValue);
+            this.Set(statId, clampedModValue);
         }
-        public void Modify(StatIdentifier statId, byte modifyAmountTo)
+        public void Set(StatIdentifier statId, int modifyAmountTo)
         {
             modStats[statId] = this.OnStatModify(character, statId, modifyAmountTo, modStats[statId]);
         }
-        public void Modify(StatIdentifier statId, float modifyAmount)
+        public void Factor(StatIdentifier statId, float modifyAmount)
         {
             float baseValue = (float)baseStats[statId];
             float modValue = baseValue * modifyAmount;
-            byte roundedClampedModValue = (byte)MathHelper.Clamp((float)Math.Round(modValue), byte.MinValue, byte.MaxValue);
-            this.Modify(statId, roundedClampedModValue);
+            int roundedClampedModValue = MathHelper.Clamp((int)Math.Round(modValue), byte.MinValue, byte.MaxValue);
+            this.Set(statId, roundedClampedModValue);
         }
 
         internal bool HasModifier(Type modifierType)
@@ -96,7 +100,7 @@ namespace LegendWorld.Data
 
             return false;
         }
-        internal byte GetStat(StatIdentifier statId)
+        internal int GetStat(StatIdentifier statId)
         {
             return modStats[statId];
         }
@@ -109,7 +113,7 @@ namespace LegendWorld.Data
             Vector2 movement = direction * ((float)this.GetStat(StatIdentifier.MovementSpeed) * .1f);
             return movement;
         }
-        internal byte CalculateEnergyCost(byte baseEnergyCost)
+        internal int CalculateEnergyCost(int baseEnergyCost)
         {
             return this.GetModdedStatByFactor(StatIdentifier.EnergyCost, baseEnergyCost);
         }
@@ -118,35 +122,35 @@ namespace LegendWorld.Data
         {
             return GetStatFactor(statId, 100);
         }
-        private float GetStatFactor(StatIdentifier statId, byte restPoint)
+        private float GetStatFactor(StatIdentifier statId, int restPoint)
         {
             float restPointFloat = restPoint;
             return MathHelper.Clamp(modStats[statId], 1f, 255f) / restPointFloat;
         }
-        private byte GetModdedStatByFactor(StatIdentifier statId, byte baseValue)
+        private int GetModdedStatByFactor(StatIdentifier statId, int baseValue)
         {
             if (baseValue == 0)
                 return 0;
 
             float factor = this.GetStatFactor(statId);
-            byte moddedValue = (byte)MathHelper.Clamp((int)Math.Round(baseValue * factor), 1, 255);
+            int moddedValue = MathHelper.Clamp((int)Math.Round(baseValue * factor), 1, 255);
             return moddedValue;
         }
 
         public class StatModifyEventArgs : EventArgs
         {
-            private byte newValue;
-            private byte oldValue;
+            private int newValue;
+            private int oldValue;
             private StatIdentifier statToModify;
 
-            public StatModifyEventArgs(StatIdentifier statToModify, byte oldValue, byte newValue)
+            public StatModifyEventArgs(StatIdentifier statToModify, int oldValue, int newValue)
             {
                 this.statToModify = statToModify;
                 this.oldValue = oldValue;
                 this.newValue = newValue;
             }
 
-            public byte NewValue
+            public int NewValue
             {
                 get
                 {
@@ -159,7 +163,7 @@ namespace LegendWorld.Data
                 }
             }
 
-            public byte OldValue
+            public int OldValue
             {
                 get
                 {

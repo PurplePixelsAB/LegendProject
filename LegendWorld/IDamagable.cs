@@ -2,8 +2,8 @@
 {
     internal interface IDamagable
     {
-        byte Health { get; set; }
-        byte MaxHealth { get; }
+        int Health { get; set; }
+        int MaxHealth { get; }
 
         //void ApplyDamage(byte damageAmount);
     }

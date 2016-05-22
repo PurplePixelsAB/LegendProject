@@ -194,12 +194,12 @@ namespace UdpServer
                     continue;
 
                 ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
-                clientSendTo.Send(new StatsChangedPacket(aboutCharacter.Id, aboutCharacter.Health, aboutCharacter.Energy));
+                clientSendTo.Send(new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Health, (byte)aboutCharacter.Energy));
             }
         }
         internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
         {
-            var packet = new StatsChangedPacket(aboutCharacter.Id, aboutCharacter.Health, aboutCharacter.Energy);
+            var packet = new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Health, (byte)aboutCharacter.Energy);
             foreach (ushort mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
             {
                 ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
