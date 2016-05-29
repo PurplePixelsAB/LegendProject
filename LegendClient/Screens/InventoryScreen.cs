@@ -205,6 +205,8 @@ namespace LegendClient.Screens
                         if (world.PlayerCharacter.DropItem(item))
                         {
                             NetworkEngine.Instance.PickUpItem(world.PlayerCharacter.Id, item);
+                            this.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(this.Player.InventoryBagId));
+                            this.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
                         }
                     }
 
@@ -225,7 +227,8 @@ namespace LegendClient.Screens
                 if (world.PlayerCharacter.PickupItem(item))
                 {
                     NetworkEngine.Instance.PickUpItem(world.PlayerCharacter.Id, item);
-                    this.GroundItems.Add(item); // = world.GroundItemsInRange(this.Player.Id);
+                    this.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(this.Player.InventoryBagId));
+                    this.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
                 }
             }
             else
