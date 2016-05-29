@@ -14,6 +14,7 @@ using LegendClient.World.Items;
 using WindowsClient.World.Mobiles;
 using WindowsClient.Net;
 using WindowsClient.World;
+using Data.World;
 
 namespace LegendClient.Screens
 {
@@ -84,6 +85,9 @@ namespace LegendClient.Screens
             spriteBatch.Begin();
             spriteBatch.Draw(whitePixel, this.Game.GraphicsDevice.Viewport.Bounds, this.Game.GraphicsDevice.Viewport.Bounds, Color.Black * .8f, 0f, Vector2.Zero, SpriteEffects.None, 1f);
             spriteBatch.Draw(bagTexture, this.Game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(), bagTexture.Bounds, Color.White, 0f, bagTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+
+
+            spriteBatch.DrawString(itemSpriteFont, string.Format("{0} / {1}", this.BaseContainer.GetTotalWeight(), Character.MaxWeight), Vector2.Zero, Color.White);
 
             if (this.BaseContainer != null && this.BaseContainer.Items != null)
             {
