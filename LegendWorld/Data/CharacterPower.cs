@@ -36,7 +36,7 @@ namespace LegendWorld.Data
             CharacterPower.Register(new ShortSpeedBurstAbility());
             CharacterPower.Register(new IncreaseSpeedAbility());
             CharacterPower.Register(new IncreaseMaxHealthAbility());
-            CharacterPower.Register(new IncreaseMaxHealthAbility());
+            CharacterPower.Register(new IncreaseMaxEnergyAbility());
             CharacterPower.Register(new IncreaseHealthRegenAbility());
             CharacterPower.Register(new IncreaseEnergyRegenAbility());
             CharacterPower.Register(new StealthAbility());

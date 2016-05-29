@@ -35,9 +35,18 @@ namespace LegendWorld.Data.Abilities
             }
         }
 
-        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
+        public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character performedBy)
         {
-            return new ConeCollitionArea() { Range = 20, Fov = 30 };
+            if (performedBy.RightHand == null && performedBy.LeftHand == null)
+                return new ConeCollitionArea() { Range = 20, Fov = 90 };
+            else if (performedBy.RightHand.Data.Identity == ItemData.ItemIdentity.Bow)
+            {
+                ArrowColltionArea arrowColltionArea = new ArrowColltionArea(this, performedBy);
+                worldState.Projectiles.Add(arrowColltionArea);
+                return arrowColltionArea;
+            }
+            else
+                return new ConeCollitionArea() { Range = performedBy.RightHand.SwingRange, Fov = performedBy.RightHand.SwingFov };
         }
 
         internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)

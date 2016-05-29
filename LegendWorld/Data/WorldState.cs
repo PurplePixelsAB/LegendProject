@@ -196,15 +196,15 @@ namespace Network
                     continue;
 
                 Character characterToUpdate = characters[characterId];
-                characterToUpdate.Update(gameTime);
+                characterToUpdate.Update(gameTime, this);
 
                 if (isRegenTick)
                 {
-                    if (characterToUpdate.Stats.Health < characterToUpdate.Stats.MaxHealth - 10 && characterToUpdate.Stats.Health >= 10)
-                        characterToUpdate.Stats.Health += 1;
+                    if (characterToUpdate.Stats.Health < Stats.Factor(characterToUpdate.Stats.MaxHealth, .9f) && characterToUpdate.Stats.Health >= Stats.Factor(characterToUpdate.Stats.MaxHealth, .1f))
+                        characterToUpdate.Stats.Health += characterToUpdate.Stats.HealthRegen;
 
                     if (characterToUpdate.Stats.Energy < characterToUpdate.Stats.MaxEnergy)
-                        characterToUpdate.Stats.Energy += 1;
+                        characterToUpdate.Stats.Energy += characterToUpdate.Stats.EnergyRegen;
 
                     nextRegendTick = (gameTime.TotalGameTime + baseRegenTick).Ticks;
                 }

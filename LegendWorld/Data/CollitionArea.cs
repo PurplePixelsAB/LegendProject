@@ -33,15 +33,15 @@ namespace LegendWorld.Data
     }
     public class ArrowColltionArea : CircleCollitionArea
     {
-        private CharacterPower defaultAttackAbility;
+        private CharacterPower characterPowerPerfomed;
         private Character performedBy;
         
         public Point Target { get; set; }
         public float Speed { get; internal set; }
 
-        public ArrowColltionArea(DefaultAttackAbility defaultAttackAbility, Character performedBy)
+        public ArrowColltionArea(CharacterPower characterPower, Character performedBy)
         {
-            this.defaultAttackAbility = defaultAttackAbility;
+            this.characterPowerPerfomed = characterPower;
             this.performedBy = performedBy;
             this.Target = this.performedBy.AimToPosition;
             this.Position = this.performedBy.Position;
@@ -72,7 +72,7 @@ namespace LegendWorld.Data
                 if (Contains(checkCollitionVersus.CollitionArea))
                 {
                     //world.Projectiles.Remove(this);
-                    defaultAttackAbility.PerformTo(world, checkCollitionVersus, performedBy);
+                    characterPowerPerfomed.PerformTo(world, checkCollitionVersus, performedBy);
                     //returnList.Add(checkCollitionVersus);
                     return true;
                 }

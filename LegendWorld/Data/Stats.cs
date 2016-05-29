@@ -30,6 +30,8 @@ namespace LegendWorld.Data
         }
 
         private const float baseMovement = 6f;
+        private const int baseHealthRegen = 1;
+        private const int baseEnergyRegen = 2;
 
         private Dictionary<StatIdentifier, int> baseStats;
         //private Dictionary<StatIdentifier, int> modStats;
@@ -79,6 +81,8 @@ namespace LegendWorld.Data
         }
 
         public ModifiersCollection Modifiers { get; set; }
+        public int HealthRegen { get { return this.GetStat(StatIdentifier.HealthRegeneration); } }
+        public int EnergyRegen { get { return this.GetStat(StatIdentifier.EnergyRegeneration); } }
 
         public Stats(Character attachedCharacter)
         {
@@ -92,6 +96,8 @@ namespace LegendWorld.Data
                 //modStats.Add(stat, defaultValue);
             }
 
+            this.Set(StatIdentifier.HealthRegeneration, baseHealthRegen);
+            this.Set(StatIdentifier.EnergyRegeneration, baseEnergyRegen);
             this.Set(StatIdentifier.Power, 0);
             this.Set(StatIdentifier.Armor, 0);
 
@@ -100,19 +106,14 @@ namespace LegendWorld.Data
 
         public void Update(GameTime gameTime)
         {
-            //this.Add(StatIdentifier.Health, this.GetStat(StatIdentifier.HealthRegeneration));
-            //this.Add(StatIdentifier.Energy, this.GetStat(StatIdentifier.EnergyRegeneration));
-            //int characterWeight = character.GetCarryWeight();
-            //float maxWeightFactor = this.GetStatFactor(StatIdentifier.MaxWeight);
-            //int maxWeight = (int)(Character.MaxWeight * maxWeightFactor);
-            //float weightFactor = (float)characterWeight / (float)maxWeight;
+            int characterWeight = character.GetCarryWeight();
+            float maxWeightFactor = this.GetStatFactor(StatIdentifier.MaxWeight);
+            int maxWeight = (int)(Character.MaxWeight * maxWeightFactor);
+            float weightFactor = 1f - ((float)characterWeight / (float)maxWeight);
+            int mobility = Stats.Clamp((int)Math.Round(100f * weightFactor));
+            this.Set(StatIdentifier.Mobility, mobility);
             //this.SetFactor(StatIdentifier.Mobility, MathHelper.Clamp(1f - weightFactor, 0f, 1f), 100);
-            //baseStats[StatIdentifier.Health] = modStats[StatIdentifier.Health];
-            //baseStats[StatIdentifier.Energy] = modStats[StatIdentifier.Energy];
-            //foreach (StatIdentifier stat in Stats.All)
-            //{
-            //    modStats[stat] = baseStats[stat];
-            //}
+
         }
 
         internal void SetPower(int power, int weaponPower)
@@ -212,7 +213,7 @@ namespace LegendWorld.Data
             if (restPoint <= 0)
                 return 0f;
 
-            return statValue / restPoint;
+            return (float)statValue / (float)restPoint;
         }
         //private int GetModdedStatByFactor(StatIdentifier statId, int baseValue)
         //{
@@ -301,6 +302,17 @@ namespace LegendWorld.Data
         {
             float ecFactor = this.GetStatFactor(StatIdentifier.EnergyCost);
             return Stats.Factor(baseEnergyCost, ecFactor);
+        }
+
+        public override string ToString()
+        {
+            string listText = string.Empty;
+            foreach (var stat in Stats.All)
+            {
+                listText += string.Format("{0}: {1}{2}", stat.ToString(), this.GetStat(stat), Environment.NewLine);
+            }
+
+            return listText;
         }
 
         //public class StatModifyEventArgs : EventArgs

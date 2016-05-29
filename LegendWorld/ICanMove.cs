@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace Data
         Point MovingToPosition { get; }
         void SetMoveToPosition(Point mapPoint);
         event EventHandler<World.Character.MoveToMapPointValidatingEventArgs> MoveToMapPointValidating;
-        void Update(GameTime gameTime);
+        void Update(GameTime gameTime, WorldState world);
     }
 }

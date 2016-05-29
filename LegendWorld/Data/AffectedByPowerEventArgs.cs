@@ -12,5 +12,7 @@ namespace Data.World
             this.characterPower = characterPower;
             this.abilityPerformedBy = abilityPerformedBy;
         }
+
+        public CharacterPower CharacterPower { get; set; }
     }
 }

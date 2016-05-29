@@ -12,6 +12,7 @@ using LegendWorld.Data.Items;
 using LegendWorld.Data;
 using LegendClient.World.Items;
 using WindowsClient.World.Mobiles;
+using LegendWorld.Data.Modifiers;
 
 namespace LegendClient.Screens
 {
@@ -93,6 +94,27 @@ namespace LegendClient.Screens
                 {
                     spriteBatch.DrawString(powerSpriteFont, "No Powers.", drawPosition, Color.White);
                 }
+
+                drawPosition = Vector2.Zero;
+                foreach (CharacterModifier mod in this.Character.Stats.Modifiers)
+                {
+                    string listText = mod.ToString();
+
+                    spriteBatch.DrawString(powerSpriteFont, listText, drawPosition, Color.White);
+                    drawPosition.Y += powerSpriteFont.LineSpacing;
+                }
+
+                drawPosition.Y += 100f;
+                drawPosition.X += 50f;
+                //drawPosition = new Vector2(this.Game.GraphicsDevice.Viewport.Bounds.Width - 400, 0f);
+                string test = this.Character.Stats.ToString();
+                //foreach (var stat in Stats.All)
+                //{
+                //    string listText = this.Character.Stats.G.ToString();
+
+                spriteBatch.DrawString(powerSpriteFont, test, drawPosition, Color.White);
+                //drawPosition.Y += powerSpriteFont.LineSpacing;
+                //}
             }
 
             spriteBatch.Draw(selectionTexture, this.Manager.InputManager.MousePosition.ToVector2(), selectionTexture.Bounds, Color.White, 0f, selectionTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);

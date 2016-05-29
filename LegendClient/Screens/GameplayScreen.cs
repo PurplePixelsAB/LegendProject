@@ -308,13 +308,16 @@ namespace WindowsClient
         {
             if (sender == null)
                 return;
-            CharacterPower power = (CharacterPower)sender;
+
+            CharacterPower power = e.CharacterPower;
+            ClientCharacter character = (ClientCharacter)sender;
         }
 
         private void Character_PerformsPower(object sender, PerformsPowerEventArgs e)
         {
             if (sender == null)
                 return;
+
             CharacterPower power = e.CharacterPower;
             ClientCharacter character = (ClientCharacter)sender;
 
@@ -324,6 +327,7 @@ namespace WindowsClient
                     effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemData.ItemIdentity.Bow)));
                     break;
                 case CharacterPowerIdentity.HardAttack:
+                    effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemData.ItemIdentity.Bow)));
                     break;
                 case CharacterPowerIdentity.CriticalAttack:
                     break;

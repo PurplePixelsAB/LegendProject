@@ -18,7 +18,7 @@ namespace Data.World
     {
         public static readonly int MaxWeight = 100000;
         private const float lootDistance = 40f;
-        private const int maxPowers = 5;
+        private const int maxPowers = 7;
         //private static Point defaultStartLocation = new Point(25, 25);
 
         public Character(int id) : this(id, Point.Zero)
@@ -223,8 +223,13 @@ namespace Data.World
             return e.IsValid;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, WorldState world)
         {
+            foreach (CharacterPowerIdentity powerID in this.Powers)
+            {
+                var power = CharacterPower.Get(powerID);
+                power.Update(gameTime, world, this);
+            }
             this.Stats.Update(gameTime);
             this.Stats.Modifiers.Update(gameTime, this);
             if (this.BusyDuration > 0)

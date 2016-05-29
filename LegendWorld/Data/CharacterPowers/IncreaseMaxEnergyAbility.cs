@@ -13,7 +13,7 @@ namespace LegendWorld.Data.Abilities
 {
     public class IncreaseMaxEnergyAbility : CharacterPower
     {
-        public IncreaseMaxEnergyAbility() : base(CharacterPowerIdentity.IncreaseEnergyCost)
+        public IncreaseMaxEnergyAbility() : base(CharacterPowerIdentity.IncreaseMaxEnergy)
         {
             this.Duration = 0;
             this.PrepareTime = 0;
