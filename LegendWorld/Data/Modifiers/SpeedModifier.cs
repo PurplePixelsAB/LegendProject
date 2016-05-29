@@ -20,9 +20,21 @@ namespace LegendWorld.Data.Modifiers
 
         public float Amount { get; private set; }
 
-        public override void Update(GameTime gameTime, Character character)
+        internal override void Register(Stats stats)
         {
-            character.Stats.Factor(StatIdentifier.MovementSpeed, this.Amount);
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.Mobility, this.OnMobility);
         }
+
+        private StatReadEventArgs OnMobility(Character character, StatReadEventArgs e)
+        {
+            e.Value = Stats.Factor(e.Value, this.Amount);
+            return e;
+        }
+
+        //public override void Update(GameTime gameTime, Character character)
+        //{
+        //    character.Stats.Factor(StatIdentifier.Mobility, this.Amount);
+        //}
     }
 }

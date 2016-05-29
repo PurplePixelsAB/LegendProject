@@ -19,8 +19,8 @@ namespace UdpServer
             this.Position = this.LatestData.WorldLocation;
             this.AimToPosition = this.Position;
             this.MovingToPosition = this.Position;
-            this.Health = this.LatestData.Health;
-            this.Energy = this.LatestData.Energy;
+            this.Stats.Health = this.LatestData.Health;
+            this.Stats.Energy = this.LatestData.Energy;
             foreach (var pwr in this.LatestData.Powers)
             {
                 this.Powers.Add(pwr.Power);
@@ -33,11 +33,26 @@ namespace UdpServer
             //CharacterData characterData = new CharacterData();
             //characterData.CharacterDataID = this.Id;
             //characterData.InventoryID = this.
-            LatestData.Energy = (byte)this.Energy;
-            LatestData.Health = (byte)this.Health;
+            LatestData.Energy = (byte)this.Stats.Energy;
+            LatestData.Health = (byte)this.Stats.Health;
             LatestData.MapID = this.CurrentMapId;
             LatestData.WorldX = this.Position.X;
             LatestData.WorldY = this.Position.Y;
+            if (this.RightHand != null)
+            {
+                LatestData.RightHand = this.RightHand.Data;
+                LatestData.RightHandID = this.RightHand.Data.ItemDataID;
+            }
+            if (this.LeftHand != null)
+            {
+                LatestData.LeftHand = this.LeftHand.Data;
+                LatestData.LeftHandID = this.LeftHand.Data.ItemDataID;
+            }
+            if (this.Armor != null)
+            {
+                LatestData.Armor = this.Armor.Data;
+                LatestData.ArmorID = this.Armor.Data.ItemDataID;
+            }
 
             return LatestData;
         }

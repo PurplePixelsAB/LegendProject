@@ -106,6 +106,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Screens\CharacterScreen.cs" />
     <Compile Include="Screens\ItemUsedEventArgs.cs" />
     <Compile Include="Screens\DisconnectedScreen.cs" />
     <Compile Include="Screens\GameMenuScreen.cs" />

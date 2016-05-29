@@ -67,6 +67,8 @@ namespace LegendWorld.Data
                     continue;
 
                 Character checkCollitionVersus = world.GetCharacter(characterId);
+                if (checkCollitionVersus.IsDead)
+                    return false;
                 if (Contains(checkCollitionVersus.CollitionArea))
                 {
                     //world.Projectiles.Remove(this);

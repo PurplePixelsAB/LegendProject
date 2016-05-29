@@ -23,6 +23,8 @@ namespace LegendWorld.Data
         
         int Weight { get; }
 
+        int GetTotalWeight();
+
         //public virtual string GetInventoryString()
         //{
         //    if (this.Data.IsStackable)

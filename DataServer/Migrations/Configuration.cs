@@ -66,7 +66,13 @@ namespace DataServer.Migrations
                     item.Identity = itemID; // ItemData.ItemIdentity.PowerScoll;
                     //item.SubType = (int)abilityId;
                     item.MoveTo(0, new Point(rnd.Next(1, 5000), rnd.Next(1, 5000)));
-                    item.Count = rnd.Next(1, 9);
+                    item.Count = 1;
+
+                    if (itemID == ItemData.ItemIdentity.Gold)
+                        item.Count = rnd.Next(1, 9999);
+                    else if (itemID == ItemData.ItemIdentity.Bandage)
+                        item.Count = rnd.Next(5, 99);
+
                     var itemAdded = context.Items.Add(item);
                     //itemId++;
                 }

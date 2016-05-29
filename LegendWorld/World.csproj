@@ -84,7 +84,7 @@
     <Compile Include="Data\Items\LeatherArmorItem.cs" />
     <Compile Include="Data\Items\ConsumableItem.cs" />
     <Compile Include="Data\Items\PlateArmorItem.cs" />
-    <Compile Include="Data\Items\OtherItem.cs" />
+    <Compile Include="Data\Items\StackableItem.cs" />
     <Compile Include="Data\Items\DaggerItem.cs" />
     <Compile Include="Data\Items\SwordItem.cs" />
     <Compile Include="Data\Items\WeaponItem.cs" />

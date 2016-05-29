@@ -200,11 +200,11 @@ namespace Network
 
                 if (isRegenTick)
                 {
-                    if (characterToUpdate.Health < characterToUpdate.MaxHealth - 10 && characterToUpdate.Health >= 10)
-                        characterToUpdate.Health += 1;
+                    if (characterToUpdate.Stats.Health < characterToUpdate.Stats.MaxHealth - 10 && characterToUpdate.Stats.Health >= 10)
+                        characterToUpdate.Stats.Health += 1;
 
-                    if (characterToUpdate.Energy < characterToUpdate.MaxEnergy)
-                        characterToUpdate.Energy += 1;
+                    if (characterToUpdate.Stats.Energy < characterToUpdate.Stats.MaxEnergy)
+                        characterToUpdate.Stats.Energy += 1;
 
                     nextRegendTick = (gameTime.TotalGameTime + baseRegenTick).Ticks;
                 }

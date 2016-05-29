@@ -11,7 +11,7 @@ namespace LegendWorld.Data.Items
     {
         public BowItem()
         {
-            this.Power = 70;
+            this.Power = 15;
             this.Speed = 75;
             this.Weight = 2000;
             this.IsTwoHanded = true;

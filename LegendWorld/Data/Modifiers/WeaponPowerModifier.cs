@@ -23,10 +23,22 @@ namespace LegendWorld.Data.Modifiers
         public float Amount { get; private set; }
         public ItemData.ItemIdentity WeaponRequired { get; private set; }
 
-        public override void Update(GameTime gameTime, Character character)
-        {            
-            if (character.IsEquiped(this.WeaponRequired))
-                character.Stats.Factor(StatIdentifier.Power, this.Amount);
+        internal override void Register(Stats stats)
+        {
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.Power, this.OnWeaponPower);
         }
+
+        private StatReadEventArgs OnWeaponPower(Character character, StatReadEventArgs e)
+        {
+            e.Value = Stats.Factor(e.Value, this.Amount);
+            return e;
+        }
+
+        //public override void Update(GameTime gameTime, Character character)
+        //{            
+        //    if (character.IsEquiped(this.WeaponRequired))
+        //        character.Stats.Factor(StatIdentifier.Power, this.Amount);
+        //}
     }
 }

@@ -6,16 +6,16 @@ using Data;
 
 namespace LegendWorld.Data.Items
 {
-    public abstract class ConsumableItem : IItem
+    public abstract class ConsumableItem : StackableItem
     {
         public ConsumableItem()
         {
             this.Category = ItemCategory.Consumable;
         }
         public abstract bool OnUse(Character usedBy, WorldState worldState);
-        public ItemData Data { get; set; }
-        public ItemCategory Category { get; protected set; }
-        public int Weight { get; protected set; }
+        //public ItemData Data { get; set; }
+        //public ItemCategory Category { get; protected set; }
+        //public int Weight { get; protected set; }
 
         public bool Use(Character character, WorldState worldState)
         {

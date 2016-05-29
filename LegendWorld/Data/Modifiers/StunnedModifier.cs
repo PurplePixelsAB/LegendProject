@@ -17,9 +17,22 @@ namespace LegendWorld.Data.Modifiers
             base.IsUsed = false;
         }
 
+        internal override void Register(Stats stats)
+        {
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.Mobility, this.OnMobility);
+        }
+
+        private StatReadEventArgs OnMobility(Character character, StatReadEventArgs e)
+        {
+            e.Value = 0;
+            return e;
+        }
+
+
         public override void Update(GameTime gameTime, Character character)
         {
-            character.Stats.Factor(StatIdentifier.MovementSpeed, 0f);
+            //character.Stats.Factor(StatIdentifier.Mobility, 0f);
             character.BusyDuration = base.Duration.Value;
         }
     }

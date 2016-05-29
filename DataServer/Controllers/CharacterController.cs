@@ -21,19 +21,19 @@ namespace DataServer.Controllers
         // GET: api/Character
         public IQueryable<CharacterData> GetCharacters()
         {
-            return db.Characters.Where(chr => db.PlayerSessions.Any(ps => ps.CharacterID == chr.CharacterDataID));
+            return db.Characters.Where(chr => db.PlayerSessions.Any(ps => ps.CharacterID == chr.CharacterDataID)).Include(c => c.Powers);
         }
 
         // GET: api/Character/5
         [ResponseType(typeof(CharacterData))]
         public async Task<IHttpActionResult> GetCharacterData(int id)
         {
-            CharacterData characterData = await db.Characters.FindAsync(id);
+            CharacterData characterData = await db.Characters.Include(c => c.Powers).FirstOrDefaultAsync(c => c.CharacterDataID == id);
             if (characterData == null)
             {
                 return NotFound();
             }
-
+            
             return Ok(characterData);
         }
 

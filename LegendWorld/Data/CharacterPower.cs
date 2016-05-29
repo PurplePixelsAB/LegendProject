@@ -82,7 +82,7 @@ namespace LegendWorld.Data
             if (character.IsDead)
                 return false;
 
-            if (character.Energy < character.Stats.CalculateEnergyCost(this.EnergyCost))
+            if (character.Stats.Energy < character.Stats.CalculateEnergyCost(this.EnergyCost))
                 return false;
 
             if (this.RequiredItem.HasValue)
@@ -106,7 +106,7 @@ namespace LegendWorld.Data
         {
             //abilityPerformedBy.Performing = this;
             abilityPerformedBy.BusyDuration += this.Duration; 
-            abilityPerformedBy.Energy -= abilityPerformedBy.Stats.CalculateEnergyCost(this.EnergyCost);
+            abilityPerformedBy.Stats.Energy -= abilityPerformedBy.Stats.CalculateEnergyCost(this.EnergyCost);
             abilityPerformedBy.OnPerformsPower(this);
             var affectedCharacters = this.GetAbilityEffectArea(worldState, abilityPerformedBy).GetAffected(worldState, abilityPerformedBy);
             foreach (Character affectedChar in affectedCharacters)

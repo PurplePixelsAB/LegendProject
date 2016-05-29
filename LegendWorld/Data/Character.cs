@@ -14,8 +14,9 @@ using System.Text;
 
 namespace Data.World
 {
-    public class Character : ICanMove, IDamagable
+    public class Character : ICanMove //IDamagable
     {
+        public static readonly int MaxWeight = 100000;
         private const float lootDistance = 40f;
         private const int maxPowers = 5;
         //private static Point defaultStartLocation = new Point(25, 25);
@@ -27,13 +28,13 @@ namespace Data.World
         {
             this.Id = id;
             Stats = new Stats(this);
+            Stats.Health = 100; //ToDo: Remove/100
+            Stats.Energy = 100; //ToDo: Remove/100
             Powers = new List<CharacterPowerIdentity>();
 
             Position = startPosition; // Character.defaultStartLocation;
             MovingToPosition = startPosition; // Character.defaultStartLocation;
             AimToPosition = startPosition; // Character.defaultStartLocation;
-            Health = 100; //ToDo: Remove/100
-            Energy = 100; //ToDo: Remove/100
 
             CollitionArea = new CircleCollitionArea();
             CollitionArea.R = 20;
@@ -41,6 +42,20 @@ namespace Data.World
 
             //Abilities.Add(AbilityIdentity.DefaultAttack);
             //this.Learn(CharacterPowerIdentity.DefaultAttack);
+        }
+
+        internal int GetCarryWeight()
+        {
+            ContainerItem inventory = this.Inventory;
+            int weight = inventory.GetTotalWeight();
+            if (this.Armor != null)
+                weight += this.Armor.Weight;
+            if (this.LeftHand != null)
+                weight += this.LeftHand.Weight;
+            if (this.RightHand != null)
+                weight += this.RightHand.Weight;
+
+            return weight;
         }
 
 
@@ -68,47 +83,8 @@ namespace Data.World
 
         public bool IsMoving { get { return this.MovingToPosition != this.Position && this.MovingToPosition != null; } }
 
-        public bool IsDead { get { return this.Health <= 0; } }
-
-        public int Health
-        {
-            get
-            {
-                return this.Stats.GetStat(StatIdentifier.Health);
-            }
-
-            set
-            {
-                var oldHp = this.Stats.GetStat(StatIdentifier.Health); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
-                if (oldHp != value)
-                {
-                    this.Stats.Set(StatIdentifier.Health, value);
-                    this.OnHealthChange(oldHp);
-                }
-            }
-        }
-
-        public int Energy
-        {
-            get
-            {
-                return this.Stats.GetStat(StatIdentifier.Energy);
-            }
-
-            set
-            {
-                //var oldEnergy = this.Stats.GetStat(StatIdentifier.Energy); //ToDo: Move to Stats.Update() routine. Move Event to Stats.
-                this.Stats.Set(StatIdentifier.Energy, value);
-                //this.OnEnergyChange(oldEnergy); //ToDo: Add to Stats as event.
-            }
-        }
-
-
-        public int MaxHealth { get { return this.Stats.GetStat(StatIdentifier.HealthMax); } }
-
-        public int MaxEnergy { get { return this.Stats.GetStat(StatIdentifier.EnergyMax); } }
-
-
+        public bool IsDead { get { return this.Stats.Health <= 0; } }
+        
         public CircleCollitionArea CollitionArea { get; set; }
 
         public event EventHandler<PerformsPowerEventArgs> PerformsPower;
@@ -149,8 +125,8 @@ namespace Data.World
 
 
         public PrepareAbility PrepareToPerform { get; set; }
-        public ItemData InventoryData { get; set; }
-
+        //public ItemData InventoryData { get; set; }
+        public ContainerItem Inventory { get; set; }
 
         public event EventHandler MoveToChanged;
         public virtual void SetMoveToPosition(Point mapPoint)
@@ -290,7 +266,7 @@ namespace Data.World
             if (!this.IsPositionInRange(itemUsed.Data.WorldLocation))
                 return false;
 
-            itemUsed.Data.MoveTo(this.InventoryData);
+            itemUsed.Data.MoveTo(this.Inventory.Data);
             return true;
         }
         public bool Equip(IItem itemToEquip)
@@ -354,23 +330,23 @@ namespace Data.World
             return distance <= lootDistance;
         }
 
-        public event EventHandler<HealthChangedEventArgs> HealthChanged;
-        private void OnHealthChange(int oldHp)
-        {
-            if (this.HealthChanged != null)
-            {
-                this.HealthChanged(this, new HealthChangedEventArgs() { PreviousHelth = oldHp });
-            }
-        }
+        //public event EventHandler<HealthChangedEventArgs> HealthChanged;
+        //private void OnHealthChange(int oldHp)
+        //{
+        //    if (this.HealthChanged != null)
+        //    {
+        //        this.HealthChanged(this, new HealthChangedEventArgs() { PreviousHelth = oldHp });
+        //    }
+        //}
 
-        public class HealthChangedEventArgs : EventArgs
-        {
-            public HealthChangedEventArgs()
-            {
-            }
+        //public class HealthChangedEventArgs : EventArgs
+        //{
+        //    public HealthChangedEventArgs()
+        //    {
+        //    }
 
-            public int PreviousHelth { get; set; }
-        }
+        //    public int PreviousHelth { get; set; }
+        //}
 
         public class MoveToMapPointValidatingEventArgs : EventArgs
         {

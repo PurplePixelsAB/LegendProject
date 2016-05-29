@@ -10,7 +10,13 @@ using System.Threading.Tasks;
 namespace LegendWorld.Data.Modifiers
 {
     public class ModifiersCollection : List<CharacterModifier>
-    {        
+    {
+        private Stats stats;
+        public ModifiersCollection(Stats owner)
+        {
+            stats = owner;
+        }
+
         Queue<CharacterModifier> durationRunOutModifiers = new Queue<CharacterModifier>(10);
         public virtual void Update(GameTime gameTime, Character character)
         {
@@ -35,5 +41,16 @@ namespace LegendWorld.Data.Modifiers
             while (durationRunOutModifiers.Count > 0)
                 this.Remove(durationRunOutModifiers.Dequeue());
         }
+
+        public new void Add(CharacterModifier item)
+        {
+            //item.Modifiers = this;
+            item.Register(stats);
+            base.Add(item);
+        }
+
+
+        
+
     }
 }

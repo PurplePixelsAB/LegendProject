@@ -20,7 +20,7 @@ namespace LegendClient.Effects
             this.Particles = 1;
             this.Size = .2f;
             this.Spread = 0f;
-            this.MaxAge = 30000;
+            this.MaxAge = 120000;
         }
 
         internal override void AddParticle(GameTime gameTime)

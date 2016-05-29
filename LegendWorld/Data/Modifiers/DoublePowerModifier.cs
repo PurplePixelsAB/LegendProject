@@ -16,10 +16,23 @@ namespace LegendWorld.Data.Modifiers
             base.IsUsed = false; //ToDo: Need to detect if chracter does damage. Maybe hook an event from Character?
         }
 
-        public override void Update(GameTime gameTime, Character character)
+        internal override void Register(Stats stats)
         {
-            character.Stats.Factor(StatIdentifier.Power, 2f);
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.Power, this.DoublePower);
         }
+
+        private StatReadEventArgs DoublePower(Character character, StatReadEventArgs e)
+        {            
+            e.Value += e.Value;
+            this.IsUsed = true;
+            return e;
+        }
+
+        //public override void Update(GameTime gameTime, Character character)
+        //{
+        //    character.Stats.Factor(StatIdentifier.Power, 2f);
+        //}
 
         //internal override int ModifyPower(int power)
         //{

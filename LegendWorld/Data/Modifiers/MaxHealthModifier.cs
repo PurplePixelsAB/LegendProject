@@ -11,18 +11,29 @@ namespace LegendWorld.Data.Modifiers
 {
     public class MaxHealthModifier : CharacterModifier
     {
-        public MaxHealthModifier(byte setTo) : base()
+        public MaxHealthModifier(int addedMax) : base()
         {
             base.Duration = null;
-            this.NewMaxHealth = setTo;
+            this.AddedMax = addedMax;
             base.IsUsed = false;
         }
 
-        public byte NewMaxHealth { get; private set; }
+        public int AddedMax { get; private set; }
 
-        public override void Update(GameTime gameTime, Character character)
+        internal override void Register(Stats stats)
         {
-            character.Stats.Set(StatIdentifier.HealthMax, this.NewMaxHealth);
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.HealthMax, this.OnMaxHealth);
         }
+
+        private StatReadEventArgs OnMaxHealth(Character character, StatReadEventArgs e)
+        {
+            e.Value += this.AddedMax;
+            return e;
+        }
+        //public override void Update(GameTime gameTime, Character character)
+        //{
+        //    character.Stats.Set(StatIdentifier.HealthMax, this.NewMaxHealth);
+        //}
     }
 }

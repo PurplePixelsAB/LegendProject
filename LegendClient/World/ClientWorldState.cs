@@ -128,8 +128,8 @@ namespace WindowsClient.World
         internal ClientCharacter CreateCharacter(CharacterData charData) //, ItemData inventoryData)
         {
             ClientCharacter character = new ClientCharacter(charData.CharacterDataID, charData.WorldLocation);
-            character.Health = charData.Health;
-            character.Energy = charData.Energy;
+            character.Stats.Health = charData.Health;
+            character.Stats.Energy = charData.Energy;
             foreach (var power in charData.Powers)
                 character.Learn(power.Power);
 
@@ -138,14 +138,14 @@ namespace WindowsClient.World
             if (charData.LeftHandID.HasValue)
                 character.LeftHand = (WeaponItem)this.GetItem(charData.RightHandID.Value);
             if (charData.ArmorID.HasValue)
-                character.Armor = (ArmorItem)this.GetItem(charData.RightHandID.Value);
+                character.Armor = (ArmorItem)this.GetItem(charData.ArmorID.Value);
 
             BagClientItem inventory = (BagClientItem)this.GetItem(charData.InventoryID);
+            character.Inventory = inventory;
 
-
-            character.InventoryData = inventory.Data; //inventoryData; //dataContext.GetItem(charData.InventoryID);
-            if (character.InventoryData != null)
-                character.Inventory = inventory; //(BagClientItem)this.CreateItem(character.InventoryData);
+            //character.InventoryData = inventory.Data; //inventoryData; //dataContext.GetItem(charData.InventoryID);
+            //if (character.InventoryData != null)
+            //    character.Inventory = inventory; //(BagClientItem)this.CreateItem(character.InventoryData);
 
             //world.AddCharacter(character);
             //this.AddItem(character.Inventory);

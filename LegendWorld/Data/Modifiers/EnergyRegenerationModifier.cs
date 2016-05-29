@@ -11,18 +11,36 @@ namespace LegendWorld.Data.Modifiers
 {
     public class EnergyRegenerationModifier : CharacterModifier
     {
-        public EnergyRegenerationModifier(byte setTo) : base()
+        public EnergyRegenerationModifier(int addTo) : base()
         {
             base.Duration = null;
-            this.Regeneration = setTo;
+            this.Regeneration = addTo;
             base.IsUsed = false;
         }
 
-        public byte Regeneration { get; private set; }
+        public int Regeneration { get; private set; }
 
-        public override void Update(GameTime gameTime, Character character)
+        internal override void Register(Stats stats)
         {
-            character.Stats.Set(StatIdentifier.EnergyRegeneration, this.Regeneration);
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.EnergyRegeneration, this.OnReadEnergyRegeneration);
         }
+
+        private StatReadEventArgs OnReadEnergyRegeneration(Character character, StatReadEventArgs e)
+        {
+            e.Value += this.Regeneration; // character.Stats.Factor(e.Value, this.Amount);
+            return e;
+        }
+
+        //private StatReadEventArgs OnReadPower(Character character, StatReadEventArgs e)
+        //{
+        //    e.Value = character.Stats.Factor(e.Value, this.Amount);
+        //    return e;
+        //}
+
+        //public override void Update(GameTime gameTime, Character character)
+        //{
+        //    character.Stats.Set(StatIdentifier.EnergyRegeneration, this.Regeneration);
+        //}
     }
 }

@@ -83,9 +83,12 @@ namespace Data
         public virtual ItemData RightHand { get; set; }
     }
 
+    [DataContract]
     public class CharacterPowerLearned
     {
+        [DataMember]
         public int CharacterPowerLearnedID { get; set; }
-        public CharacterPowerIdentity Power { get; set; }
+        [DataMember]
+        public CharacterPowerIdentity Power { get; set; }        
     }
 }

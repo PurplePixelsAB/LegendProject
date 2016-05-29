@@ -12,14 +12,14 @@ namespace LegendWorld.Data.Abilities
 {
     public class HardAttackAbility : CharacterPower
     {
-        private byte basePower = 34;
+        private byte basePower = 24;
         //private byte baseEnergyCost = 40;
 
         public HardAttackAbility() : base(CharacterPowerIdentity.HardAttack)
         {
             this.Duration = 1000;
             this.PrepareTime = 1000;
-            this.EnergyCost = 20;
+            this.EnergyCost = 15;
         }
 
         public byte Power
@@ -42,13 +42,15 @@ namespace LegendWorld.Data.Abilities
 
         internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            int attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
+            int attackersPower = abilityPerformedBy.Stats.GetStat(StatIdentifier.Power); //abilityPerformedBy.Stats.CalculateAbilityPower(this.Power + weaponPower);
             int damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
-            abilityPerformedTo.Health -= damageTaken;
+            abilityPerformedTo.Stats.Health -= damageTaken;
         }
 
         internal override void PerformBy(WorldState worldState, Character character)
         {
+            int weaponPower = character.Stats.GetWeaponPower();
+            character.Stats.SetPower(this.Power, weaponPower);
             base.PerformBy(worldState, character);
         }
     }

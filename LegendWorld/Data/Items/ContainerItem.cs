@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Data;
+using System.Linq;
 
 namespace LegendWorld.Data.Items
 {
@@ -16,6 +18,11 @@ namespace LegendWorld.Data.Items
         public ItemData Data { get; set; }
         public List<IItem> Items { get; set; }
         public int Weight { get; protected set; }
+
+        public int GetTotalWeight()
+        {
+            return this.Items.Sum(i => i.GetTotalWeight()) + this.Weight;
+        }
 
         //public List<int> Items { get; set; }
 

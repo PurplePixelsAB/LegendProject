@@ -5,11 +5,11 @@ using System.Runtime.Serialization;
 
 namespace LegendWorld.Data.Items
 {
-    public abstract class OtherItem : IItem
+    public abstract class StackableItem : IItem
     {
-        public OtherItem()
+        public StackableItem()
         {
-            this.Category = ItemCategory.Other;
+            this.Category = ItemCategory.Stackable;
         }
         
         public int StackCount { get { return this.Data.Count; } set { this.Data.Count = value; } }
@@ -26,6 +26,11 @@ namespace LegendWorld.Data.Items
 
             return string.Format("{0}", this.Data.Identity);
 
+        }
+
+        public int GetTotalWeight()
+        {
+            return this.StackWeight;
         }
     }
 }

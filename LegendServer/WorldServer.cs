@@ -49,9 +49,9 @@ namespace UdpServer
                 characterData.Inventory = dataContext.GetItem(characterData.InventoryID);
                 if (characterData.Inventory != null)
                 {
-                    var inventoryBagItem = this.CreateItem(characterData.Inventory);
+                    var inventoryBagItem = (ContainerItem)this.CreateItem(characterData.Inventory);
                     this.AddItem(inventoryBagItem);
-                    serverCharacter.InventoryData = characterData.Inventory;
+                    serverCharacter.Inventory = inventoryBagItem; //characterData.Inventory;
 
                     return serverCharacter;
                 }
@@ -101,7 +101,8 @@ namespace UdpServer
         public override void AddCharacter(Character character)
         {
             ServerCharacter serverCharacter = (ServerCharacter)character;
-            serverCharacter.HealthChanged += ServerCharacter_HealthChanged;
+            serverCharacter.Stats.OnStatChangedRegister(StatIdentifier.Health, ServerCharacter_HealthChanged);
+            //serverCharacter.HealthChanged += ServerCharacter_HealthChanged;
             serverCharacter.AimToChanged += ServerCharacter_AimToChanged;
             serverCharacter.MoveToChanged += ServerCharacter_MoveToChanged;
             serverCharacter.Owner.Disconnected += ServerCharacter_Disconnects;
@@ -149,10 +150,12 @@ namespace UdpServer
             }
         }
 
-        private void ServerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
+
+        private StatChangedEventArgs ServerCharacter_HealthChanged(Character character, StatChangedEventArgs e) //private void ServerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
         {
-            ServerCharacter character = (ServerCharacter)sender;
-            this.UpdateEveryoneOfThisCharacter(character);
+            ServerCharacter servCharacter = (ServerCharacter)character;
+            this.UpdateEveryoneOfThisCharacter(servCharacter);
+            return e;
         }
 
         //public override void AddItem(Item item)
@@ -194,12 +197,12 @@ namespace UdpServer
                     continue;
 
                 ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
-                clientSendTo.Send(new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Health, (byte)aboutCharacter.Energy));
+                clientSendTo.Send(new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Stats.Health, (byte)aboutCharacter.Stats.Energy));
             }
         }
         internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
         {
-            var packet = new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Health, (byte)aboutCharacter.Energy);
+            var packet = new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Stats.Health, (byte)aboutCharacter.Stats.Energy);
             foreach (ushort mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
             {
                 ServerCharacter characterToUpdate = ((ServerCharacter)characters[mapCharacterId]);
@@ -240,7 +243,8 @@ namespace UdpServer
 
         public override void RemoveCharacter(Character character)
         {
-            character.HealthChanged -= ServerCharacter_HealthChanged;
+            //character.Stats.OnStatChangedRegister(StatIdentifier.Health, )
+            //character.HealthChanged -= ServerCharacter_HealthChanged;
             character.AimToChanged -= ServerCharacter_AimToChanged;
             character.MoveToChanged -= ServerCharacter_MoveToChanged;
             base.RemoveCharacter(character);

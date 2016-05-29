@@ -196,6 +196,11 @@ namespace WindowsClient
             actionKeyMappingOpenBags.Primary = Keys.B;
             actionKeyMappingOpenBags.ActionTriggered += ActionKeyMappingOpenBags_ActionTriggered;
             Input.Actions.Add(actionKeyMappingOpenBags);
+            ActionKeyMapping actionKeyMappingCharacter = new ActionKeyMapping();
+            actionKeyMappingCharacter.Id = 5;
+            actionKeyMappingCharacter.Primary = Keys.C;
+            actionKeyMappingCharacter.ActionTriggered += ActionKeyMappingOpenCharacter_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingCharacter);
 
             ActionKeyMapping actionKeyMappingToggleFlullscreen = new ActionKeyMapping();
             actionKeyMappingToggleFlullscreen.Id = 0;
@@ -217,7 +222,25 @@ namespace WindowsClient
             menuScreen.Initialize(this.Manager);
             menuScreen.Show();
         }
+        private void ActionKeyMappingOpenCharacter_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            if (world.PlayerCharacter == null)
+                return;
+            if (world.PlayerCharacter.Powers == null)
+                return;
+            //if (world.PlayerCharacter.IsDead)
+            //    return;
 
+            CharacterScreen characterScreen = new CharacterScreen();
+            characterScreen.Character = world.PlayerCharacter;
+            characterScreen.Initialize(this.Manager);
+            characterScreen.Activate();
+
+            //inventoryScreen.Player = world.PlayerCharacter;
+            //inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+            //inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+            //inventoryScreen.Activate();
+        }
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
             if (world.PlayerCharacter == null)
@@ -274,7 +297,8 @@ namespace WindowsClient
 
         private void World_CharacterAdded(object sender, NewCharacterEventArgs e)
         {
-            e.Character.HealthChanged += Character_HealthChanged;
+            e.Character.Stats.OnStatChangedRegister(StatIdentifier.Health, Character_HealthChanged);
+            //e.Character.HealthChanged += Character_HealthChanged;
             e.Character.PerformsPower += Character_PerformsPower;
             e.Character.AffectedByPower += Character_AffectedByPower;
         }
@@ -351,18 +375,20 @@ namespace WindowsClient
             }
         }
 
-        private void Character_HealthChanged(object sender, Character.HealthChangedEventArgs e)
+        private StatChangedEventArgs Character_HealthChanged(Character character, StatChangedEventArgs e)
         {
-            ClientCharacter clientCharacter = (ClientCharacter)sender;
-            if (clientCharacter.Health <= e.PreviousHelth) //Damage
+            ClientCharacter clientCharacter = (ClientCharacter)character;
+            if (e.Value <= e.PreviousValue) //Damage
             {
-                this.AddDamageIndicator(clientCharacter, e.PreviousHelth - clientCharacter.Health);
-                effectManager.AddEffect(new BloodEffect(clientCharacter.DrawPosition));
+                this.AddDamageIndicator(clientCharacter, e.PreviousValue - e.Value);
+                effectManager.AddEffect(new BloodEffect(this.GetScreenPostion(clientCharacter.Position)));
             }
             else //Healing
             {
-                this.AddHealIndicator(clientCharacter, clientCharacter.Health - e.PreviousHelth);
+                this.AddHealIndicator(clientCharacter, e.Value - e.PreviousValue);
             }
+
+            return e;
         }
 
         private void AddHealIndicator(ClientCharacter clientCharacter, int healAmount)
@@ -576,7 +602,7 @@ namespace WindowsClient
             var healthDrawPosition = new Vector2(CenterScreenVector2.X - sourceSize.Center.X, CenterScreenVector2.Y + (CenterScreenVector2.Y * .7f));
             spriteBatch.Draw(hudbarTexture, healthDrawPosition, Color.White);
 
-            int healthBasedWidth = (int)(sourceSize.Width * ((float)world.PlayerCharacter.Health / (float)world.PlayerCharacter.MaxHealth));
+            int healthBasedWidth = (int)(sourceSize.Width * ((float)world.PlayerCharacter.Stats.Health / (float)world.PlayerCharacter.Stats.MaxHealth));
             Rectangle healthSize = sourceSize;
             healthSize.Width = healthBasedWidth;
             spriteBatch.Draw(hudbarTexture, healthDrawPosition, healthSize, Color.DarkGreen);
@@ -584,7 +610,7 @@ namespace WindowsClient
             var energyDrawPosition = healthDrawPosition + new Vector2(0f, sourceSize.Size.Y);
             spriteBatch.Draw(hudbarTexture, energyDrawPosition, Color.White);
 
-            int energyBasedWidth = (int)(sourceSize.Width * ((float)world.PlayerCharacter.Energy / (float)world.PlayerCharacter.MaxEnergy));
+            int energyBasedWidth = (int)(sourceSize.Width * ((float)world.PlayerCharacter.Stats.Energy / (float)world.PlayerCharacter.Stats.MaxEnergy));
             Rectangle energySize = sourceSize;
             energySize.Width = energyBasedWidth;
             spriteBatch.Draw(hudbarTexture, energyDrawPosition, energySize, Color.Orange);

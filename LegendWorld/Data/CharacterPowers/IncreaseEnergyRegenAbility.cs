@@ -21,7 +21,7 @@ namespace LegendWorld.Data.Abilities
             this.Regeneration = 2;
         }
 
-        public byte Regeneration { get; private set; }
+        public int Regeneration { get; private set; }
 
         public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {

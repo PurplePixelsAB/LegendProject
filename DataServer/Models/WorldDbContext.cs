@@ -20,6 +20,7 @@ namespace DataServer.Models
         public WorldDbContext() : base("name=WorldDbContext")
         {
             Configuration.ProxyCreationEnabled = false;
+            Configuration.LazyLoadingEnabled = true;
         }
 
         public DbSet<ItemData> Items { get; set; }
@@ -28,6 +29,7 @@ namespace DataServer.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CharacterData>().HasMany(c => c.Powers);
             //modelBuilder.Entity<Item>()
             //            .Map<ContainerItem>(m => m.Requires("Category").HasValue(ItemCategory.Container))
             //            .Map<ArmorItem>(m => m.Requires("Category").HasValue(ItemCategory.Armor))

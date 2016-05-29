@@ -11,8 +11,8 @@ namespace LegendWorld.Data.Items
     {
         public SwordItem()
         {
-            this.Weight = 5000;
-            this.Power = 90;
+            this.Weight = 7000;
+            this.Power = 18;
             this.Speed = 125;
             this.IsTwoHanded = false;
             this.SwingRange = 60;

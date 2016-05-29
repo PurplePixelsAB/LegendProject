@@ -12,19 +12,19 @@ namespace LegendWorld.Data.Abilities
 {
     public class DefaultAttackAbility : CharacterPower
     {
-        private byte basePower = 5;
+        private int basePower = 5;
         //private byte baseEnergyCost = 40;
 
         public DefaultAttackAbility() : base(CharacterPowerIdentity.DefaultAttack)
         {
             this.Duration = 1000;
             this.PrepareTime = 0;
-            this.EnergyCost = 5;
+            this.EnergyCost = 10;
             //this.Area = new ConeCollitionArea();
             //this.Area.Range = 20;
         }
 
-        public byte Power
+        public int Power
         {
             get
             {
@@ -53,13 +53,15 @@ namespace LegendWorld.Data.Abilities
 
         internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            int attackersPower = abilityPerformedBy.Stats.CalculateAbilityPower(this.Power);
+            int attackersPower = abilityPerformedBy.Stats.GetStat(StatIdentifier.Power); //abilityPerformedBy.Stats.CalculateAbilityPower(this.Power + weaponPower);
             int damageTaken = abilityPerformedTo.Stats.CalculateDamageTaken(attackersPower);
-                abilityPerformedTo.Health -= damageTaken;
+                abilityPerformedTo.Stats.Health -= damageTaken;
         }
 
         internal override void PerformBy(WorldState worldState, Character character)
         {
+            int weaponPower = character.Stats.GetWeaponPower();
+            character.Stats.SetPower(this.Power, weaponPower);
             base.PerformBy(worldState, character);
             //if (character.RightHand != null)
             //{

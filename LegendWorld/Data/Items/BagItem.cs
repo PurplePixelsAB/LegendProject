@@ -11,7 +11,7 @@ namespace LegendWorld.Data.Items
     {
         public BagItem()
         {
-            this.Weight = 20;
+            this.Weight = 200;
         }
     }
 }

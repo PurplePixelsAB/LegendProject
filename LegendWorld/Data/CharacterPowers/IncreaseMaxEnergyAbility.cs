@@ -18,10 +18,10 @@ namespace LegendWorld.Data.Abilities
             this.Duration = 0;
             this.PrepareTime = 0;
             this.EnergyCost = 0;
-            this.NewMax = 150;
+            this.AddedToMax = 50;
         }
 
-        public byte NewMax { get; private set; }
+        public int AddedToMax { get; private set; }
 
         public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
@@ -32,7 +32,7 @@ namespace LegendWorld.Data.Abilities
         {
             base.Update(gameTime, worldState, abilityOwner);
             if (!abilityOwner.Stats.HasModifier(typeof(MaxEnergyModifier)))
-                abilityOwner.Stats.Modifiers.Add(new MaxEnergyModifier(this.NewMax));
+                abilityOwner.Stats.Modifiers.Add(new MaxEnergyModifier(this.AddedToMax));
         }
     }
 }

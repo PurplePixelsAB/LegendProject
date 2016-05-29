@@ -14,7 +14,7 @@ namespace WindowsClient.World.Mobiles
     public class ClientCharacter : Character
     {
         public Point DrawPosition { get; set; }
-        public BagClientItem Inventory { get; set; }
+        //public BagClientItem Inventory { get; set; }
 
         public ClientCharacter(int id, Point startPosition) : base(id, startPosition)
         {
@@ -36,16 +36,16 @@ namespace WindowsClient.World.Mobiles
         {
             if (health.HasValue)
             {
-                if (this.Health != health.Value)
+                if (this.Stats.Health != health.Value)
                 {
-                    this.Stats.Set(StatIdentifier.Health, health.Value);
+                    this.Stats.Health = health.Value; //this.Stats.Set(StatIdentifier.Health, health.Value);
                 }
             }
             if (energy.HasValue)
             {
-                if (this.Energy != energy.Value)
+                if (this.Stats.Energy != energy.Value)
                 {
-                    this.Stats.Set(StatIdentifier.Energy, energy.Value);
+                    this.Stats.Energy = energy.Value; //this.Stats.Set(StatIdentifier.Energy, energy.Value);
                 }
             }
         }

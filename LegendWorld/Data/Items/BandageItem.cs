@@ -27,7 +27,7 @@ namespace LegendWorld.Data.Items
             if (usedBy.IsBusy)
                 return false;
 
-            usedBy.Health += this.HealAmount;
+            usedBy.Stats.Health += this.HealAmount;
             this.Data.Count--;
 
             if (this.Data.Count <= 0)

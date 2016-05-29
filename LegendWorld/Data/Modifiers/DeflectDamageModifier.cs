@@ -17,20 +17,38 @@ namespace LegendWorld.Data.Modifiers
             base.IsUsed = false;
         }
 
-        public override void Update(GameTime gameTime, Character character)
+        internal override void Register(Stats stats)
         {
-
+            base.Register(stats);
+            stats.OnStatChangedRegister(StatIdentifier.Health, this.ReflectDamage);
         }
 
-        public override int Modify(Character character, StatIdentifier stat, int newValue, int oldValue)
+        private StatChangedEventArgs ReflectDamage(Character character, StatChangedEventArgs e)
         {
-            if (stat == StatIdentifier.Health && newValue < oldValue && !this.IsUsed)
+            if (e.Value < e.PreviousValue && !this.IsUsed)
             {
                 this.IsUsed = true;
-                return oldValue;
+                e.Value = e.PreviousValue;
+                character.Stats.Modifiers.Remove(this);
             }
-            else
-                return base.Modify(character, stat, newValue, oldValue);
+
+            return e;
         }
+
+        //public override void Update(GameTime gameTime, Character character)
+        //{
+
+        //}
+
+        //public override int Modify(Character character, StatIdentifier stat, int newValue, int oldValue)
+        //{
+        //    if (stat == StatIdentifier.Health && newValue < oldValue && !this.IsUsed)
+        //    {
+        //        this.IsUsed = true;
+        //        return oldValue;
+        //    }
+        //    else
+        //        return base.Modify(character, stat, newValue, oldValue);
+        //}
     }
 }

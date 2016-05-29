@@ -25,7 +25,7 @@ namespace LegendWorld.Data.Modifiers
         {
             if (character.IsMoving)
                 character.Stats.Modifiers.Remove(this);
-            
+
             elapstedTime += gameTime.ElapsedGameTime.Ticks;
             float lerpAmount = elapstedTime / timeToMaxAmount.Ticks;
             float modAmount = MathHelper.Lerp(this.StartAmount, this.EndAmount, lerpAmount);
