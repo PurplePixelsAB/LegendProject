@@ -46,6 +46,8 @@ namespace UdpServer
             ServerPacketHandler.Register(PacketIdentity.PerformAbility, new PerformAbilityPacketHandler());
             PacketFactory.Register(PacketIdentity.UseItem, () => new UseItemPacket());
             ServerPacketHandler.Register(PacketIdentity.UseItem, new UseItemPacketHandler());
+            PacketFactory.Register(PacketIdentity.PickUpItem, () => new PickUpItemPacket());
+            ServerPacketHandler.Register(PacketIdentity.PickUpItem, new PickUpItemPacketHandler());
 
             acceptedQueue = new Queue<Socket>();
             onAccept = new AsyncCallback(BeginAcceptCallback);

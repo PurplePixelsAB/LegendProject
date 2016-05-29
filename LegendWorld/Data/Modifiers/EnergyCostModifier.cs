@@ -23,6 +23,12 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadRegister(StatIdentifier.Power, this.OnReadPower);
             stats.OnStatReadRegister(StatIdentifier.EnergyCost, this.OnReadEnergyCost);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.Power, this.OnReadPower);
+            stats.OnStatReadUnRegister(StatIdentifier.EnergyCost, this.OnReadEnergyCost);
+        }
 
         private StatReadEventArgs OnReadEnergyCost(Character character, StatReadEventArgs e)
         {

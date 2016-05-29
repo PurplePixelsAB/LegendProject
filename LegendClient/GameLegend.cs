@@ -29,7 +29,7 @@ namespace WindowsClient
             Content.RootDirectory = "Content";
             inputManager = new InputManager();
             screenManager = new ScreenManager(this, inputManager);
-            firstScreen = new SelectCharacterScreen(new Net.NetworkEngine());
+            firstScreen = new SelectCharacterScreen();
         }
 
         /// <summary>

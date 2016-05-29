@@ -25,6 +25,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.Mobility, this.OnMobility);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.Mobility, this.OnMobility);
+        }
 
         private StatReadEventArgs OnMobility(Character character, StatReadEventArgs e)
         {

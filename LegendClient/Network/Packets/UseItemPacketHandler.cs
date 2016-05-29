@@ -31,7 +31,7 @@ namespace WindowsClient.Net.Packets
             {
                 if (itemToUse.Data.IsWorldItem)
                 {
-                    if (!mobileToUpdate.Pickup(itemToUse))
+                    if (!mobileToUpdate.PickupItem(itemToUse))
                     {
                         //ToDo: Simulation missmatch, Force server Authority
                     }

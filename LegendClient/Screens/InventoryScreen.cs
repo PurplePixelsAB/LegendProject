@@ -12,6 +12,8 @@ using LegendWorld.Data.Items;
 using LegendWorld.Data;
 using LegendClient.World.Items;
 using WindowsClient.World.Mobiles;
+using WindowsClient.Net;
+using WindowsClient.World;
 
 namespace LegendClient.Screens
 {
@@ -26,12 +28,16 @@ namespace LegendClient.Screens
         private int currentItemIndex = 0;
         private bool isNavigatingBag = true;
 
-        public BagClientItem BaseContainer { get; set; }
-        public List<IClientItem> GroundItems { get; set; }
-        public ClientCharacter Player { get; set; }
+        private BagClientItem BaseContainer { get; set; }
+        private List<IItem> GroundItems { get; set; }
+        //public ClientCharacter Player { get; set; }
+        private ClientWorldState world;
 
-        public InventoryScreen()
+        public InventoryScreen(ClientWorldState clientWorldState)
         {
+            world = clientWorldState;
+            this.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+            this.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory;
         }
         public override void Initialize(ScreenManager screenManager)
         {
@@ -66,7 +72,13 @@ namespace LegendClient.Screens
             actionKeyMappingRight.Primary = Keys.Right;
             actionKeyMappingRight.ActionTriggered += ActionKeyMappingRight_ActionTriggered;
             Input.Actions.Add(actionKeyMappingRight);
+            ActionKeyMapping actionKeyMappingDrop = new ActionKeyMapping();
+            actionKeyMappingDrop.Id = 6;
+            actionKeyMappingDrop.Primary = Keys.D;
+            actionKeyMappingDrop.ActionTriggered += ActionKeyMappingDrop_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingDrop);
         }
+
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -86,9 +98,9 @@ namespace LegendClient.Screens
                             color = Color.Red;
 
                         string listText = bagItem.ToString();
-                        if (this.Player != null)
+                        if (world.PlayerCharacter != null)
                         {
-                            if (this.Player.IsEquiped(bagItem))
+                            if (world.PlayerCharacter.IsEquiped(bagItem))
                                 listText += " (Equiped)";
                         }
 
@@ -181,12 +193,62 @@ namespace LegendClient.Screens
             }
         }
 
-        public event EventHandler<ItemUsedEventArgs> ItemUsed;
+        private void ActionKeyMappingDrop_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            if (isNavigatingBag)
+            {
+                if (currentItemIndex < this.BaseContainer.Items.Count)
+                {
+                    var item = this.BaseContainer.Items[currentItemIndex];
+                    if (item != null)
+                    {
+                        if (world.PlayerCharacter.DropItem(item))
+                        {
+                            NetworkEngine.Instance.PickUpItem(world.PlayerCharacter.Id, item);
+                        }
+                    }
+
+                    if (currentItemIndex >= this.BaseContainer.Items.Count && currentItemIndex > 0)
+                        currentItemIndex--;
+                }
+            }
+        }
+        //public event EventHandler<ItemUsedEventArgs> ItemUsed;
         private void Use(IItem item, bool isWorldItem)
         {
-            if (this.ItemUsed != null)
+            //if (this.ItemUsed != null)
+            //{
+            //    this.ItemUsed(this, new ItemUsedEventArgs(item, isWorldItem));
+            //}            
+            if (isWorldItem)
             {
-                this.ItemUsed(this, new ItemUsedEventArgs(item, isWorldItem));
+                if (world.PlayerCharacter.PickupItem(item))
+                {
+                    NetworkEngine.Instance.PickUpItem(world.PlayerCharacter.Id, item);
+                    this.GroundItems.Add(item); // = world.GroundItemsInRange(this.Player.Id);
+                }
+            }
+            else
+            {
+                if (item.Category == ItemCategory.Consumable)
+                {
+                    ConsumableItem consumable = (ConsumableItem)item;
+                    if (consumable.Use(world.PlayerCharacter, world))
+                    {
+                        NetworkEngine.Instance.UseItem(world.PlayerCharacter.Id, consumable);
+                        this.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(this.Player.InventoryBagId));
+                        this.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+                    }
+                }
+                if (item.Category == ItemCategory.Armor || item.Category == ItemCategory.Weapon)
+                {
+                    if (world.PlayerCharacter.Equip(item))
+                    {
+                        NetworkEngine.Instance.UseItem(world.PlayerCharacter.Id, item);
+                        this.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(this.Player.InventoryBagId));
+                        this.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+                    }
+                }
             }
         }
 

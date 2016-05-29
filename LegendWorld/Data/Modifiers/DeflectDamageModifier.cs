@@ -22,6 +22,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatChangedRegister(StatIdentifier.Health, this.ReflectDamage);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatChangedRegister(StatIdentifier.Health, this.ReflectDamage);
+        }
 
         private StatChangedEventArgs ReflectDamage(Character character, StatChangedEventArgs e)
         {

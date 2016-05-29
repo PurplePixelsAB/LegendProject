@@ -18,8 +18,11 @@ namespace LegendWorld.Data.Abilities
             this.Duration = 0;
             this.PrepareTime = 0;
             this.EnergyCost = 20;
+            this.Amount = 2f;
         }
-        
+
+        public float Amount { get; set; }
+
         public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new SelfCollitionArea();
@@ -27,12 +30,13 @@ namespace LegendWorld.Data.Abilities
 
         internal override void PerformTo(WorldState worldState, Character abilityPerformedTo, Character abilityPerformedBy)
         {
-            abilityPerformedTo.Stats.Modifiers.Add(new TimedSpeedModifier(10000, 1.5f));
+            abilityPerformedTo.Stats.Modifiers.Add(new TimedSpeedModifier(10000, this.Amount));
         }
 
         internal override void PerformBy(WorldState worldState, Character character)
         {
-            base.PerformBy(worldState, character);
+            if (!character.Stats.HasModifier(typeof(TimedSpeedModifier)))
+                base.PerformBy(worldState, character);
         }
     }
 }

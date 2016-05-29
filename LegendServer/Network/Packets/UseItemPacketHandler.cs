@@ -29,7 +29,7 @@ namespace UdpServer.Network.Packets
             {
                 if (itemToUse.Data.IsWorldItem)
                 {
-                    if (serverCharacter.Pickup(itemToUse))
+                    if (serverCharacter.PickupItem(itemToUse))
                     {
                         worldState.SaveItem(itemToUse);
                         this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);

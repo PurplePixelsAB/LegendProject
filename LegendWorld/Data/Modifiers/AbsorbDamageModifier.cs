@@ -22,6 +22,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatChangedRegister(StatIdentifier.Health, this.OnHealthChanged);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatChangedUnRegister(StatIdentifier.Health, this.OnHealthChanged);
+        }
 
         private StatChangedEventArgs OnHealthChanged(Character character, StatChangedEventArgs e)
         {

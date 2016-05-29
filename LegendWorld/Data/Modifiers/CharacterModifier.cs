@@ -17,11 +17,16 @@ namespace LegendWorld.Data.Modifiers
         {
             this.Modifiers = stats.Modifiers;
         }
+        internal virtual void UnRegister(Stats stats)
+        {
+            this.Modifiers = null;
+        }
 
         public virtual void Update(GameTime gameTime, Character character)
         {
 
         }
+
 
         //public virtual int Modify(Character character, StatIdentifier stat, int newValue, int oldValue)
         //{

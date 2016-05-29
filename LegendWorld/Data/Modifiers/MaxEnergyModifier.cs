@@ -25,6 +25,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.EnergyMax, this.OnEnergyMax);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.EnergyMax, this.OnEnergyMax);
+        }
 
         private StatReadEventArgs OnEnergyMax(Character character, StatReadEventArgs e)
         {

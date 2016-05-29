@@ -18,8 +18,15 @@ using LegendWorld.Network.Packets;
 
 namespace WindowsClient.Net
 {
-    public class NetworkEngine
+    public sealed class NetworkEngine
     {
+        public static NetworkEngine Instance { get; private set; }
+        public static void CreateInstance()
+        {
+            if (NetworkEngine.Instance == null)
+                NetworkEngine.Instance = new NetworkEngine();
+        }
+
         Queue<ServerMessage> serverMessages = new Queue<ServerMessage>(10);
         internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
         internal bool CharacterSelected { get { return playerSelectableCharacter != null; } }
@@ -32,7 +39,7 @@ namespace WindowsClient.Net
         private SocketClient worldServerClient;
         private ClientPacketHandler[] clientPacketHandlers;
 
-        public NetworkEngine()
+        private NetworkEngine()
         {
             
             dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendClient.Properties.Settings.Default.DataServerAddress, LegendClient.Properties.Settings.Default.DataServerPort));
@@ -47,6 +54,8 @@ namespace WindowsClient.Net
             PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
             clientPacketHandlers[(byte)PacketIdentity.UseItem] = new UseItemPacketHandler();
             PacketFactory.Register(PacketIdentity.UseItem, () => new UseItemPacket());
+            clientPacketHandlers[(byte)PacketIdentity.PickUpItem] = new PickUpItemPacketHandler();
+            PacketFactory.Register(PacketIdentity.PickUpItem, () => new PickUpItemPacket());
             clientPacketHandlers[(byte)PacketIdentity.Error] = new ErrorPacketHandler();
             PacketFactory.Register(PacketIdentity.Error, () => new ErrorPacket());
             worldServerClient = new SocketClient();
@@ -214,6 +223,12 @@ namespace WindowsClient.Net
                     WorldState.AddCharacter(character);
                 }
             }
+        }
+
+        internal void PickUpItem(int id, IItem item)
+        {
+            PickUpItemPacket useItemPacket = new PickUpItemPacket(item.Data.ItemDataID, id);
+            worldServerClient.Send(useItemPacket);
         }
 
         internal List<ServerMessage> GetServerMessages()

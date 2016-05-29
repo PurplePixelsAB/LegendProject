@@ -21,14 +21,15 @@ namespace LegendClient.Screens
         private Point centerScreen;
         private SpriteFont characterSpriteFont;
         private NetworkEngine network;
-        private bool charactersLoaded = false;
+        //private bool charactersLoaded = false;
         private List<SelectableCharacter> characters;
         private int selectedIndex = 0;
         private Vector2 fontSizeVector;
 
-        public SelectCharacterScreen(NetworkEngine networkEngine) //ToDo: Create character option
+        public SelectCharacterScreen() //ToDo: Create character option
         {
-            network = networkEngine;
+            NetworkEngine.CreateInstance();
+            network = NetworkEngine.Instance;
         }
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
@@ -83,7 +84,7 @@ namespace LegendClient.Screens
                 return;
 
             network.SelectCharacter(characters[selectedIndex]);
-            GameplayScreen screenToLoad = new GameplayScreen(network);
+            GameplayScreen screenToLoad = new GameplayScreen();
             LoadingScreen loadingScreen = new LoadingScreen(screenToLoad);
             loadingScreen.Initialize(this.Manager);
             loadingScreen.Activate();

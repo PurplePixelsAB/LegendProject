@@ -20,7 +20,7 @@ namespace LegendWorld.Data.Modifiers
         Queue<CharacterModifier> durationRunOutModifiers = new Queue<CharacterModifier>(10);
         public virtual void Update(GameTime gameTime, Character character)
         {
-            for (int i = 0; i < this.Capacity; i++)//foreach (var modifier in this)
+            for (int i = 0; i < this.Count; i++)//foreach (var modifier in this)
             {
                 var modifier = this[i];
                 modifier.Update(gameTime, character);
@@ -49,6 +49,11 @@ namespace LegendWorld.Data.Modifiers
             base.Add(item);
         }
 
+        public new void Remove(CharacterModifier item)
+        {
+            item.UnRegister(stats);
+            base.Remove(item);
+        }
 
         
 

@@ -28,6 +28,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.Armor, this.OnRead);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.Armor, this.OnRead);
+        }
         private StatReadEventArgs OnRead(Character character, StatReadEventArgs e)
         {
             if (character.IsEquiped(this.Required))

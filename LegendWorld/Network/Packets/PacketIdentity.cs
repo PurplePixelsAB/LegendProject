@@ -10,8 +10,9 @@
         PerformAbility = 5,
         //UpdateStatic = 6,
         UseItem = 7,
+        PickUpItem = 8,
         //Ack = 253,
         Auth = 254,
-        Error = 255
+        Error = 255,
     }
 }

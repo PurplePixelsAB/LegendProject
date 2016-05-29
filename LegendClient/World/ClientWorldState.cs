@@ -78,13 +78,13 @@ namespace WindowsClient.World
             }
         }
 
-        internal List<IClientItem> GroundItemsInRange(int id)
+        internal List<IItem> GroundItemsInRange(int id)
         {
-            List<IClientItem> itemsInRange = new List<IClientItem>(10);
+            List<IItem> itemsInRange = new List<IItem>(10);
             Character charToRangeCheck = this.GetCharacter(id);
             foreach (int itemId in this.Items)
             {
-                IClientItem clientItem = (IClientItem)this.GetItem(itemId);
+                IItem clientItem = (IItem)this.GetItem(itemId);
                 if (!clientItem.Data.IsWorldItem)
                 {
                     continue;

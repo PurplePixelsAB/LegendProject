@@ -18,7 +18,7 @@ namespace LegendClient.Screens
         private SpriteBatch spriteBatch;
         private List<char> dots = new List<char>(20);
         private TimeSpan dotInterval = new TimeSpan(0, 0, 0, 0, 1500);
-        private TimeSpan nextDot;
+        //private TimeSpan nextDot;
         //private Task loadingTask;
         //private bool isLoadCompleated;
         private bool isOnlyScreen = false;

@@ -50,16 +50,27 @@ namespace WindowsClient.World.Mobiles
             }
         }
 
+
         internal void ServerAimToRecived(Point point)
         {
             this.AimToPosition = point;
         }
 
-        public override bool Pickup(IItem itemUsed)
+        public override bool PickupItem(IItem item)
         {
-            if (base.Pickup(itemUsed))
+            if (base.PickupItem(item))
             {
-                this.Inventory.Items.Add(itemUsed);
+                this.Inventory.Items.Add(item);
+
+                return true;
+            }
+            return false;
+        }
+        public override bool DropItem(IItem item)
+        {
+            if (base.DropItem(item))
+            {
+                this.Inventory.Items.Remove(item);
                 return true;
             }
             return false;

@@ -21,6 +21,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.Power, this.DoublePower);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.Power, this.DoublePower);
+        }
 
         private StatReadEventArgs DoublePower(Character character, StatReadEventArgs e)
         {            

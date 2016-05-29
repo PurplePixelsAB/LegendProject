@@ -25,6 +25,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.EnergyRegeneration, this.OnReadEnergyRegeneration);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.EnergyRegeneration, this.OnReadEnergyRegeneration);
+        }
 
         private StatReadEventArgs OnReadEnergyRegeneration(Character character, StatReadEventArgs e)
         {

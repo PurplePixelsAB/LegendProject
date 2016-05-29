@@ -35,7 +35,7 @@ namespace WindowsClient
         //private Texture2D bowTexture;
         private Texture2D backgroundTexture;
         private MovementBodyBobEffect movementBodyBobEffect = new MovementBodyBobEffect();
-        private InventoryScreen inventoryScreen;
+        //private InventoryScreen inventoryScreen;
         private Texture2D bodyGhostTexture;
         private Texture2D headGhostTexture;
 
@@ -55,7 +55,7 @@ namespace WindowsClient
         Vector2 CenterScreenVector2; //ToDo: Remove
         Point centerScreen;
 
-        public GameplayScreen(NetworkEngine networkEngine)
+        public GameplayScreen()
         {
             Viewport = new Rectangle(0, 0, 1920, 1080);
             centerScreen = Viewport.Center;
@@ -63,7 +63,7 @@ namespace WindowsClient
 
             world = new ClientWorldState();
             world.CharacterAdded += World_CharacterAdded;
-            network = networkEngine;
+            network = NetworkEngine.Instance; //networkEngine;
             network.WorldState = world;
             worldPump = new WorldPump();
             worldPump.State = world;
@@ -73,15 +73,15 @@ namespace WindowsClient
             effectManager.DayColor = Color.White;
             effectManager.NightColor = new Color(.2f, .2f, .4f);//Color.DarkBlue;
 
-            inventoryScreen = new InventoryScreen();
-            inventoryScreen.ItemUsed += InventoryScreen_ItemUsed;
-            inventoryScreen.Player = world.PlayerCharacter;
+            //inventoryScreen = new InventoryScreen();
+            //inventoryScreen.ItemUsed += InventoryScreen_ItemUsed;
+            //inventoryScreen.Player = world.PlayerCharacter;
         }
 
         public override void Initialize(ScreenManager screenManager)
         {
             base.Initialize(screenManager);
-            inventoryScreen.Initialize(screenManager);
+            //inventoryScreen.Initialize(screenManager);
             network.Initialize();
         }
 
@@ -115,7 +115,7 @@ namespace WindowsClient
                 this.Disconnect("Failed to load world.");
                 return;
             }
-            inventoryScreen.LoadContent(graphicsDevice);
+            //inventoryScreen.LoadContent(graphicsDevice);
 
             spriteBatch = new SpriteBatch(graphicsDevice);
             bodyTexture = Game.Content.Load<Texture2D>("Body");
@@ -249,45 +249,46 @@ namespace WindowsClient
                 return;
             if (world.PlayerCharacter.IsDead)
                 return;
-
-            inventoryScreen.Player = world.PlayerCharacter;
-            inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
-            inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+            InventoryScreen inventoryScreen = new InventoryScreen(world);
+            //inventoryScreen.Player = world.PlayerCharacter;
+            //inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+            //inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+            inventoryScreen.Initialize(this.Manager);
             inventoryScreen.Activate();
         }
-        private void InventoryScreen_ItemUsed(object sender, ItemUsedEventArgs e)
-        {
-            if (e.IsWorldItem)
-            {
-                if (world.PlayerCharacter.Pickup(e.ItemUsed))
-                {
-                    network.UseItem(world.PlayerCharacter.Id, e.ItemUsed);
-                    inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
-                }
-            }
-            else
-            {
-                if (e.ItemUsed.Category == ItemCategory.Consumable)
-                {
-                    ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
-                    if (consumable.Use(world.PlayerCharacter, world))
-                    {
-                        network.UseItem(world.PlayerCharacter.Id, consumable);
-                        inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
-                        inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
-                    }
-                }
-                if (e.ItemUsed.Category == ItemCategory.Armor || e.ItemUsed.Category == ItemCategory.Weapon)
-                {
-                    if (world.PlayerCharacter.Equip(e.ItemUsed))
-                    {
-                        network.UseItem(world.PlayerCharacter.Id, e.ItemUsed);
-                        inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
-                        inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
-                    }
-                }
-            }
-        }
+        //private void InventoryScreen_ItemUsed(object sender, ItemUsedEventArgs e)
+        //{
+        //    if (e.IsWorldItem)
+        //    {
+        //        if (world.PlayerCharacter.PickupItem(e.ItemUsed))
+        //        {
+        //            network.UseItem(world.PlayerCharacter.Id, e.ItemUsed);
+        //            inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (e.ItemUsed.Category == ItemCategory.Consumable)
+        //        {
+        //            ConsumableItem consumable = (ConsumableItem)e.ItemUsed;
+        //            if (consumable.Use(world.PlayerCharacter, world))
+        //            {
+        //                network.UseItem(world.PlayerCharacter.Id, consumable);
+        //                inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+        //                inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+        //            }
+        //        }
+        //        if (e.ItemUsed.Category == ItemCategory.Armor || e.ItemUsed.Category == ItemCategory.Weapon)
+        //        {
+        //            if (world.PlayerCharacter.Equip(e.ItemUsed))
+        //            {
+        //                network.UseItem(world.PlayerCharacter.Id, e.ItemUsed);
+        //                inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
+        //                inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
+        //            }
+        //        }
+        //    }
+        //}
 
         private void ActionKeyMappingToggleFlullscreen_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {

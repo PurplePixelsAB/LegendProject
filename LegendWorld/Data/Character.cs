@@ -259,14 +259,22 @@ namespace Data.World
             this.CollitionArea.Position = this.Position;
         }
 
-        public virtual bool Pickup(IItem itemUsed)
+        public virtual bool PickupItem(IItem item)
         {
-            if (!itemUsed.Data.IsWorldItem)
+            if (!item.Data.IsWorldItem)
                 return false;
-            if (!this.IsPositionInRange(itemUsed.Data.WorldLocation))
+            if (!this.IsPositionInRange(item.Data.WorldLocation))
                 return false;
 
-            itemUsed.Data.MoveTo(this.Inventory.Data);
+            item.Data.MoveTo(this.Inventory.Data);
+            return true;
+        }
+        public virtual bool DropItem(IItem item)
+        {
+            if (item.Data.IsWorldItem)
+                return false;
+
+            item.Data.MoveTo(this.CurrentMapId, this.Position);
             return true;
         }
         public bool Equip(IItem itemToEquip)

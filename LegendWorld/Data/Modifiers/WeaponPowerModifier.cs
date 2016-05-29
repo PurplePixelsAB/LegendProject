@@ -28,6 +28,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.Power, this.OnWeaponPower);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.Power, this.OnWeaponPower);
+        }
 
         private StatReadEventArgs OnWeaponPower(Character character, StatReadEventArgs e)
         {

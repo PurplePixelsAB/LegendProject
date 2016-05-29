@@ -25,6 +25,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.HealthMax, this.OnMaxHealth);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.HealthMax, this.OnMaxHealth);
+        }
 
         private StatReadEventArgs OnMaxHealth(Character character, StatReadEventArgs e)
         {

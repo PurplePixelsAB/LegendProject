@@ -25,6 +25,11 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.Visibility, this.OnGetVisibility);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.Visibility, this.OnGetVisibility);
+        }
 
         private StatReadEventArgs OnGetVisibility(Character character, StatReadEventArgs e)
         {
