@@ -46,17 +46,49 @@ namespace UdpServer
             if (characterData != null)
             {
                 ServerCharacter serverCharacter = new ServerCharacter(characterData);
+
                 characterData.Inventory = dataContext.GetItem(characterData.InventoryID);
                 if (characterData.Inventory != null)
                 {
                     var inventoryBagItem = (ContainerItem)this.CreateItem(characterData.Inventory);
                     this.AddItem(inventoryBagItem);
                     serverCharacter.Inventory = inventoryBagItem; //characterData.Inventory;
-
-                    return serverCharacter;
                 }
                 else
-                    return null;
+                    return null;                
+
+                if (characterData.RightHandID.HasValue)
+                {
+                    characterData.RightHand = dataContext.GetItem(characterData.RightHandID.Value);
+                    if (characterData != null)
+                    {
+                        serverCharacter.RightHand = (WeaponItem)this.CreateItem(characterData.RightHand);
+                    }
+                    else
+                        return null;
+                }
+                if (characterData.LeftHandID.HasValue)
+                {
+                    characterData.LeftHand = dataContext.GetItem(characterData.LeftHandID.Value);
+                    if (characterData.LeftHand != null)
+                    {
+                        serverCharacter.LeftHand = (WeaponItem)this.CreateItem(characterData.LeftHand);
+                    }
+                    else
+                        return null;
+                }
+                if (characterData.ArmorID.HasValue)
+                {
+                    characterData.Armor = dataContext.GetItem(characterData.ArmorID.Value);
+                    if (characterData.Armor != null)
+                    {
+                        serverCharacter.Armor = (ArmorItem)this.CreateItem(characterData.Armor);
+                    }
+                    else
+                        return null;
+                }
+
+                return serverCharacter;
             }
             else
                 return null;
