@@ -110,6 +110,10 @@ namespace LegendWorld.Data
             this.Set(StatIdentifier.Mobility, mobility);
             //this.SetFactor(StatIdentifier.Mobility, MathHelper.Clamp(1f - weightFactor, 0f, 1f), 100);
 
+            if (character.IsDead)
+                this.Set(StatIdentifier.Visibility, 0);
+            else
+                this.Set(StatIdentifier.Visibility, 100); //ToDo: character.GetEquipedVisibility();
         }
 
         internal void SetPower(int power, int weaponPower)
@@ -167,14 +171,13 @@ namespace LegendWorld.Data
         {
             int baseValue = (int)baseStats[statId];
             int modValue = baseValue + modifyAmount;
-            int clampedModValue = MathHelper.Clamp(modValue, Stats.MinValue, Stats.MaxValue);
-            this.Set(statId, clampedModValue);
+            this.Set(statId, modValue);
         }
         private void Set(StatIdentifier statId, int newValue)
         {
             int prevValue = this.GetStat(statId);
             var eventArgs = this.OnStatChanged(statId, new StatChangedEventArgs(newValue, prevValue));
-            baseStats[statId] = eventArgs.Value;
+            baseStats[statId] = Stats.Clamp(eventArgs.Value);
             //modStats[statId] = this.OnStatModify(character, statId, modifyAmountTo, modStats[statId]);
         }
         //private void SetFactor(StatIdentifier statId, float factor, int restPoint)

@@ -732,7 +732,7 @@ namespace WindowsClient
                     Vector2 clientScreenPostion = this.GetScreenPostion(charToDraw.DrawPosition).ToVector2();
                     spriteBatch.Draw(bodyTextureToUse, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, visibilityColor,
                         0f, centerBody, 1f, SpriteEffects.None, 1f);
-                    if (charToDraw.Armor != null)
+                    if (charToDraw.Armor != null && !charToDraw.IsDead)
                     {
                         IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
                         spriteBatch.Draw(armorItem.Texture, clientScreenPostion + bodyMovingBobPosition + bodyRotationPosition, null, visibilityColor,
@@ -744,7 +744,7 @@ namespace WindowsClient
                         (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
 
                     //Draw Armor
-                    if (charToDraw.Armor != null)
+                    if (charToDraw.Armor != null && !charToDraw.IsDead)
                     {
                         IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
                         spriteBatch.Draw(armorItem.HeadTexture, clientScreenPostion, null, visibilityColor,
@@ -752,7 +752,7 @@ namespace WindowsClient
                     }
 
                     //Draw Weapons
-                    if (charToDraw.RightHand != null)
+                    if (charToDraw.RightHand != null && !charToDraw.IsDead)
                     {
                         IClientItem weaponItem = (IClientItem)charToDraw.RightHand;
                         spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition + new Vector2(-weaponItem.Texture.Bounds.Width, weaponItem.Texture.Bounds.Center.Y * .5f), null, visibilityColor,
