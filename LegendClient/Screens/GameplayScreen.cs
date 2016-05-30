@@ -61,6 +61,7 @@ namespace WindowsClient
         private Texture2D arrowTexture;
         private Texture2D chatIcon;
         private SpriteFont chatSpriteFont;
+        private Effect deadEffect;
 
         public GameplayScreen()
         {
@@ -140,6 +141,7 @@ namespace WindowsClient
             hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
             arrowTexture = Game.Content.Load<Texture2D>("ArrowProjectile");
             chatIcon = Game.Content.Load<Texture2D>("ChatIcon");
+            deadEffect = Game.Content.Load<Effect>("DeadEffect");
 
             effectManager.LoadContent(graphicsDevice, Game.Content);
 
@@ -554,7 +556,11 @@ namespace WindowsClient
 
             effectManager.CreateLightMap(Game.GraphicsDevice, spriteBatch, gameTime);
 
-            spriteBatch.Begin();
+            if (!world.PlayerCharacter.IsDead)
+                spriteBatch.Begin();
+            else
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, deadEffect);
+
             this.BaseDrawing(spriteBatch);
             this.DrawGroundItems(spriteBatch);
             this.DrawCharacters(spriteBatch);
@@ -627,6 +633,9 @@ namespace WindowsClient
         }
         public void DrawCharacterStatusBar(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if (world.PlayerCharacter.IsDead)
+                return;
+
             Rectangle sourceSize = hudbarTexture.Bounds;
 
             var healthDrawPosition = new Vector2(CenterScreenVector2.X - sourceSize.Center.X, CenterScreenVector2.Y + (CenterScreenVector2.Y * .7f));
