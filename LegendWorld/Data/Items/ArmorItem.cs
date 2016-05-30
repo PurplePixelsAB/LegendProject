@@ -11,7 +11,7 @@ namespace LegendWorld.Data.Items
             this.Category = ItemCategory.Armor;
             //this.Data.Count = 1;
         }
-        public int Armor { get; set; }
+        public float Armor { get; set; }
         public ItemCategory Category { get; protected set; }
         public ItemData Data { get; set; }
         public int Weight { get; protected set; }

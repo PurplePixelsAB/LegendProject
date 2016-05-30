@@ -11,7 +11,7 @@ namespace LegendWorld.Data.Items
     {
         public PlateArmorItem()
         {
-            Armor = 125;
+            Armor = .3f;
             Weight = 27000;
         }
     }

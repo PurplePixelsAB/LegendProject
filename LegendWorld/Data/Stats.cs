@@ -247,16 +247,13 @@ namespace LegendWorld.Data
 
         internal int CalculateDamageTaken(int attackersPower)
         {
-            int defenderArmor = 0;
+            float defenderArmor = 0f;
             if (character.Armor != null)
                 defenderArmor = (int)character.Armor.Armor;
 
-
             float armorFactor = this.GetStatFactor(StatIdentifier.Armor, 255);
-            int damageTaken = Stats.Factor(attackersPower, armorFactor);
-
-            //int armor = this.Factor(defenderArmor, this.GetStatFactor(StatIdentifier.Armor)); //this.GetModdedStatByFactor(StatIdentifier.Armor, defenderArmor);
-            //int damageTaken = (int)MathHelper.Clamp(attackersPower - armor, 1, Stats.MaxValue);
+            float moddedArmor = defenderArmor * (1f + armorFactor);
+            int damageTaken = (int)MathHelper.Clamp(Stats.Factor(attackersPower, 1f - moddedArmor), 1, Stats.MaxValue);
 
             return damageTaken;
         }
