@@ -29,7 +29,7 @@ namespace LegendWorld.Data
             return MathHelper.Clamp(value, Stats.MinValue, Stats.MaxValue);
         }
 
-        private const float baseMovement = 6f;
+        private const float baseMovement = 8f;
         private const int baseHealthRegen = 1;
         private const int baseEnergyRegen = 2;
 
@@ -74,11 +74,6 @@ namespace LegendWorld.Data
         public int MaxHealth { get { return this.GetStat(StatIdentifier.HealthMax); } }
 
         public int MaxEnergy { get { return this.GetStat(StatIdentifier.EnergyMax); } }
-
-        internal void Factor(StatIdentifier mobility, float amount)
-        {
-            throw new NotImplementedException();
-        }
 
         public ModifiersCollection Modifiers { get; set; }
         public int HealthRegen { get { return this.GetStat(StatIdentifier.HealthRegeneration); } }

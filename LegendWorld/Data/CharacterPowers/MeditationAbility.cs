@@ -37,7 +37,8 @@ namespace LegendWorld.Data.Abilities
 
         internal override void PerformBy(WorldState worldState, Character character)
         {
-            base.PerformBy(worldState, character);
+            if (!character.Stats.HasModifier(typeof(MeditationModifier)))
+                base.PerformBy(worldState, character);
         }
     }
 }

@@ -21,16 +21,36 @@ namespace LegendWorld.Data.Modifiers
             this.EndAmount = endAmount;
         }
 
+        internal override void Register(Stats stats)
+        {
+            base.Register(stats);
+            stats.OnStatReadRegister(StatIdentifier.EnergyRegeneration, this.GetEnergyRegen);
+        }
+
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.EnergyRegeneration, this.GetEnergyRegen);
+        }
+
+        private StatReadEventArgs GetEnergyRegen(Character character, StatReadEventArgs e)
+        {
+            float lerpAmount = elapstedTime / timeToMaxAmount.Ticks;
+            float modAmount = MathHelper.Lerp(this.StartAmount, this.EndAmount, lerpAmount);
+
+            int energyRegen = character.Stats.EnergyRegen;
+            int modER = Stats.Factor(energyRegen, modAmount);
+            e.Value = modER;
+            return e;
+            //character.Stats.Factor(StatIdentifier.EnergyRegeneration, modAmount);
+        }
+
         public override void Update(GameTime gameTime, Character character)
         {
             if (character.IsMoving)
                 character.Stats.Modifiers.Remove(this);
 
             elapstedTime += gameTime.ElapsedGameTime.Ticks;
-            float lerpAmount = elapstedTime / timeToMaxAmount.Ticks;
-            float modAmount = MathHelper.Lerp(this.StartAmount, this.EndAmount, lerpAmount);
-
-            character.Stats.Factor(StatIdentifier.EnergyRegeneration, modAmount);
         }
     }
 }
