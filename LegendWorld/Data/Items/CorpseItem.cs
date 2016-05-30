@@ -9,14 +9,8 @@ namespace LegendWorld.Data.Items
         public CorpseItem()
         {
             this.Weight = 80000;
-        }        
+        }
 
-        public int CharacterID { get; set; }
-        //public BagItem Inventory { get; set; }
-        //public ArmorItem Armor { get; set; }
-
-        //public WeaponItem LeftHand { get; set; }
-
-        //public WeaponItem RightHand { get; set; }
+        public int CharacterID { get { return this.Data.SubType.HasValue ? this.Data.SubType.Value : 0; } set { this.Data.SubType = value; } }
     }
 }

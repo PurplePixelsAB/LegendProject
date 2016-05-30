@@ -61,7 +61,19 @@ namespace DataClient
             HttpResponseMessage response = httpClient.PutAsync(requestAdress, content).Result;
             return response.IsSuccessStatusCode;
         }
+        protected TObject Post<TObject>(string requestAdress, TObject objectToPut)
+        {
+            string strJson = JsonConvert.SerializeObject(objectToPut);
+            StringContent content = new System.Net.Http.StringContent(strJson, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = httpClient.PostAsync(requestAdress, content).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string returnJson = response.Content.ReadAsStringAsync().Result;
+                objectToPut = JsonConvert.DeserializeObject<TObject>(strJson);
+            }
 
+            return objectToPut;
+        }
         public PlayerSession GetSession(int sessionId)
         {
             return this.Get<PlayerSession>(sessionAddress + sessionId);

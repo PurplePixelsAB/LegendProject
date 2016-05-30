@@ -46,7 +46,6 @@ namespace UdpServer
             if (characterData != null)
             {
                 ServerCharacter serverCharacter = new ServerCharacter(characterData);
-
                 characterData.Inventory = dataContext.GetItem(characterData.InventoryID);
                 if (characterData.Inventory != null)
                 {
@@ -55,7 +54,7 @@ namespace UdpServer
                     serverCharacter.Inventory = inventoryBagItem; //characterData.Inventory;
                 }
                 else
-                    return null;                
+                    return null;
 
                 if (characterData.RightHandID.HasValue)
                 {
@@ -185,8 +184,32 @@ namespace UdpServer
 
         private void ServerCharacter_HealthChanged(Character character, StatChangedEventArgs e) //private void ServerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
         {
-            ServerCharacter servCharacter = (ServerCharacter)character;
-            this.UpdateEveryoneOfThisCharacter(servCharacter);
+            if (e.Value != e.PreviousValue) //Why does not this get called?
+            {
+                ServerCharacter servCharacter = (ServerCharacter)character;
+                this.UpdateEveryoneOfThisCharacter(servCharacter);
+                if (e.Value == 0)
+                {
+                    CorpseItem corpse = new CorpseItem();
+                    corpse.Data = new ItemData();
+                    corpse.Data.Identity = ItemData.ItemIdentity.Corpse;
+                    corpse.Data.MoveTo(character.CurrentMapId, servCharacter.Position);
+                    corpse.CharacterID = character.Id;
+                    dataContext.SaveItem(corpse.Data);
+
+                    foreach (var item in servCharacter.Inventory.Items)
+                    {
+                        item.Data.MoveTo(corpse.Data);
+                        dataContext.SaveItem(item.Data);
+                    }
+
+                    foreach (int charID in this.maptoCharacterRelations[character.CurrentMapId])
+                    {
+                        ServerCharacter informChar = (ServerCharacter)this.GetCharacter(charID);
+                        informChar.Owner.Send(new NewItemPacket(corpse.Data.ItemDataID));
+                    }
+                }
+            }
         }
 
         //public override void AddItem(Item item)

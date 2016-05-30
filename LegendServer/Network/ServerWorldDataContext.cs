@@ -57,9 +57,14 @@ namespace LegendServer.Network
             this.Put(characterAddress + dataToSave.CharacterDataID, dataToSave);
         }
 
-        internal void SaveItem(ItemData data)
+        internal ItemData SaveItem(ItemData data)
         {
-            this.Put(itemsAddress + data.ItemDataID, data);
+            if (data.ItemDataID != 0)
+                this.Put(itemsAddress + data.ItemDataID, data);
+            else
+                this.Post(itemsAddress, data);
+
+            return data;
         }
     }
 }

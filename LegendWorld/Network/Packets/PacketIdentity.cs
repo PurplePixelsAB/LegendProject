@@ -14,5 +14,6 @@
         UseItem = 6,
         ChatStatus = 7,
         ChatMessage = 8,
+        NewItem = 9,
     }
 }

@@ -23,7 +23,6 @@ namespace WindowsClient.World
         public List<int> MissingCharacters { get; set; }
         internal List<ChatMessage> ChatMessages { get; private set; }
 
-
         public ClientWorldState() : base()
         {
             this.MissingCharacters = new List<int>(30);

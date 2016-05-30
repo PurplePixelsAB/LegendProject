@@ -97,8 +97,9 @@
     <Compile Include="Network\Packets\PerformAbilityPacketHandler.cs" />
     <Compile Include="Network\Packets\AimToPacketHandler.cs" />
     <Compile Include="Network\Packets\MoveToPacketHandler.cs" />
+    <Compile Include="Network\Packets\NewItemPacketHandler.cs" />
     <Compile Include="Network\Packets\StatsChangedPacketHandler.cs" />
-    <Compile Include="Network\Packets\PickUpItemPacketHandlercs.cs" />
+    <Compile Include="Network\Packets\PickUpItemPacketHandler.cs" />
     <Compile Include="Network\Packets\UseItemPacketHandler.cs" />
     <Compile Include="Network\SocketClient.cs" />
     <Compile Include="Program.cs" />

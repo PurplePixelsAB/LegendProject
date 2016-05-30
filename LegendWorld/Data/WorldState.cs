@@ -168,6 +168,7 @@ namespace Network
             newCharacter.MoveToMapPointValidating += Character_MoveToMapPointValidating;
             characters.Add(newCharacter.Id, newCharacter);
         }
+
         public virtual void RemoveCharacter(Character charToRemove)
         {
             if (!characters.ContainsKey(charToRemove.Id))

@@ -28,6 +28,12 @@ namespace WindowsClient.Net
         }
 
         Queue<ServerMessage> serverMessages = new Queue<ServerMessage>(10);
+
+        internal ItemData LoadItem(int itemId)
+        {
+            return dataContext.GetItem(itemId);
+        }
+
         internal bool ConnectedToWorld { get { return worldServerClient.State == State.Connected; } }
         internal bool CharacterSelected { get { return playerSelectableCharacter != null; } }
         internal uint Ticks { get; set; }
@@ -62,6 +68,8 @@ namespace WindowsClient.Net
             PacketFactory.Register(PacketIdentity.ChatMessage, () => new ChatMessagePacket());
             clientPacketHandlers[(byte)PacketIdentity.ChatStatus] = new ChatStatusPacketHandler();
             PacketFactory.Register(PacketIdentity.ChatStatus, () => new ChatStatusPacket());
+            clientPacketHandlers[(byte)PacketIdentity.NewItem] = new NewItemPacketHandler();
+            PacketFactory.Register(PacketIdentity.NewItem, () => new NewItemPacket());
 
             worldServerClient = new SocketClient();
             worldServerClient.ProcessPacket += SocketClient_ProcessPacket;
