@@ -28,16 +28,14 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatChangedRegister(StatIdentifier.Health, this.ReflectDamage);
         }
 
-        private StatChangedEventArgs ReflectDamage(Character character, StatChangedEventArgs e)
+        private void ReflectDamage(Character character, StatChangedEventArgs e)
         {
             if (e.Value < e.PreviousValue && !this.IsUsed)
             {
                 this.IsUsed = true;
                 e.Value = e.PreviousValue;
                 character.Stats.Modifiers.Remove(this);
-            }
-
-            return e;
+            }            
         }
 
         //public override void Update(GameTime gameTime, Character character)

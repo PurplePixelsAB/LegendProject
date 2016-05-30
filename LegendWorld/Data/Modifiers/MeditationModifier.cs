@@ -33,7 +33,7 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.EnergyRegeneration, this.GetEnergyRegen);
         }
 
-        private StatReadEventArgs GetEnergyRegen(Character character, StatReadEventArgs e)
+        private void GetEnergyRegen(Character character, StatReadEventArgs e)
         {
             float lerpAmount = elapstedTime / timeToMaxAmount.Ticks;
             float modAmount = MathHelper.Lerp(this.StartAmount, this.EndAmount, lerpAmount);
@@ -41,7 +41,6 @@ namespace LegendWorld.Data.Modifiers
             int energyRegen = character.Stats.EnergyRegen;
             int modER = Stats.Factor(energyRegen, modAmount);
             e.Value = modER;
-            return e;
             //character.Stats.Factor(StatIdentifier.EnergyRegeneration, modAmount);
         }
 

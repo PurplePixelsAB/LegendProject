@@ -27,11 +27,10 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.Power, this.DoublePower);
         }
 
-        private StatReadEventArgs DoublePower(Character character, StatReadEventArgs e)
+        private void DoublePower(Character character, StatReadEventArgs e)
         {            
             e.Value += e.Value;
             this.IsUsed = true;
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)

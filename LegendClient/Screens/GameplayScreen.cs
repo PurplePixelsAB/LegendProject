@@ -404,7 +404,7 @@ namespace WindowsClient
             }
         }
 
-        private StatChangedEventArgs Character_HealthChanged(Character character, StatChangedEventArgs e)
+        private void Character_HealthChanged(Character character, StatChangedEventArgs e)
         {
             ClientCharacter clientCharacter = (ClientCharacter)character;
             if (e.Value <= e.PreviousValue) //Damage
@@ -416,8 +416,6 @@ namespace WindowsClient
             {
                 this.AddHealIndicator(clientCharacter, e.Value - e.PreviousValue);
             }
-
-            return e;
         }
 
         private void AddHealIndicator(ClientCharacter clientCharacter, int healAmount)

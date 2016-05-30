@@ -31,10 +31,9 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.Visibility, this.OnGetVisibility);
         }
 
-        private StatReadEventArgs OnGetVisibility(Character character, StatReadEventArgs e)
+        private void OnGetVisibility(Character character, StatReadEventArgs e)
         {
             e.Value = Stats.Factor(e.Value, this.Amount);
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)
@@ -57,11 +56,15 @@ namespace LegendWorld.Data.Modifiers
             base.Register(stats);
             stats.OnStatReadRegister(StatIdentifier.EnergyRegeneration, this.ModifyEnergyRegen);
         }
+        internal override void UnRegister(Stats stats)
+        {
+            base.UnRegister(stats);
+            stats.OnStatReadUnRegister(StatIdentifier.EnergyRegeneration, this.ModifyEnergyRegen);
+        }
 
-        private StatReadEventArgs ModifyEnergyRegen(Character character, StatReadEventArgs e)
+        private void ModifyEnergyRegen(Character character, StatReadEventArgs e)
         {
             e.Value += this.RegenCost;
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)

@@ -34,10 +34,9 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.Power, this.OnWeaponPower);
         }
 
-        private StatReadEventArgs OnWeaponPower(Character character, StatReadEventArgs e)
+        private void OnWeaponPower(Character character, StatReadEventArgs e)
         {
             e.Value = Stats.Factor(e.Value, this.Amount);
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)

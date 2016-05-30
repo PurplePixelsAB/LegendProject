@@ -31,10 +31,9 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.Mobility, this.OnMobility);
         }
 
-        private StatReadEventArgs OnMobility(Character character, StatReadEventArgs e)
+        private void OnMobility(Character character, StatReadEventArgs e)
         {
             e.Value = Stats.Factor(e.Value, this.Amount);
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)

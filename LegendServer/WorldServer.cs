@@ -183,11 +183,10 @@ namespace UdpServer
         }
 
 
-        private StatChangedEventArgs ServerCharacter_HealthChanged(Character character, StatChangedEventArgs e) //private void ServerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
+        private void ServerCharacter_HealthChanged(Character character, StatChangedEventArgs e) //private void ServerCharacter_HealthChanged(object sender, Character.HealthChangedEventArgs e)
         {
             ServerCharacter servCharacter = (ServerCharacter)character;
             this.UpdateEveryoneOfThisCharacter(servCharacter);
-            return e;
         }
 
         //public override void AddItem(Item item)

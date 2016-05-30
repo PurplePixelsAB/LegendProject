@@ -36,10 +36,9 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.HealthRegeneration, this.OnReadRegeneration);
         }
 
-        private StatReadEventArgs OnReadRegeneration(Character character, StatReadEventArgs e)
+        private void OnReadRegeneration(Character character, StatReadEventArgs e)
         {
             e.Value += this.Regeneration; // character.Stats.Factor(e.Value, this.Amount);
-            return e;
         }
     }
 }

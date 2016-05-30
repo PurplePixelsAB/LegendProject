@@ -31,13 +31,12 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.EnergyRegeneration, this.OnReadEnergyRegeneration);
         }
 
-        private StatReadEventArgs OnReadEnergyRegeneration(Character character, StatReadEventArgs e)
+        private void OnReadEnergyRegeneration(Character character, StatReadEventArgs e)
         {
             e.Value += this.Regeneration; // character.Stats.Factor(e.Value, this.Amount);
-            return e;
         }
 
-        //private StatReadEventArgs OnReadPower(Character character, StatReadEventArgs e)
+        //private void OnReadPower(Character character, StatReadEventArgs e)
         //{
         //    e.Value = character.Stats.Factor(e.Value, this.Amount);
         //    return e;

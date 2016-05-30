@@ -30,16 +30,14 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.EnergyCost, this.OnReadEnergyCost);
         }
 
-        private StatReadEventArgs OnReadEnergyCost(Character character, StatReadEventArgs e)
+        private void OnReadEnergyCost(Character character, StatReadEventArgs e)
         {
             e.Value = Stats.Factor(e.Value, this.Amount);
-            return e;
         }
 
-        private StatReadEventArgs OnReadPower(Character character, StatReadEventArgs e)
+        private void OnReadPower(Character character, StatReadEventArgs e)
         {
             e.Value = Stats.Factor(e.Value, this.Amount);
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)

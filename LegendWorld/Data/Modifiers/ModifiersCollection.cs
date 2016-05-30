@@ -54,8 +54,5 @@ namespace LegendWorld.Data.Modifiers
             item.UnRegister(stats);
             base.Remove(item);
         }
-
-        
-
     }
 }

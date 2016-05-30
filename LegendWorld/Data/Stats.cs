@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace LegendWorld.Data
 {
-    public delegate StatReadEventArgs StatReadEventHandler(Character character, StatReadEventArgs e);
-    public delegate StatChangedEventArgs StatChangedEventHandler(Character character, StatChangedEventArgs e);
+    public delegate void StatReadEventHandler(Character character, StatReadEventArgs e);
+    public delegate void StatChangedEventHandler(Character character, StatChangedEventArgs e);
     public class Stats
     {        
         private static readonly int MaxValue = byte.MaxValue;
@@ -138,16 +138,15 @@ namespace LegendWorld.Data
         {
             if (onStatModified[(int)statID] != null)
             {
-                return onStatModified[(int)statID](character, e);
+                onStatModified[(int)statID](character, e);
             }
-
             return e;
         }
         private StatReadEventArgs OnStatRead(StatIdentifier statID, StatReadEventArgs e)
         {
             if (onStatRead[(int)statID] != null)
             {
-                return onStatRead[(int)statID](character, e);
+                onStatRead[(int)statID](character, e);
             }
             return e;
         }
@@ -266,21 +265,25 @@ namespace LegendWorld.Data
         public float GetVisibility(float distance)
         {
             if (distance == 0f)
-                distance = 1f;
+                distance = 10f;
 
             float visibleDistance = 50f;
             //float farDistance = 1000f;
             float minVisibility = 0f;
+            float maxVisibility = 1f;
 
             if (distance <= visibleDistance)
-                minVisibility = .3f;
+                minVisibility = .3f;            
 
             float visibilityFactor = this.GetStatFactor(StatIdentifier.Visibility);
-            float distanceFactor = distance / (visibleDistance * 2f);                     
+            float distanceFactor = distance / (visibleDistance * 2f);
+
+            if (visibilityFactor < 1f - minVisibility)
+                maxVisibility = minVisibility + visibilityFactor;
 
             //float distanceFactor = (farDistance * visibilityFactor) / distance;
             var distanceLerpValue = MathHelper.Clamp((float)Math.Pow(visibilityFactor, distanceFactor), 0f, 1f);
-            var lerpVisibility = MathHelper.Lerp(minVisibility, 1f, distanceLerpValue);
+            var lerpVisibility = MathHelper.Lerp(minVisibility, maxVisibility, distanceLerpValue);
 
             return lerpVisibility;
         }

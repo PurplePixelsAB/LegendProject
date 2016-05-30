@@ -28,7 +28,7 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatChangedUnRegister(StatIdentifier.Health, this.OnHealthChanged);
         }
 
-        private StatChangedEventArgs OnHealthChanged(Character character, StatChangedEventArgs e)
+        private void OnHealthChanged(Character character, StatChangedEventArgs e)
         {
             int damageToAbsorb = 0;
             int maxAbsorbAmount = character.Stats.Energy;
@@ -38,7 +38,6 @@ namespace LegendWorld.Data.Modifiers
                 damageToAbsorb = MathHelper.Clamp(damageAmount, byte.MinValue, byte.MaxValue);
                 character.Stats.Energy -= damageToAbsorb;
                 e.Value = e.PreviousValue;
-                return e;
             }
 
             damageToAbsorb = MathHelper.Clamp(maxAbsorbAmount, byte.MinValue, byte.MaxValue);
@@ -46,7 +45,6 @@ namespace LegendWorld.Data.Modifiers
 
             int returnHealth = MathHelper.Clamp(e.Value + damageToAbsorb, byte.MinValue, byte.MaxValue);
             e.Value = returnHealth;
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)

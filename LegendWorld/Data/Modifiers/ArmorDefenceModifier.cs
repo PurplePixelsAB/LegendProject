@@ -33,12 +33,10 @@ namespace LegendWorld.Data.Modifiers
             base.UnRegister(stats);
             stats.OnStatReadUnRegister(StatIdentifier.Armor, this.OnRead);
         }
-        private StatReadEventArgs OnRead(Character character, StatReadEventArgs e)
+        private void OnRead(Character character, StatReadEventArgs e)
         {
             if (character.IsEquiped(this.Required))
-                e.Value = Stats.Factor(e.Value, this.Amount);
-
-                return e;
+                e.Value = Stats.Factor(e.Value, this.Amount);;
         }
 
         //public override void Update(GameTime gameTime, Character character)

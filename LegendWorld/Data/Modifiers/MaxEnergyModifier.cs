@@ -31,10 +31,9 @@ namespace LegendWorld.Data.Modifiers
             stats.OnStatReadUnRegister(StatIdentifier.EnergyMax, this.OnEnergyMax);
         }
 
-        private StatReadEventArgs OnEnergyMax(Character character, StatReadEventArgs e)
+        private void OnEnergyMax(Character character, StatReadEventArgs e)
         {
             e.Value += this.AddedMax;
-            return e;
         }
 
         //public override void Update(GameTime gameTime, Character character)
