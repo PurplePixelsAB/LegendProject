@@ -279,9 +279,13 @@ namespace Data.World
             if (item.Data.IsWorldItem)
                 return false;
 
+            if (this.IsEquiped(item))
+                this.Equip(item); //Equip toggles equipment.
+
             item.Data.MoveTo(this.CurrentMapId, this.Position);
             return true;
         }
+
         public bool Equip(IItem itemToEquip)
         {
             if (itemToEquip.Category == ItemCategory.Weapon)
