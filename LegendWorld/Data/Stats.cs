@@ -104,7 +104,8 @@ namespace LegendWorld.Data
             int characterWeight = character.GetCarryWeight();
             float maxWeightFactor = this.GetStatFactor(StatIdentifier.MaxWeight);
             int maxWeight = (int)(Character.MaxWeight * maxWeightFactor);
-            float weightFactor = 1f - ((float)characterWeight / (float)maxWeight);
+            float weightFact = ((float)characterWeight / (float)maxWeight);
+            float weightFactor = 1f - (weightFact * weightFact);
             int mobility = Stats.Clamp((int)Math.Round(100f * weightFactor));
             this.Set(StatIdentifier.Mobility, mobility);
             //this.SetFactor(StatIdentifier.Mobility, MathHelper.Clamp(1f - weightFactor, 0f, 1f), 100);

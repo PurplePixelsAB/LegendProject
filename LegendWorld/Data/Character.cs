@@ -48,12 +48,12 @@ namespace Data.World
         {
             ContainerItem inventory = this.Inventory;
             int weight = inventory.GetTotalWeight();
-            if (this.Armor != null)
-                weight += this.Armor.Weight;
-            if (this.LeftHand != null)
-                weight += this.LeftHand.Weight;
-            if (this.RightHand != null)
-                weight += this.RightHand.Weight;
+            //if (this.Armor != null)               //These items are already in inventory, at the moment.
+            //    weight += this.Armor.Weight;
+            //if (this.LeftHand != null)
+            //    weight += this.LeftHand.Weight;
+            //if (this.RightHand != null)
+            //    weight += this.RightHand.Weight;
 
             return weight;
         }
