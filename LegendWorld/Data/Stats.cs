@@ -268,15 +268,18 @@ namespace LegendWorld.Data
             if (distance == 0f)
                 distance = 1f;
 
-            float visibleDistance = 40f;
-            float farDistance = 1500f;
+            float visibleDistance = 50f;
+            //float farDistance = 1000f;
             float minVisibility = 0f;
 
             if (distance <= visibleDistance)
                 minVisibility = .3f;
 
-            var invertedVisibility = this.GetStatFactor(StatIdentifier.Visibility);
-            var distanceLerpValue = MathHelper.Clamp((farDistance * invertedVisibility) / distance, 0f, 1f);
+            float visibilityFactor = this.GetStatFactor(StatIdentifier.Visibility);
+            float distanceFactor = distance / (visibleDistance * 2f);                     
+
+            //float distanceFactor = (farDistance * visibilityFactor) / distance;
+            var distanceLerpValue = MathHelper.Clamp((float)Math.Pow(visibilityFactor, distanceFactor), 0f, 1f);
             var lerpVisibility = MathHelper.Lerp(minVisibility, 1f, distanceLerpValue);
 
             return lerpVisibility;

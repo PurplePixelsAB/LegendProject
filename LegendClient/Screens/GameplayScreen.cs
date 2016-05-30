@@ -724,7 +724,7 @@ namespace WindowsClient
                     headTextureToUse = headGhostTexture;
                 }
 
-                var distance = Vector2.Distance(world.PlayerCharacter.Position.ToVector2(), charToDraw.DrawPosition.ToVector2());
+                var distance = Vector2.Distance(world.PlayerCharacter.Position.ToVector2(), charToDraw.Position.ToVector2());
                 float visibility = charToDraw.Stats.GetVisibility(distance);
 
                 if (visibility > 0f)
