@@ -32,6 +32,7 @@ namespace Data
         IncreaseDaggerPower, //Increase dmg of all attacks with dagger
         IncreasePlateArmor,
         IncreaseLeatherArmor,
+        Resurrect,
         //Comeplete
 
         //ToDo

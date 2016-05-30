@@ -45,7 +45,7 @@ namespace LegendWorld.Data
             CharacterPower.Register(new IncreaseDaggerPowerAbility());
             CharacterPower.Register(new IncreasePlateArmorAbility());
             CharacterPower.Register(new IncreaseLeatherArmorAbility());
-
+            CharacterPower.Register(new ResurrectAbility());
         }
         public static CharacterPower Get(CharacterPowerIdentity id)
         {

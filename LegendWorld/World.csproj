@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\AffectedByPowerEventArgs.cs" />
+    <Compile Include="Data\CharacterPowers\ResurrectAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseDaggerPowerAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseLeatherArmorAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreasePlateArmorAbility.cs" />
