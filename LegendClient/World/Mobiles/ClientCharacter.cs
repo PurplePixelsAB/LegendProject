@@ -27,6 +27,8 @@ namespace WindowsClient.World.Mobiles
         }
 
         public Vector2 OldDrawPosition { get; set; }
+        public bool IsWritingMessage { get; internal set; }
+
         internal void ServerMoveToRecived(Point point)
         {
             this.SetMoveToPosition(point);

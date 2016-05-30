@@ -55,6 +55,13 @@ namespace WindowsClient
         Vector2 CenterScreenVector2; //ToDo: Remove
         Point centerScreen;
 
+        private long lastMovementClickTicks;
+        private TimeSpan doubleClickSpeed = new TimeSpan(0, 0, 0, 0, 200);
+        private Texture2D hudbarTexture;
+        private Texture2D arrowTexture;
+        private Texture2D chatIcon;
+        private SpriteFont chatSpriteFont;
+
         public GameplayScreen()
         {
             Viewport = new Rectangle(0, 0, 1920, 1080);
@@ -128,9 +135,11 @@ namespace WindowsClient
             backgroundTexture = Game.Content.Load<Texture2D>("GrassBackground");
             selectionTexture = Game.Content.Load<Texture2D>("Selection");
             damageSpriteFont = Game.Content.Load<SpriteFont>("Damage");
+            chatSpriteFont = Game.Content.Load<SpriteFont>("ChatFont");
             bigBushTexture = Game.Content.Load<Texture2D>("bigbush");
             hudbarTexture = Game.Content.Load<Texture2D>("HudBar");
             arrowTexture = Game.Content.Load<Texture2D>("ArrowProjectile");
+            chatIcon = Game.Content.Load<Texture2D>("ChatIcon");
 
             effectManager.LoadContent(graphicsDevice, Game.Content);
 
@@ -202,6 +211,12 @@ namespace WindowsClient
             actionKeyMappingCharacter.ActionTriggered += ActionKeyMappingOpenCharacter_ActionTriggered;
             Input.Actions.Add(actionKeyMappingCharacter);
 
+            ActionKeyMapping actionKeyMappingChat = new ActionKeyMapping();
+            actionKeyMappingChat.Id = 6;
+            actionKeyMappingChat.Primary = Keys.Enter;
+            actionKeyMappingChat.ActionTriggered += ActionKeyMappingChat_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingChat);
+
             ActionKeyMapping actionKeyMappingToggleFlullscreen = new ActionKeyMapping();
             actionKeyMappingToggleFlullscreen.Id = 0;
             actionKeyMappingToggleFlullscreen.Primary = Keys.Enter;
@@ -214,6 +229,13 @@ namespace WindowsClient
             actionKeyMappingGameMenu.Primary = Keys.Escape;
             actionKeyMappingGameMenu.ActionTriggered += this.ActionKeyMappingOpenGameMenu;
             Input.Actions.Add(actionKeyMappingGameMenu);
+        }
+
+        private void ActionKeyMappingChat_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            ChatScreen chatScreen = new ChatScreen(world.PlayerCharacter.Id);
+            chatScreen.Initialize(this.Manager);
+            chatScreen.Show();
         }
 
         private void ActionKeyMappingOpenGameMenu(object sender, ActionTriggeredEventArgs e)
@@ -451,10 +473,6 @@ namespace WindowsClient
             }
         }
 
-        private long lastMovementClickTicks;
-        private TimeSpan doubleClickSpeed = new TimeSpan(0, 0, 0, 0, 200);
-        private Texture2D hudbarTexture;
-        private Texture2D arrowTexture;
 
         private void ActionButtonMappingMoveTo_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
@@ -583,6 +601,13 @@ namespace WindowsClient
             this.DrawCharacterIndicators(spriteBatch, gameTime);
             this.DrawServerMessages(spriteBatch, gameTime);
 
+            foreach (ChatMessage message in world.ChatMessages)
+            {
+                var textSize = chatSpriteFont.MeasureString(message.Text);
+                var halfSize = textSize * .5f;
+                spriteBatch.DrawString(chatSpriteFont, message.Text, this.GetScreenPostion(message.Owner.DrawPosition).ToVector2() - halfSize - new Vector2(0f, 30f), Color.White);
+            }
+
             //Draw Mouse Pointer
             spriteBatch.Draw(selectionTexture, Mouse.GetState().Position.ToVector2(), selectionTexture.Bounds, Color.White, 0f, selectionTexture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
         }
@@ -710,6 +735,8 @@ namespace WindowsClient
                     //Draw Head
                     spriteBatch.Draw(headTextureToUse, clientScreenPostion, null, visibilityColor,
                         (float)world.VectorToRadian(charToDrawDirection), centerHead, 1f, SpriteEffects.None, 1f);
+
+                    //Draw Armor
                     if (charToDraw.Armor != null)
                     {
                         IArmorClientItem armorItem = (IArmorClientItem)charToDraw.Armor;
@@ -723,6 +750,13 @@ namespace WindowsClient
                         IClientItem weaponItem = (IClientItem)charToDraw.RightHand;
                         spriteBatch.Draw(weaponItem.Texture, (clientScreenPostion - (bodyMovingBobPosition * .5f)) + bodyRotationPosition + new Vector2(-weaponItem.Texture.Bounds.Width, weaponItem.Texture.Bounds.Center.Y * .5f), null, visibilityColor,
                             -.5f, weaponItem.Texture.Bounds.Center.ToVector2(), 1f, SpriteEffects.None, 1f);
+                    }
+
+                    //Draw ChatIcon
+                    if (charToDraw.IsWritingMessage)
+                    {
+                        spriteBatch.Draw(chatIcon, clientScreenPostion + new Vector2(0f, -30f), null, visibilityColor,
+                            0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
                     }
                 }
             }

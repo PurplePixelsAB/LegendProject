@@ -2,17 +2,17 @@
 {
     public enum PacketIdentity : byte
     {
+        Auth = 253,
+        Error = 254,
         Invalid = 0,
+
         MoveTo = 1,
         AimTo = 2,
         StatsChanged = 3,
-        //SelectCharacter = 4,
-        PerformAbility = 5,
-        //UpdateStatic = 6,
-        UseItem = 7,
-        PickUpItem = 8,
-        //Ack = 253,
-        Auth = 254,
-        Error = 255,
+        PerformAbility = 4,
+        PickUpItem = 5,
+        UseItem = 6,
+        ChatStatus = 7,
+        ChatMessage = 8,
     }
 }

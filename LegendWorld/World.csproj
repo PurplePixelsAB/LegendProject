@@ -113,6 +113,8 @@
     <Compile Include="Network\Packet.cs" />
     <Compile Include="Network\PacketFactory.cs" />
     <Compile Include="Network\Packets\AimToPacket.cs" />
+    <Compile Include="Network\Packets\ChatStatusPacket.cs" />
+    <Compile Include="Network\Packets\ChatMessagePacket.cs" />
     <Compile Include="Network\Packets\ErrorPacket.cs" />
     <Compile Include="Network\Packets\MoveToPacket.cs" />
     <Compile Include="Network\Packets\PacketIdentity.cs" />

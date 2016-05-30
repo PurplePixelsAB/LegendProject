@@ -16,15 +16,37 @@ namespace WindowsClient.World
 {
     public class ClientWorldState : WorldState
     {
-        public ClientWorldState() : base()
-        {
-            this.MissingCharacters = new List<int>(30);
-        }
         //private byte swingDmg = 24;
 
         //public IEnumerable<ushort> Characters { get { return base.characters.Keys; } }
         internal ClientCharacter PlayerCharacter { get; set; }
         public List<int> MissingCharacters { get; set; }
+        internal List<ChatMessage> ChatMessages { get; private set; }
+
+
+        public ClientWorldState() : base()
+        {
+            this.MissingCharacters = new List<int>(30);
+            this.ChatMessages = new List<ChatMessage>(100);
+        }
+
+        internal void AddChatMessage(int mobileId, string message)
+        {
+            ClientCharacter clientCharacter = (ClientCharacter)this.GetCharacter(mobileId);
+            clientCharacter.IsWritingMessage = false;
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.Text = message;
+            chatMessage.Duration = 2000 + message.Length * 50;
+            chatMessage.Owner = clientCharacter;
+
+            this.ChatMessages.Add(chatMessage);
+        }
+
+        internal void SetChatState(int mobileId, bool state)
+        {
+            ClientCharacter clientCharacter = (ClientCharacter)this.GetCharacter(mobileId);
+            clientCharacter.IsWritingMessage = state;
+        }
 
         protected override WorldMap GetCharactersMap(Character character)
         {
@@ -74,6 +96,23 @@ namespace WindowsClient.World
                     client.OldDrawPosition = PlayerCharacter.DrawPosition.ToVector2();
 
                     //client.OldDrawPosition = Vector2.Lerp(client.OldDrawPosition, realClientPosition, lerpAmount);
+                }
+            }
+
+            if (this.ChatMessages.Count > 0)
+            {
+                Queue<ChatMessage> expiredMessage = new Queue<ChatMessage>(this.ChatMessages.Count);
+                foreach (ChatMessage message in this.ChatMessages)
+                {
+                    message.Duration -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (message.Duration <= 0D)
+                    {
+                        expiredMessage.Enqueue(message);
+                    }
+                }
+                while (expiredMessage.Count > 0)
+                {
+                    this.ChatMessages.Remove(expiredMessage.Dequeue());
                 }
             }
         }

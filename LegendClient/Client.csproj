@@ -91,6 +91,8 @@
     <Compile Include="GameLegend.cs" />
     <Compile Include="Network\ClientPacketHandler.cs" />
     <Compile Include="Network\NetworkEngine.cs" />
+    <Compile Include="Network\Packets\ChatStatusPacketHandler.cs" />
+    <Compile Include="Network\Packets\ChatMessagePacketHandler.cs" />
     <Compile Include="Network\Packets\ErrorPacketHandler.cs" />
     <Compile Include="Network\Packets\PerformAbilityPacketHandler.cs" />
     <Compile Include="Network\Packets\AimToPacketHandler.cs" />
@@ -108,10 +110,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Screens\CharacterScreen.cs" />
+    <Compile Include="Screens\ChatScreen.cs" />
     <Compile Include="Screens\ItemUsedEventArgs.cs" />
     <Compile Include="Screens\DisconnectedScreen.cs" />
     <Compile Include="Screens\GameMenuScreen.cs" />
     <Compile Include="Screens\SelectCharacterScreen.cs" />
+    <Compile Include="World\ChatMessage.cs" />
     <Compile Include="World\Items\BandageClientItem.cs" />
     <Compile Include="World\ClientItemFactory.cs" />
     <Compile Include="World\Items\BagClientItem.cs" />

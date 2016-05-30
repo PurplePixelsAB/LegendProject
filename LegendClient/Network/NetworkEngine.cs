@@ -58,6 +58,11 @@ namespace WindowsClient.Net
             PacketFactory.Register(PacketIdentity.PickUpItem, () => new PickUpItemPacket());
             clientPacketHandlers[(byte)PacketIdentity.Error] = new ErrorPacketHandler();
             PacketFactory.Register(PacketIdentity.Error, () => new ErrorPacket());
+            clientPacketHandlers[(byte)PacketIdentity.ChatMessage] = new ChatMessagePacketHandler();
+            PacketFactory.Register(PacketIdentity.ChatMessage, () => new ChatMessagePacket());
+            clientPacketHandlers[(byte)PacketIdentity.ChatStatus] = new ChatStatusPacketHandler();
+            PacketFactory.Register(PacketIdentity.ChatStatus, () => new ChatStatusPacket());
+
             worldServerClient = new SocketClient();
             worldServerClient.ProcessPacket += SocketClient_ProcessPacket;
         }
@@ -223,6 +228,18 @@ namespace WindowsClient.Net
                     WorldState.AddCharacter(character);
                 }
             }
+        }
+
+        internal void ToggleChat(int id, bool state)
+        {
+            ChatStatusPacket packet = new ChatStatusPacket(id, state);
+            worldServerClient.Send(packet);
+        }
+
+        internal void SendMessage(int id, string name)
+        {
+            ChatMessagePacket packet = new ChatMessagePacket(id, name);
+            worldServerClient.Send(packet);
         }
 
         internal void PickUpItem(int id, IItem item)

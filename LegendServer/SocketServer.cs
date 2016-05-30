@@ -1,4 +1,5 @@
-﻿using Network;
+﻿using LegendWorld.Network.Packets;
+using Network;
 using Network.Packets;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,10 @@ namespace UdpServer
             ServerPacketHandler.Register(PacketIdentity.UseItem, new UseItemPacketHandler());
             PacketFactory.Register(PacketIdentity.PickUpItem, () => new PickUpItemPacket());
             ServerPacketHandler.Register(PacketIdentity.PickUpItem, new PickUpItemPacketHandler());
+            PacketFactory.Register(PacketIdentity.ChatMessage, () => new ChatMessagePacket());
+            ServerPacketHandler.Register(PacketIdentity.ChatMessage, new ChatMessagePacketHandler());
+            PacketFactory.Register(PacketIdentity.ChatStatus, () => new ChatStatusPacket());
+            ServerPacketHandler.Register(PacketIdentity.ChatStatus, new ChatStatusPacketHandler());
 
             acceptedQueue = new Queue<Socket>();
             onAccept = new AsyncCallback(BeginAcceptCallback);

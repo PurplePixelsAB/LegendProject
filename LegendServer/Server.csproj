@@ -44,6 +44,8 @@
     <Compile Include="ConsoleGameServer.cs" />
     <Compile Include="IServerCharacter.cs" />
     <Compile Include="NetState.cs" />
+    <Compile Include="Network\Packets\ChatStatusPacketHandler.cs" />
+    <Compile Include="Network\Packets\ChatMessagePacketHandler.cs" />
     <Compile Include="Network\Packets\AimToPacketHandler.cs" />
     <Compile Include="Network\Packets\MoveToPacketHandler.cs" />
     <Compile Include="Network\Packets\AuthPacketHandler.cs" />
