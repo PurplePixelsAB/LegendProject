@@ -47,8 +47,8 @@ namespace UdpServer
             ServerPacketHandler.Register(PacketIdentity.PerformAbility, new PerformAbilityPacketHandler());
             PacketFactory.Register(PacketIdentity.UseItem, () => new UseItemPacket());
             ServerPacketHandler.Register(PacketIdentity.UseItem, new UseItemPacketHandler());
-            PacketFactory.Register(PacketIdentity.PickUpItem, () => new PickUpItemPacket());
-            ServerPacketHandler.Register(PacketIdentity.PickUpItem, new PickUpItemPacketHandler());
+            PacketFactory.Register(PacketIdentity.MoveItem, () => new MoveItemPacket());
+            ServerPacketHandler.Register(PacketIdentity.MoveItem, new MoveItemPacketHandler());
             PacketFactory.Register(PacketIdentity.ChatMessage, () => new ChatMessagePacket());
             ServerPacketHandler.Register(PacketIdentity.ChatMessage, new ChatMessagePacketHandler());
             PacketFactory.Register(PacketIdentity.ChatStatus, () => new ChatStatusPacket());

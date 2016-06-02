@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Network.Packets
 {
@@ -32,6 +33,16 @@ namespace Network.Packets
             this.Write(nullableValue.HasValue);
             if (nullableValue.HasValue)
                 this.Write(nullableValue.Value);
+        }
+
+        internal void WriteNullable(Point? nullableValue)
+        {
+            this.Write(nullableValue.HasValue);
+            if (nullableValue.HasValue)
+            {
+                this.Write(nullableValue.Value.X);
+                this.Write(nullableValue.Value.Y);
+            }
         }
     }
 }

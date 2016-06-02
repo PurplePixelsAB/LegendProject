@@ -54,6 +54,8 @@ namespace UdpServer.Network.Packets
                         }
                     }
                 }
+
+                worldState.SaveCharacter(serverCharacter);
             }
         }
 

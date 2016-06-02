@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Network.Packets
 {
@@ -41,6 +42,18 @@ namespace Network.Packets
             bool hasValue = this.ReadBoolean();
             if (hasValue)
                 value = this.ReadSingle();
+
+            return value;
+        }
+
+        internal Point? ReadNullablePoint()
+        {
+            Point? value = null;
+            bool hasValue = this.ReadBoolean();
+            if (hasValue)
+            {
+                value = new Point(this.ReadInt32(), this.ReadInt32());
+            }
 
             return value;
         }

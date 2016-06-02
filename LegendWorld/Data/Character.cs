@@ -274,17 +274,19 @@ namespace Data.World
             this.CollitionArea.Position = this.Position;
         }
 
+
         public virtual bool PickupItem(IItem item)
         {
-            if (!item.Data.IsWorldItem)
-                return false;
-            if (!this.IsPositionInRange(item.Data.WorldLocation))
+            if (this.IsDead)
                 return false;
 
-            item.Data.MoveTo(this.Inventory.Data);
-            return true;
+            return this.MoveItem(item, this.Inventory);
         }
         public virtual bool DropItem(IItem item)
+        {
+            return this.MoveItem(item, this.Position);
+        }
+        public virtual bool MoveItem(IItem item, Point worldPosition)
         {
             if (item.Data.IsWorldItem)
                 return false;
@@ -292,8 +294,64 @@ namespace Data.World
             if (this.IsEquiped(item))
                 this.Equip(item); //Equip toggles equipment.
 
-            item.Data.MoveTo(this.CurrentMapId, this.Position);
+            item.Data.MoveTo(this.CurrentMapId, worldPosition);
             return true;
+        }
+        public virtual bool MoveItem(IItem item, ContainerItem container)
+        {
+            if (item.Data.IsWorldItem)
+            {
+                if (!this.IsPositionInRange(item.Data.WorldLocation))
+                    return false;
+            }
+            else
+            {
+                if (!this.IsItemInInventory(item))
+                    return false;
+            }
+            if (container.Data.IsWorldItem)
+            {
+                if (!this.IsPositionInRange(container.Data.WorldLocation))
+                    return false;
+            }
+            else
+            {
+                if (!this.IsItemInInventory(container))
+                    return false;
+            }
+
+            item.Data.MoveTo(container.Data);
+            return true;
+        }
+
+        public bool IsItemInInventory(IItem item)
+        {
+            if (this.Inventory == null)
+                return false;
+            if (this.Inventory.Items.Count <= 0)
+                return false;
+
+            if (this.Inventory.Data.ItemDataID == item.Data.ItemDataID)
+                return true;
+
+            return this.IsItemInContainer(this.Inventory, item);
+        }
+        private bool IsItemInContainer(ContainerItem containerToCheck, IItem itemToLookFor)
+        {
+            foreach (IItem item in containerToCheck.Items)
+            {
+                if (item.Data.ItemDataID == itemToLookFor.Data.ItemDataID)
+                    return true;
+
+                if (item.Category == ItemCategory.Container)
+                {
+                    bool checkSubContainerResult = this.IsItemInContainer((ContainerItem)item, itemToLookFor);
+                    if (checkSubContainerResult)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         public bool Equip(IItem itemToEquip)

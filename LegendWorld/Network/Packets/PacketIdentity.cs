@@ -10,7 +10,7 @@
         AimTo = 2,
         StatsChanged = 3,
         PerformAbility = 4,
-        PickUpItem = 5,
+        MoveItem = 5,
         UseItem = 6,
         ChatStatus = 7,
         ChatMessage = 8,

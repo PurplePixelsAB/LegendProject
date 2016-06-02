@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Data;
 using DataServer.Models;
+using System.Data.Entity.Migrations;
 
 namespace DataServer.Controllers
 {
@@ -67,7 +68,8 @@ namespace DataServer.Controllers
                 else
                     db.Entry(power).State = EntityState.Modified;
             }
-            db.Entry(characterData).State = EntityState.Modified;
+
+            db.Set<CharacterData>().AddOrUpdate(characterData);
 
             try
             {

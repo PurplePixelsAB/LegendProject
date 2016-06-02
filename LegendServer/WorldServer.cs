@@ -99,6 +99,11 @@ namespace UdpServer
                 return null;
         }
 
+        internal void SaveCharacter(ServerCharacter serverCharacter)
+        {
+            dataContext.SaveCharacter(serverCharacter.GetData());
+        }
+
         internal void LoadMapData(int mapId)
         {
             IEnumerable<ItemData> items = dataContext.GetItems(mapId);
@@ -205,21 +210,21 @@ namespace UdpServer
                     if (corpse.Data.ItemDataID != 0)
                     {
                         this.AddItem(corpse);
-
-                        foreach (var item in servCharacter.Inventory.Items)
-                        {
-                            item.Data.MoveTo(corpse.Data);
-                            dataContext.SaveItem(item.Data);
-                        }
-
+                        servCharacter.MoveItem(servCharacter.Inventory, corpse); //                         item.Data.MoveTo(corpse.Data);
+                        dataContext.SaveItem(servCharacter.Inventory.Data);
                         foreach (int charID in this.maptoCharacterRelations[character.CurrentMapId])
                         {
                             ServerCharacter informChar = (ServerCharacter)this.GetCharacter(charID);
                             informChar.Owner.Send(new NewItemPacket(corpse.Data.ItemDataID));
+                            informChar.Owner.Send(new MoveItemPacket(servCharacter.Inventory.Data.ItemDataID, corpse.Data.ItemDataID));
                         }
+
+                        //foreach (var item in servCharacter.Inventory.Items)
+                        //{
+                        //}
                     }
 
-                    this.SendStatChangeToMapCharacters(servCharacter);
+                    //this.SendStatChangeToMapCharacters(servCharacter);
                 }
             }
         }

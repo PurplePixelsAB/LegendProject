@@ -60,8 +60,8 @@ namespace WindowsClient.Net
             PacketFactory.Register(PacketIdentity.PerformAbility, () => new PerformAbilityPacket());
             clientPacketHandlers[(byte)PacketIdentity.UseItem] = new UseItemPacketHandler();
             PacketFactory.Register(PacketIdentity.UseItem, () => new UseItemPacket());
-            clientPacketHandlers[(byte)PacketIdentity.PickUpItem] = new PickUpItemPacketHandler();
-            PacketFactory.Register(PacketIdentity.PickUpItem, () => new PickUpItemPacket());
+            clientPacketHandlers[(byte)PacketIdentity.MoveItem] = new MoveItemPacketHandler();
+            PacketFactory.Register(PacketIdentity.MoveItem, () => new MoveItemServerPacket());
             clientPacketHandlers[(byte)PacketIdentity.Error] = new ErrorPacketHandler();
             PacketFactory.Register(PacketIdentity.Error, () => new ErrorPacket());
             clientPacketHandlers[(byte)PacketIdentity.ChatMessage] = new ChatMessagePacketHandler();
@@ -253,7 +253,7 @@ namespace WindowsClient.Net
 
         internal void PickUpItem(int id, IItem item)
         {
-            PickUpItemPacket useItemPacket = new PickUpItemPacket(item.Data.ItemDataID, id);
+            MoveItemPacket useItemPacket = new MoveItemPacket(item.Data.ItemDataID, id);
             worldServerClient.Send(useItemPacket);
         }
 
