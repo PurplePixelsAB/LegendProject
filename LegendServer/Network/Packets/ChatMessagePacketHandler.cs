@@ -1,4 +1,5 @@
 ﻿using Data.World;
+using LegendWorld.Data.Modifiers;
 using LegendWorld.Network.Packets;
 using Microsoft.Xna.Framework;
 using Network;
@@ -20,6 +21,7 @@ namespace UdpServer.Network.Packets
             if (serverCharacter != null)
             {
                 string ghostText = this.GhostText(packetToHandle.Message.Length);
+                serverCharacter.SentMessage();
 
                 foreach (int mapCharacterId in worldState.Characters)
                 {

@@ -89,6 +89,7 @@
     <Compile Include="Data\Items\SwordItem.cs" />
     <Compile Include="Data\Items\WeaponItem.cs" />
     <Compile Include="Data\ItemCategory.cs" />
+    <Compile Include="Data\Modifiers\RevealingActionModifier.cs" />
     <Compile Include="Data\Modifiers\VisibilityModifier.cs" />
     <Compile Include="Data\Modifiers\DeflectDamageModifier.cs" />
     <Compile Include="Data\Modifiers\CharacterModifier.cs" />

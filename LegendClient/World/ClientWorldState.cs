@@ -32,6 +32,7 @@ namespace WindowsClient.World
         internal void AddChatMessage(int mobileId, string message)
         {
             ClientCharacter clientCharacter = (ClientCharacter)this.GetCharacter(mobileId);
+            clientCharacter.SentMessage();
             clientCharacter.IsWritingMessage = false;
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.Text = message;

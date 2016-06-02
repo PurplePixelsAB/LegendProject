@@ -111,9 +111,11 @@ namespace LegendWorld.Data
             //this.SetFactor(StatIdentifier.Mobility, MathHelper.Clamp(1f - weightFactor, 0f, 1f), 100);
 
             if (character.IsDead)
-                this.Set(StatIdentifier.Visibility, 0);
+            {                
+                this.Add(StatIdentifier.Visibility, -1);
+            }
             else
-                this.Set(StatIdentifier.Visibility, 100); //ToDo: character.GetEquipedVisibility();
+                this.Set(StatIdentifier.Visibility, character.GetBaseVisibility());
         }
 
         internal void SetPower(int power, int weaponPower)

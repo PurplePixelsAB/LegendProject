@@ -84,7 +84,7 @@ namespace Data.World
         public bool IsMoving { get { return this.MovingToPosition != this.Position && this.MovingToPosition != null; } }
 
         public bool IsDead { get { return this.Stats.Health <= 0; } }
-        
+
         public CircleCollitionArea CollitionArea { get; set; }
 
         public event EventHandler<PerformsPowerEventArgs> PerformsPower;
@@ -149,6 +149,16 @@ namespace Data.World
         {
             this.AimToPosition = mapPoint;
             this.OnAimToChanged();
+        }
+
+        internal int GetBaseVisibility()
+        {
+            return 100; //ToDo: Calculate visibility from characters items/armor.
+        }
+
+        public void SentMessage()
+        {
+            this.Stats.Modifiers.Add(new RevealingActionModifier(10000));
         }
 
         protected virtual void OnAimToChanged()
