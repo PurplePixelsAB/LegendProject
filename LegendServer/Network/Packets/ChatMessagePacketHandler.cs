@@ -20,7 +20,7 @@ namespace UdpServer.Network.Packets
             ServerCharacter serverCharacter = (ServerCharacter)worldState.GetCharacter(netState.WorldId);
             if (serverCharacter != null)
             {
-                string ghostText = this.GhostText(packetToHandle.Message.Length);
+                string ghostText = this.GhostText(packetToHandle.Message);
                 serverCharacter.SentMessage();
 
                 foreach (int mapCharacterId in worldState.Characters)
@@ -43,7 +43,19 @@ namespace UdpServer.Network.Packets
             }
         }
 
-        private string GhostText(int length)
+        private string GhostText(string message)
+        {
+            string ghostText = string.Empty;
+            string[] words = message.Split(new char[] { ' ' });
+            foreach (string word in words)
+            {
+                ghostText += " " + this.GhostWord(word.Length);
+            }
+
+            return ghostText;
+        }
+
+        private string GhostWord(int length)
         {
             string ghostText = string.Empty;
             for (int i = 0; i < length; i++)
