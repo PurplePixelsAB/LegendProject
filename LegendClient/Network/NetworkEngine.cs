@@ -47,7 +47,7 @@ namespace WindowsClient.Net
 
         private NetworkEngine()
         {
-            
+
             dataContext = new WorldWebDataContext(string.Format(@"http://{0}:{1}/", LegendClient.Properties.Settings.Default.DataServerAddress, LegendClient.Properties.Settings.Default.DataServerPort));
             clientPacketHandlers = new ClientPacketHandler[byte.MaxValue + 1];
             clientPacketHandlers[(byte)PacketIdentity.StatsChanged] = new StatsChangedPacketHandler();
@@ -80,8 +80,9 @@ namespace WindowsClient.Net
         {
             Packet packet = (Packet)sender;
             ClientPacketHandler handler = this.GetHandler(packet.PacketId);
-            handler.Network = this;
-            handler.Handle(packet, this.WorldState);
+            //handler.Network = this;
+            if (handler != null)
+                handler.Handle(packet, this.WorldState);
         }
 
         public ClientPacketHandler GetHandler(PacketIdentity packetId)

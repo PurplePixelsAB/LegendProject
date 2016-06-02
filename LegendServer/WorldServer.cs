@@ -146,9 +146,9 @@ namespace UdpServer
 
             base.AddCharacter(character);
             this.AddCharacterToMap(character);
-            this.UpdateThisCharacterOfEveryone(serverCharacter);
-            this.UpdateEveryoneOfThisCharacter(serverCharacter);
-            //this.UpdateCharacterOfEveryGroundItem(serverCharacter);
+            this.SendInitialMapStatValues(serverCharacter);
+            this.SendInitialMapPositions(serverCharacter);
+            this.SendStatChangeToMapCharacters(serverCharacter);
         }
 
         private void AddCharacterToMap(Character character)
@@ -193,7 +193,7 @@ namespace UdpServer
             if (e.Value != e.PreviousValue) //Why does not this get called?
             {
                 ServerCharacter servCharacter = (ServerCharacter)character;
-                this.UpdateEveryoneOfThisCharacter(servCharacter);
+                this.SendStatChangeToMapCharacters(servCharacter);
                 if (e.Value <= 0)
                 {
                     CorpseItem corpse = new CorpseItem();
@@ -219,7 +219,7 @@ namespace UdpServer
                         }
                     }
 
-                    this.UpdateEveryoneOfThisCharacter(servCharacter);
+                    this.SendStatChangeToMapCharacters(servCharacter);
                 }
             }
         }
@@ -253,20 +253,35 @@ namespace UdpServer
                 dataContext.EndSession(dcOwner.Id);
         }
 
-        internal void UpdateThisCharacterOfEveryone(ServerCharacter characterToUpdate)
+        internal void SendInitialMapStatValues(ServerCharacter toCharacter)
         {
-            NetState clientSendTo = characterToUpdate.Owner;
+            NetState clientSendTo = toCharacter.Owner;
 
             foreach (ushort characterId in characters.Keys)
             {
-                if (characterToUpdate.Id == characterId)
+                if (toCharacter.Id == characterId)
                     continue;
 
                 ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
                 clientSendTo.Send(new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Stats.Health, (byte)aboutCharacter.Stats.Energy));
             }
         }
-        internal void UpdateEveryoneOfThisCharacter(ServerCharacter aboutCharacter)
+        internal void SendInitialMapPositions(ServerCharacter toCharacter)
+        {
+            NetState clientSendTo = toCharacter.Owner;
+
+            foreach (ushort characterId in characters.Keys)
+            {
+                if (toCharacter.Id == characterId)
+                    continue;
+
+                ServerCharacter aboutCharacter = ((ServerCharacter)characters[characterId]);
+                clientSendTo.Send(new MoveToPacket(aboutCharacter.Id, aboutCharacter.MovingToPosition)); // (byte)aboutCharacter.Stats.Health, (byte)aboutCharacter.Stats.Energy));
+                clientSendTo.Send(new AimToPacket(aboutCharacter.Id, aboutCharacter.AimToPosition));
+            }
+        }
+
+        internal void SendStatChangeToMapCharacters(ServerCharacter aboutCharacter)
         {
             var packet = new StatsChangedPacket(aboutCharacter.Id, (byte)aboutCharacter.Stats.Health, (byte)aboutCharacter.Stats.Energy);
             foreach (ushort mapCharacterId in maptoCharacterRelations[aboutCharacter.CurrentMapId])
@@ -304,7 +319,7 @@ namespace UdpServer
         private void character_InputUpdated(object sender, EventArgs e)
         {
             ServerCharacter mobileUpdated = (ServerCharacter)sender;
-            this.UpdateEveryoneOfThisCharacter(mobileUpdated);
+            this.SendStatChangeToMapCharacters(mobileUpdated);
         }
 
         public override void RemoveCharacter(Character character)

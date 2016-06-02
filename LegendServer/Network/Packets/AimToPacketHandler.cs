@@ -19,7 +19,7 @@ namespace UdpServer.Network.Packets
             if (serverCharacter != null)
             {
                 serverCharacter.SetAimToPosition(new Point(packetToHandle.X, packetToHandle.Y));
-                worldState.UpdateEveryoneOfThisCharacter(serverCharacter);
+                worldState.SendStatChangeToMapCharacters(serverCharacter);                
             }
         }
     }

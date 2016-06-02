@@ -18,7 +18,7 @@ namespace WindowsClient.Net.Packets
         protected override void OnHandle(IPacket packet, ClientWorldState worldState)
         {
             ErrorPacket recivedPacket = (ErrorPacket)packet;
-            this.Network.AddServerError(recivedPacket.Code, recivedPacket.Message);
+            NetworkEngine.Instance.AddServerError(recivedPacket.Code, recivedPacket.Message);
         }
     }
 }

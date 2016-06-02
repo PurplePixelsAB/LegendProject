@@ -16,7 +16,7 @@ namespace Network
         //protected byte swingEnergy = 34;
         //protected byte healAmount = 11;
 
-        protected TimeSpan baseRegenTick = new TimeSpan(0, 0, 1);
+        protected TimeSpan baseRegenTick = new TimeSpan(0, 0, 3);
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
         private long nextRegendTick = 0;
 

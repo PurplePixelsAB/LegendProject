@@ -31,7 +31,7 @@ namespace LegendWorld.Data
 
         private const float baseMovement = 8f;
         private const int baseHealthRegen = 1;
-        private const int baseEnergyRegen = 2;
+        private const int baseEnergyRegen = 5;
 
         private Dictionary<StatIdentifier, CharacterStat> baseStats;
         //private Dictionary<StatIdentifier, int> modStats;
