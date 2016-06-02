@@ -22,7 +22,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	color.r = value;
 	color.g = value;
 	color.b = value;
-	color.a = 1.0f;
+	color.a = color.a;
 
 	return color;
 }
