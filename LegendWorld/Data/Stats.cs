@@ -33,12 +33,12 @@ namespace LegendWorld.Data
         private const int baseHealthRegen = 1;
         private const int baseEnergyRegen = 2;
 
-        private Dictionary<StatIdentifier, int> baseStats;
+        private Dictionary<StatIdentifier, CharacterStat> baseStats;
         //private Dictionary<StatIdentifier, int> modStats;
         private Character character;
 
-        private StatChangedEventHandler[] onStatModified = new StatChangedEventHandler[Stats.All.Length];
-        private StatReadEventHandler[] onStatRead = new StatReadEventHandler[Stats.All.Length];
+        //private StatChangedEventHandler[] onStatModified = new StatChangedEventHandler[Stats.All.Length];
+        //private StatReadEventHandler[] onStatRead = new StatReadEventHandler[Stats.All.Length];
         public int Health
         {
             get
@@ -82,12 +82,12 @@ namespace LegendWorld.Data
         public Stats(Character attachedCharacter)
         {
             character = attachedCharacter;
-            baseStats = new Dictionary<StatIdentifier, int>(Stats.All.Length);
+            baseStats = new Dictionary<StatIdentifier, CharacterStat>(Stats.All.Length);
             //modStats = new Dictionary<StatIdentifier, int>(Stats.All.Length);
             int defaultValue = 100;
             foreach (StatIdentifier stat in Stats.All)
             {
-                baseStats.Add(stat, defaultValue);
+                baseStats.Add(stat, new CharacterStat(stat) { Value = defaultValue });
                 //modStats.Add(stat, defaultValue);
             }
 
@@ -123,37 +123,27 @@ namespace LegendWorld.Data
 
         public void OnStatChangedRegister(StatIdentifier statID, StatChangedEventHandler function)
         {
-            onStatModified[(int)statID] += function;
+            baseStats[statID].Changed += function;
+            //onStatModified[(int)statID] += function;
         }
         public void OnStatChangedUnRegister(StatIdentifier statID, StatChangedEventHandler function)
         {
-            onStatModified[(int)statID] -= function;
+            baseStats[statID].Changed -= function;
+            //onStatModified[(int)statID] -= function;
         }
         public void OnStatReadRegister(StatIdentifier statID, StatReadEventHandler function)
         {
-            onStatRead[(int)statID] += function;
+            baseStats[statID].Read += function;
+            //onStatRead[(int)statID] += function;
         }
         public void OnStatReadUnRegister(StatIdentifier statID, StatReadEventHandler function)
         {
-            onStatRead[(int)statID] -= function;
+            baseStats[statID].Read -= function;
+            //onStatRead[(int)statID] -= function;
         }
 
-        private StatChangedEventArgs OnStatChanged(StatIdentifier statID, StatChangedEventArgs e)
-        {
-            if (onStatModified[(int)statID] != null)
-            {
-                onStatModified[(int)statID](character, e);
-            }
-            return e;
-        }
-        private StatReadEventArgs OnStatRead(StatIdentifier statID, StatReadEventArgs e)
-        {
-            if (onStatRead[(int)statID] != null)
-            {
-                onStatRead[(int)statID](character, e);
-            }
-            return e;
-        }
+
+
 
         //public event EventHandler<StatModifyEventArgs> StatModify;
         //protected virtual int OnStatModify(Character character, StatIdentifier statToModify, int newValue, int oldValue)
@@ -169,15 +159,15 @@ namespace LegendWorld.Data
 
         private void Add(StatIdentifier statId, int modifyAmount)
         {
-            int baseValue = (int)baseStats[statId];
+            int baseValue = baseStats[statId].Value;
             int modValue = baseValue + modifyAmount;
             this.Set(statId, modValue);
         }
-        private void Set(StatIdentifier statId, int newValue)
+        private void Set(StatIdentifier statID, int newValue)
         {
-            int prevValue = this.GetStat(statId);
-            var eventArgs = this.OnStatChanged(statId, new StatChangedEventArgs(newValue, prevValue));
-            baseStats[statId] = Stats.Clamp(eventArgs.Value);
+            int prevValue = this.GetStat(statID);
+            var eventArgs = this.baseStats[statID].OnStatChanged(statID, new StatChangedEventArgs(newValue, prevValue), character);
+            baseStats[statID].Value = Stats.Clamp(eventArgs.Value);
             //modStats[statId] = this.OnStatModify(character, statId, modifyAmountTo, modStats[statId]);
         }
         //private void SetFactor(StatIdentifier statId, float factor, int restPoint)
@@ -194,8 +184,8 @@ namespace LegendWorld.Data
 
         internal int GetStat(StatIdentifier statId)
         {
-            int currentValue = baseStats[statId];
-            var eventArgs = this.OnStatRead(statId, new StatReadEventArgs(currentValue));
+            var currentValue = baseStats[statId];
+            var eventArgs = currentValue.OnStatRead(statId, new StatReadEventArgs(currentValue.Value), character);
             return eventArgs.Value;
             //return modStats[statId];
         }

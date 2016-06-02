@@ -62,7 +62,7 @@ namespace LegendServer.Network
             if (data.ItemDataID != 0)
                 this.Put(itemsAddress + data.ItemDataID, data);
             else
-                this.Post(itemsAddress, data);
+                data = this.Post(itemsAddress, data);
 
             return data;
         }

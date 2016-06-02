@@ -65,6 +65,16 @@ namespace Network
             if (items.ContainsKey((ushort)item.Data.ItemDataID))
                 return;
 
+            if (item.Data.ContainerID.HasValue)
+            {
+                ContainerItem container = (ContainerItem)this.GetItem(item.Data.ContainerID.Value);
+                if (container != null)
+                {
+                    if (!container.Items.Contains(item))
+                        container.Items.Add(item);
+                }
+            }
+
             items.Add((ushort)item.Data.ItemDataID, item);
         }
         public virtual void RemoveItem(IItem item)
@@ -155,7 +165,7 @@ namespace Network
             if (characters.ContainsKey(id))
             {
                 return characters[id];
-            }            
+            }
 
             return null;
         }

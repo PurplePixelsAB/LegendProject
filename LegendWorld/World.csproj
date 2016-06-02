@@ -108,6 +108,7 @@
     <Compile Include="Data\Modifiers\StunnedModifier.cs" />
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
     <Compile Include="Data\PerformsPowerEventArgs.cs" />
+    <Compile Include="Data\CharacterStat.cs" />
     <Compile Include="Data\StatIdentifier.cs" />
     <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />

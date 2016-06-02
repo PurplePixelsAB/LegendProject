@@ -26,7 +26,8 @@ namespace WindowsClient.Net.Packets
             if (item == null)
             {
                 ItemData itemData = NetworkEngine.Instance.LoadItem(incomingPacket.ItemId);
-                worldState.CreateItem(itemData);
+                item = worldState.CreateItem(itemData);
+                worldState.AddItem(item);
             }
         }
     }

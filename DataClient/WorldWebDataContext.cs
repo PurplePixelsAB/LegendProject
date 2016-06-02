@@ -13,7 +13,7 @@ namespace DataClient
 {
     public class WorldWebDataContext
     {
-        protected const string itemsAddress = "API/Item/"; 
+        protected const string itemsAddress = "API/Item/";
         protected const string characterAddress = "API/Character/";
         protected const string sessionAddress = "API/PlayerSessions/";
         protected const string authAddress = "RCP/Auth/";
@@ -61,18 +61,18 @@ namespace DataClient
             HttpResponseMessage response = httpClient.PutAsync(requestAdress, content).Result;
             return response.IsSuccessStatusCode;
         }
-        protected TObject Post<TObject>(string requestAdress, TObject objectToPut)
+        protected TObject Post<TObject>(string requestAdress, TObject objectToPost)
         {
-            string strJson = JsonConvert.SerializeObject(objectToPut);
+            string strJson = JsonConvert.SerializeObject(objectToPost);
             StringContent content = new System.Net.Http.StringContent(strJson, Encoding.UTF8, "application/json");
             HttpResponseMessage response = httpClient.PostAsync(requestAdress, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 string returnJson = response.Content.ReadAsStringAsync().Result;
-                objectToPut = JsonConvert.DeserializeObject<TObject>(strJson);
+                objectToPost = JsonConvert.DeserializeObject<TObject>(returnJson);
             }
 
-            return objectToPut;
+            return objectToPost;
         }
         public PlayerSession GetSession(int sessionId)
         {

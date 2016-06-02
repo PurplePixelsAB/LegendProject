@@ -102,10 +102,10 @@ namespace WindowsClient
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bandage,
                 new ClientItemFactory<BandageClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bandage") });
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bag,
-
                 new ClientItemFactory<BagClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bag") });
+
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bow,
-                new ClientItemFactory<BowClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bow") });
+    new ClientItemFactory<BowClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bow") });
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Sword,
                 new ClientItemFactory<SwordClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Sword") });
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.Dagger,
@@ -117,6 +117,9 @@ namespace WindowsClient
                 new ArmorClientItemFactory<PlateArmorClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/PlateArmor"), HeadTexture = Game.Content.Load<Texture2D>("Items/PlateHead") });
             ClientItemFactory.Load(Data.ItemData.ItemIdentity.ClothRobe,
                 new ArmorClientItemFactory<ClothClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/ClothArmor"), HeadTexture = Game.Content.Load<Texture2D>("Items/ClothHead") });
+
+            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Corpse,
+            new ClientItemFactory<CorpseClientItem>() { Texture = Game.Content.Load<Texture2D>("DeadHead") });
 
             if (!network.LoadContent(world))
             {
