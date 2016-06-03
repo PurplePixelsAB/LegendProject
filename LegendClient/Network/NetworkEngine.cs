@@ -239,6 +239,12 @@ namespace WindowsClient.Net
             }
         }
 
+        internal void DropItem(ClientCharacter playerCharacter, IItem item)
+        {
+            MoveItemPacket packet = new MoveItemPacket(item.Data.ItemDataID, playerCharacter.Position);
+            worldServerClient.Send(packet);
+        }
+
         internal void ToggleChat(int id, bool state)
         {
             ChatStatusPacket packet = new ChatStatusPacket(id, state);

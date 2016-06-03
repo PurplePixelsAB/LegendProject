@@ -31,6 +31,7 @@ namespace DataServer.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            context.Database.ExecuteSqlCommand("DELETE FROM CharacterPowerLearneds");
             context.Database.ExecuteSqlCommand("DELETE FROM ItemDatas");
             context.Database.ExecuteSqlCommand("DELETE FROM PlayerSessions");
             context.Database.ExecuteSqlCommand("DELETE FROM CharacterDatas");

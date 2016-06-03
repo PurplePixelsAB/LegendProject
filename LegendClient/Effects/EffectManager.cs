@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WindowsClient.World;
 
 namespace LegendClient.Effects
 {
@@ -65,6 +66,7 @@ namespace LegendClient.Effects
         public Color DayColor { get; set; }
         public Color NightColor { get; set; }
         public float CurrentStateProgress { get; set; }
+        private Vector2 centerScreen;
 
         private Color CycleDrawColor = Color.White;
 
@@ -76,6 +78,7 @@ namespace LegendClient.Effects
 
         protected internal void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
+            centerScreen = graphicsDevice.Viewport.Bounds.Center.ToVector2();
             PresentationParameters pp = graphicsDevice.PresentationParameters;
             lightSourceMap = new RenderTarget2D(graphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, true, SurfaceFormat.Color, DepthFormat.None); // pp.MultiSampleType, pp.MultiSampleQuality);
             //cloudShadowMap = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, 1, SurfaceFormat.Color, pp.MultiSampleType, pp.MultiSampleQuality);
@@ -123,15 +126,15 @@ namespace LegendClient.Effects
                 UpdateCycle(gameTime);
         }
 
-        protected internal void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        protected internal void Draw(SpriteBatch spriteBatch, GameTime gameTime, ClientWorldState world)
         {
             //if (lightSheet != null)
                 DrawLightMap(spriteBatch, gameTime);
 
             //if (particleEffectSheet != null)
-                DrawEffects(spriteBatch, gameTime);
+                DrawEffects(spriteBatch, gameTime, world);
         }
-        private void DrawEffects(SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawEffects(SpriteBatch spriteBatch, GameTime gameTime, ClientWorldState world)
         {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
             //SpriteBatch.Begin(SpriteBlendMode.Additive, SpriteSortMode.Deferred, SaveStateMode.None);
@@ -144,7 +147,10 @@ namespace LegendClient.Effects
                     Texture2D textureToDraw = effectTextures[effect.Sprite];
                     Rectangle sourceRectangle = textureToDraw.Bounds; //particleEffectSheet.GetSourceRectangle(effect.Sprite);
                     Vector2 origin = sourceRectangle.Center.ToVector2(); //new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
-                    spriteBatch.Draw(textureToDraw, particle.Position + new Vector2(20f, 20f), sourceRectangle, particle.Color, particle.Rotation, origin, particle.Scale, SpriteEffects.None, 1);
+                    if (effect.WorldPosition)
+                        spriteBatch.Draw(textureToDraw, (centerScreen - (world.PlayerCharacter.DrawPosition.ToVector2() - particle.Position)), sourceRectangle, particle.Color, particle.Rotation, origin, particle.Scale, SpriteEffects.None, 1);
+                    else
+                        spriteBatch.Draw(textureToDraw, particle.Position, sourceRectangle, particle.Color, particle.Rotation, origin, particle.Scale, SpriteEffects.None, 1);
                 }
             }
             spriteBatch.End();

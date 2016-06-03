@@ -59,14 +59,20 @@ namespace UdpServer
                 if (characterData.RightHandID.HasValue)
                 {
                     characterData.RightHand = dataContext.GetItem(characterData.RightHandID.Value);
-                    if (characterData != null)
+                    if (characterData.RightHand != null)
                     {
                         var item = (WeaponItem)this.CreateItem(characterData.RightHand);
                         this.AddItem(item);
-                        serverCharacter.RightHand = item;
+                        if (serverCharacter.IsItemInInventory(item))
+                            serverCharacter.RightHand = item;
+                        else
+                            characterData.RightHandID = null;
                     }
                     else
-                        return null;
+                    {
+                        characterData.RightHandID = null;
+                    }
+                          
                 }
                 if (characterData.LeftHandID.HasValue)
                 {
@@ -75,10 +81,15 @@ namespace UdpServer
                     {
                         var item = (WeaponItem)this.CreateItem(characterData.LeftHand);
                         this.AddItem(item);
-                        serverCharacter.LeftHand = item;
+                        if (serverCharacter.IsItemInInventory(item))
+                            serverCharacter.LeftHand = item;
+                        else
+                            characterData.LeftHandID = null;
                     }
                     else
-                        return null;
+                    {
+                        characterData.LeftHandID = null;
+                    }
                 }
                 if (characterData.ArmorID.HasValue)
                 {
@@ -87,10 +98,15 @@ namespace UdpServer
                     {
                         var item = (ArmorItem)this.CreateItem(characterData.Armor);
                         this.AddItem(item);
-                        serverCharacter.Armor = item;
+                        if (serverCharacter.IsItemInInventory(item))
+                            serverCharacter.Armor = item;
+                        else
+                            characterData.ArmorID = null;
                     }
                     else
-                        return null;
+                    {
+                        characterData.ArmorID = null;
+                    }
                 }
 
                 return serverCharacter;

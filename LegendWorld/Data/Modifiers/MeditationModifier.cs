@@ -38,7 +38,7 @@ namespace LegendWorld.Data.Modifiers
             float lerpAmount = elapstedTime / timeToMaxAmount.Ticks;
             float modAmount = MathHelper.Lerp(this.StartAmount, this.EndAmount, lerpAmount);
 
-            int energyRegen = character.Stats.EnergyRegen;
+            int energyRegen = e.Value;
             int modER = Stats.Factor(energyRegen, modAmount);
             e.Value = modER;
             //character.Stats.Factor(StatIdentifier.EnergyRegeneration, modAmount);

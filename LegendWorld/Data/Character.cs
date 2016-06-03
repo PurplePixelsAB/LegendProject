@@ -320,6 +320,13 @@ namespace Data.World
                     return false;
             }
 
+            if (this.IsEquiped(item))
+            {
+                if (!this.Equip(item))
+                {
+                }
+            }
+
             item.Data.MoveTo(container.Data);
             return true;
         }
@@ -328,11 +335,13 @@ namespace Data.World
         {
             if (this.Inventory == null)
                 return false;
-            if (this.Inventory.Items.Count <= 0)
-                return false;
 
             if (this.Inventory.Data.ItemDataID == item.Data.ItemDataID)
                 return true;
+
+            if (this.Inventory.Items.Count <= 0)
+                return false;
+
 
             return this.IsItemInContainer(this.Inventory, item);
         }

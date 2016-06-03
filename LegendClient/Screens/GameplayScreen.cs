@@ -204,6 +204,16 @@ namespace WindowsClient
             actionKeyMappingAbility5.Primary = Keys.D5;
             actionKeyMappingAbility5.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
             Input.Actions.Add(actionKeyMappingAbility5);
+            ActionKeyMapping actionKeyMappingAbility6 = new ActionKeyMapping();
+            actionKeyMappingAbility6.Id = 16;
+            actionKeyMappingAbility6.Primary = Keys.D6;
+            actionKeyMappingAbility6.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility6);
+            ActionKeyMapping actionKeyMappingAbility7 = new ActionKeyMapping();
+            actionKeyMappingAbility7.Id = 16;
+            actionKeyMappingAbility7.Primary = Keys.D7;
+            actionKeyMappingAbility7.ActionTriggered += actionKeyMappingAbility_ActionTriggered;
+            Input.Actions.Add(actionKeyMappingAbility7);
 
             ActionKeyMapping actionKeyMappingOpenBags = new ActionKeyMapping();
             actionKeyMappingOpenBags.Id = 4;
@@ -413,7 +423,7 @@ namespace WindowsClient
             if (e.Value <= e.PreviousValue) //Damage
             {
                 this.AddDamageIndicator(clientCharacter, e.PreviousValue - e.Value);
-                effectManager.AddEffect(new BloodEffect(this.GetScreenPostion(clientCharacter.Position)));
+                effectManager.AddEffect(new BloodEffect(clientCharacter.Position));
             }
             else //Healing
             {
@@ -568,7 +578,7 @@ namespace WindowsClient
             this.DrawProjectiles(spriteBatch);
             spriteBatch.End();
 
-            effectManager.Draw(spriteBatch, gameTime);
+            effectManager.Draw(spriteBatch, gameTime, world);
 
             spriteBatch.Begin();
             this.DrawDamageEffect(spriteBatch, gameTime);
@@ -686,7 +696,7 @@ namespace WindowsClient
 
 
 
-        private Point GetScreenPostion(Point worldPostion)
+        public Point GetScreenPostion(Point worldPostion)
         {
             return (centerScreen - (world.PlayerCharacter.DrawPosition - worldPostion));
         }

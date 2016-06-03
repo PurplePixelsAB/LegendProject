@@ -18,6 +18,7 @@ namespace LegendClient.Effects
         public float MaxAge { get; set; }
 
         public int Particles { get; set; }
+        public bool WorldPosition { get; set; }
 
         internal EffectManager Manager { get; set; }
         internal List<Particle> ParticleList = new List<Particle>();

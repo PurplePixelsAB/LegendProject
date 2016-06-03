@@ -208,7 +208,7 @@ namespace LegendClient.Screens
                     {
                         if (world.PlayerCharacter.DropItem(item))
                         {
-                            NetworkEngine.Instance.PickUpItem(world.PlayerCharacter.Inventory.Data.ItemDataID, item);
+                            NetworkEngine.Instance.DropItem(world.PlayerCharacter, item);
                             this.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(this.Player.InventoryBagId));
                             this.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);
                         }

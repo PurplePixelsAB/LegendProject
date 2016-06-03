@@ -53,7 +53,7 @@ namespace LegendClient.Effects
                     float invAge = 1.0f - relAge;
                     particle.Color = new Color(new Vector4(invAge, invAge, invAge, invAge));
 
-                    Vector2 positionFromCenter = particle.Position - this.Position; //particle.OrginalPosition;
+                    Vector2 positionFromCenter = (particle.Position - this.Position); //particle.OrginalPosition;
                     float distance = positionFromCenter.Length();
                     particle.Scale = ((50.0f + distance) / 200.0f) * this.Size;
 

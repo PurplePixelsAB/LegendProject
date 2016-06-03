@@ -21,6 +21,7 @@ namespace LegendClient.Effects
             this.Size = .2f;
             this.Spread = 0f;
             this.MaxAge = 120000;
+            this.WorldPosition = true;
         }
 
         internal override void AddParticle(GameTime gameTime)
@@ -29,7 +30,8 @@ namespace LegendClient.Effects
 
             //particle.OrginalPosition = Position;
             particle.Position = Position; // particle.OrginalPosition;
-
+            particle.Scale = 1f;
+            particle.Color = Color.White;
             ////particle.BirthTime = (float)gameTime.TotalGameTime.TotalMilliseconds;
             ////particle.MaxAge = MaxAge;
             //particle.Scaling = 0.25f;
