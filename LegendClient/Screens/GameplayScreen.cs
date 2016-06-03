@@ -286,7 +286,12 @@ namespace WindowsClient
                 return;
             if (world.PlayerCharacter.IsDead)
                 return;
-            InventoryScreen inventoryScreen = new InventoryScreen(world);
+
+            List<IItem> worldItems = world.WorldItemsInRange(world.PlayerCharacter.Id);
+            ContainerItem worldItemsTempContainer = new BagClientItem(worldItems);
+            ContainerItem playerContainer = (BagClientItem)world.PlayerCharacter.Inventory;
+
+            InventoryScreen inventoryScreen = new InventoryScreen(world, worldItemsTempContainer, playerContainer);
             //inventoryScreen.Player = world.PlayerCharacter;
             //inventoryScreen.BaseContainer = (BagClientItem)world.PlayerCharacter.Inventory; //new ClientBagItem((BagItem)world.GetItem(world.PlayerCharacter.InventoryBagId));
             //inventoryScreen.GroundItems = world.GroundItemsInRange(world.PlayerCharacter.Id);

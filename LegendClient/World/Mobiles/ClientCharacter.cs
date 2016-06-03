@@ -68,14 +68,14 @@ namespace WindowsClient.World.Mobiles
             }
             return false;
         }
-        public override bool DropItem(IItem item)
-        {
-            if (base.DropItem(item))
-            {
-                this.Inventory.Items.Remove(item);
-                return true;
-            }
-            return false;
-        }
+        //public override bool DropItem(IItem item)
+        //{
+        //    if (base.DropItem(item))
+        //    {
+        //        this.Inventory.Items.Remove(item);
+        //        return true;
+        //    }
+        //    return false;
+        //}
     }
 }

@@ -257,9 +257,14 @@ namespace WindowsClient.Net
             worldServerClient.Send(packet);
         }
 
-        internal void PickUpItem(int id, IItem item)
+        internal void MoveItem(IItem itemToMove, IItem toContainer)
         {
-            MoveItemPacket useItemPacket = new MoveItemPacket(item.Data.ItemDataID, id);
+            MoveItemPacket useItemPacket = new MoveItemPacket(itemToMove.Data.ItemDataID, toContainer.Data.ItemDataID);
+            worldServerClient.Send(useItemPacket);
+        }
+        internal void MoveItem(IItem itemToMove, Point worldPosition)
+        {
+            MoveItemPacket useItemPacket = new MoveItemPacket(itemToMove.Data.ItemDataID, worldPosition);
             worldServerClient.Send(useItemPacket);
         }
 

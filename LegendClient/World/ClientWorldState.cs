@@ -117,7 +117,7 @@ namespace WindowsClient.World
             }
         }
 
-        internal List<IItem> GroundItemsInRange(int id)
+        internal List<IItem> WorldItemsInRange(int id)
         {
             List<IItem> itemsInRange = new List<IItem>(10);
             Character charToRangeCheck = this.GetCharacter(id);

@@ -11,6 +11,15 @@ namespace LegendClient.Screens
 {
     public class BagClientItem : BagItem, IClientItem
     {
+        private List<IItem> worldItems;
+
+        public BagClientItem() : base()
+        { }
+        public BagClientItem(List<IItem> worldItems) : base()
+        {
+            this.Items = worldItems;
+        }
+
         public Texture2D Texture { get; set; }
 
         //public void LoadItems(ClientWorldState world)
