@@ -52,9 +52,12 @@ namespace DataServer.Controllers
                 return BadRequest();
             }
 
+            db.Entry(characterData).State = EntityState.Modified;
+
             List<int> previousIds = db.Characters.AsNoTracking().FirstOrDefault(chr => chr.CharacterDataID == id).Powers.Select(pwr => pwr.CharacterPowerLearnedID).ToList();
             List<int> currentIds = characterData.Powers.Select(pwr => pwr.CharacterPowerLearnedID).ToList();
             List<int> deletedIds = previousIds.Except(currentIds).ToList();
+
             foreach (var deletedId in deletedIds)
             {
                 CharacterPowerLearned characterPowerLearned = characterData.Powers.Single(od => od.CharacterPowerLearnedID == deletedId);
@@ -69,7 +72,7 @@ namespace DataServer.Controllers
                     db.Entry(power).State = EntityState.Modified;
             }
 
-            db.Set<CharacterData>().AddOrUpdate(characterData);
+            //db.Set<CharacterData>().AddOrUpdate(characterData);
 
             try
             {

@@ -93,8 +93,8 @@ namespace LegendWorld.Data
 
             this.Set(StatIdentifier.HealthRegeneration, baseHealthRegen);
             this.Set(StatIdentifier.EnergyRegeneration, baseEnergyRegen);
-            this.Set(StatIdentifier.Power, 0);
-            this.Set(StatIdentifier.Armor, 0);
+            //this.Set(StatIdentifier.Power, 0);
+            //this.Set(StatIdentifier.Armor, 0);
 
             Modifiers = new ModifiersCollection(this);
         }
@@ -243,8 +243,8 @@ namespace LegendWorld.Data
         {
             float defenderArmor = 0f;
             if (character.Armor != null)
-                defenderArmor = (int)character.Armor.Armor;
-
+                defenderArmor = character.Armor.Armor;
+            
             float armorFactor = this.GetStatFactor(StatIdentifier.Armor, 255);
             float moddedArmor = defenderArmor * (1f + armorFactor);
             int damageTaken = (int)MathHelper.Clamp(Stats.Factor(attackersPower, 1f - moddedArmor), 1, Stats.MaxValue);

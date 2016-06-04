@@ -28,27 +28,6 @@ namespace Network
             CharacterPower.Load();
 
             this.Projectiles = new List<ArrowColltionArea>(30);
-            //ushort itemId = 1;
-            //foreach (AbilityIdentity abilityId in Enum.GetValues(typeof(AbilityIdentity)))
-            //{
-            //    Random rnd = new Random();
-            //    for (ushort i = 0; i < 10; i++)
-            //    {
-            //        AbilityScrollItem item = new AbilityScrollItem();
-            //        item.Id = itemId;
-            //        item.Ability = abilityId;
-            //        itemId++;
-            //        this.AddItem(item);
-
-            //        GroundItem groundItem = new GroundItem();
-            //        groundItem.ItemId = item.Id;
-            //        groundItem.Id = itemId;
-            //        groundItem.Position = new Point(rnd.Next(1, 1000), rnd.Next(1, 1000));
-            //        this.AddGroundItem(groundItem);
-
-            //        itemId++;
-            //    }
-            //}
         }
 
         public virtual IItem GetItem(int id)

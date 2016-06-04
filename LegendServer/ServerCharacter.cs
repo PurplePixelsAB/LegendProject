@@ -40,17 +40,17 @@ namespace UdpServer
             LatestData.WorldY = this.Position.Y;
             if (this.RightHand != null)
             {
-                LatestData.RightHand = this.RightHand.Data;
+                //LatestData.RightHand = this.RightHand.Data;
                 LatestData.RightHandID = this.RightHand.Data.ItemDataID;
             }
             if (this.LeftHand != null)
             {
-                LatestData.LeftHand = this.LeftHand.Data;
+                //LatestData.LeftHand = this.LeftHand.Data;
                 LatestData.LeftHandID = this.LeftHand.Data.ItemDataID;
             }
             if (this.Armor != null)
             {
-                LatestData.Armor = this.Armor.Data;
+                //LatestData.Armor = this.Armor.Data;
                 LatestData.ArmorID = this.Armor.Data.ItemDataID;
             }
 

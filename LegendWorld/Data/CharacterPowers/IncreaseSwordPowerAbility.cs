@@ -19,8 +19,11 @@ namespace LegendWorld.Data.Abilities
             this.PrepareTime = 0;
             this.EnergyCost = 0;
             this.RequiredItem = ItemData.ItemIdentity.Sword;
+            this.Amount = 2f;
         }
-        
+
+        public float Amount { get; private set; }
+
         public override CollitionArea GetAbilityEffectArea(WorldState worldState, Character abilityPerformedBy)
         {
             return new SelfCollitionArea();
@@ -30,7 +33,7 @@ namespace LegendWorld.Data.Abilities
         {
             base.Update(gameTime, worldState, abilityOwner);
             if (!abilityOwner.Stats.HasModifier(typeof(WeaponPowerModifier)))
-                abilityOwner.Stats.Modifiers.Add(new WeaponPowerModifier(1f, this.RequiredItem.Value));
+                abilityOwner.Stats.Modifiers.Add(new WeaponPowerModifier(this.Amount, this.RequiredItem.Value));
         }
     }
 }

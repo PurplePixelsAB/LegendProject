@@ -31,7 +31,9 @@ namespace LegendWorld.Data.Items
             {
                 this.Data.Count--;
                 if (this.Data.Count <= 0)
+                {
                     worldState.RemoveItem(this);
+                }
             }
 
             return result;

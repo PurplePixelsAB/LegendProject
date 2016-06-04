@@ -19,7 +19,7 @@ namespace LegendWorld.Data.Abilities
             this.PrepareTime = 0;
             this.EnergyCost = 0;
             this.RequiredItem = ItemData.ItemIdentity.Dagger;
-            this.Amount = 1f;
+            this.Amount = 2f;
         }
 
         public float Amount { get; private set; }

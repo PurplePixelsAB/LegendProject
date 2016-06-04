@@ -303,6 +303,9 @@ namespace Data.World
         }
         public virtual bool MoveItem(IItem item, ContainerItem container)
         {
+            if (item.Data.ItemDataID == container.Data.ItemDataID)
+                return false;
+
             if (item.Data.IsWorldItem)
             {
                 if (!this.IsPositionInRange(item.Data.WorldLocation))
@@ -411,12 +414,14 @@ namespace Data.World
                 if (this.RightHand.Data.Identity == itemIdentity)
                     return true;
             }
-            else if (this.LeftHand != null)
+
+            if (this.LeftHand != null)
             {
                 if (this.LeftHand.Data.Identity == itemIdentity)
                     return true;
             }
-            else if (this.Armor != null)
+
+            if (this.Armor != null)
             {
                 if (this.Armor.Data.Identity == itemIdentity)
                     return true;

@@ -94,11 +94,6 @@ namespace LegendClient.Screens
             Input.Actions.Add(actionKeyMappingEscape);
         }
 
-        private void ActionKeyMappingBack_ActionTriggered(object sender, ActionTriggeredEventArgs e)
-        {
-            this.Hide();
-        }
-
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -225,6 +220,21 @@ namespace LegendClient.Screens
             selectionTexture = Game.Content.Load<Texture2D>("Selection");
         }
 
+        public override void UnloadContent()
+        {
+
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+
+        }
+
+        private void ActionKeyMappingBack_ActionTriggered(object sender, ActionTriggeredEventArgs e)
+        {
+            this.Hide();
+        }
+
         private void ActionKeyMappingLeft_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
             currentItemIndex = 0;
@@ -296,8 +306,9 @@ namespace LegendClient.Screens
             if (world.PlayerCharacter.MoveItem(item, this.BaseContainer))
             {
                 NetworkEngine.Instance.MoveItem(item, this.BaseContainer);
-                this.ParentContainer.Items.Remove(item);
-                this.BaseContainer.Items.Add(item);
+                if (this.ParentContainer.Data == null)
+                    this.ParentContainer.Items.Remove(item);
+                //this.BaseContainer.Items.Add(item);
             }
         }
 
@@ -315,7 +326,7 @@ namespace LegendClient.Screens
                             if (world.PlayerCharacter.MoveItem(item, world.PlayerCharacter.Position))
                             {
                                 NetworkEngine.Instance.MoveItem(item, world.PlayerCharacter.Position);
-                                this.BaseContainer.Items.Remove(item);
+                                //this.BaseContainer.Items.Remove(item);
                                 this.ParentContainer.Items.Add(item);
                             }
                         }
@@ -324,8 +335,8 @@ namespace LegendClient.Screens
                             if (world.PlayerCharacter.MoveItem(item, this.ParentContainer))
                             {
                                 NetworkEngine.Instance.MoveItem(item, this.ParentContainer);
-                                this.BaseContainer.Items.Remove(item);
-                                this.ParentContainer.Items.Add(item);
+                                //this.BaseContainer.Items.Remove(item);
+                                //this.ParentContainer.Items.Add(item);
                             }
                         }
                     }
@@ -425,16 +436,6 @@ namespace LegendClient.Screens
         private void ActionKeyMappingOpenBags_ActionTriggered(object sender, ActionTriggeredEventArgs e)
         {
             this.Hide(); //ToDo: Close all InventoryScreens.
-        }
-
-        public override void UnloadContent()
-        {
-
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-
         }
     }
 }

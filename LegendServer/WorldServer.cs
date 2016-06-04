@@ -215,7 +215,7 @@ namespace UdpServer
             {
                 ServerCharacter servCharacter = (ServerCharacter)character;
                 this.SendStatChangeToMapCharacters(servCharacter);
-                if (e.Value <= 0)
+                if (e.Value <= 0 && e.PreviousValue > 0)
                 {
                     CorpseItem corpse = new CorpseItem();
                     corpse.Data = new ItemData();
@@ -223,25 +223,44 @@ namespace UdpServer
                     corpse.Data.MoveTo(character.CurrentMapId, servCharacter.Position);
                     corpse.CharacterID = character.Id;
                     corpse.Data = dataContext.SaveItem(corpse.Data);
+
                     if (corpse.Data.ItemDataID != 0)
                     {
                         this.AddItem(corpse);
-                        servCharacter.MoveItem(servCharacter.Inventory, corpse); //                         item.Data.MoveTo(corpse.Data);
-                        dataContext.SaveItem(servCharacter.Inventory.Data);
+                        foreach (var item in servCharacter.Inventory.Items)
+                        {
+                            servCharacter.MoveItem(item, corpse);
+                        }
+
                         foreach (int charID in this.maptoCharacterRelations[character.CurrentMapId])
                         {
                             ServerCharacter informChar = (ServerCharacter)this.GetCharacter(charID);
                             informChar.Owner.Send(new NewItemPacket(corpse.Data.ItemDataID));
-                            informChar.Owner.Send(new MoveItemPacket(servCharacter.Inventory.Data.ItemDataID, corpse.Data.ItemDataID));
+                            foreach (var item in corpse.Items)
+                                informChar.Owner.Send(new MoveItemPacket(servCharacter.Inventory.Data.ItemDataID, corpse.Data.ItemDataID));
                         }
 
-                        //foreach (var item in servCharacter.Inventory.Items)
-                        //{
-                        //}
+                        //servCharacter.MoveItem(servCharacter.Inventory, corpse); //                         item.Data.MoveTo(corpse.Data);
+                        //dataContext.SaveItem(servCharacter.Inventory.Data);
                     }
 
                     //this.SendStatChangeToMapCharacters(servCharacter);
                 }
+                //else if (e.Value > 0 && e.PreviousValue <= 0)
+                //{                    
+                //    BagItem newInventory = new BagItem();
+                //    newInventory.Data = new ItemData();
+                //    newInventory.Data.Identity = ItemData.ItemIdentity.Bag;
+                //    newInventory.Data = dataContext.SaveItem(newInventory.Data);
+
+                //    if (newInventory.Data.ItemDataID != 0)
+                //    {
+                //        this.AddItem(newInventory);
+                //        servCharacter.Inventory = newInventory;
+                //        servCharacter.LatestData.InventoryID = newInventory.Data.ItemDataID;
+                //        dataContext.SaveCharacter(servCharacter.GetData());
+                //    }
+                //}
             }
         }
 
