@@ -176,6 +176,7 @@ namespace Network
                 return;
 
             newCharacter.MoveToMapPointValidating += Character_MoveToMapPointValidating;
+            newCharacter.World = this;
             characters.Add(newCharacter.Id, newCharacter);
         }
 

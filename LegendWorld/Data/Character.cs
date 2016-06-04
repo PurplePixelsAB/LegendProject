@@ -59,6 +59,7 @@ namespace Data.World
         }
 
 
+        internal WorldState World { get; set; }
         //public CharacterData Data { get; set; }
 
         public int Id { get; private set; }
@@ -288,11 +289,14 @@ namespace Data.World
         }
         public virtual bool MoveItem(IItem item, Point worldPosition)
         {
-            if (item.Data.IsWorldItem)
-                return false;
-
             if (this.IsEquiped(item))
                 this.Equip(item); //Equip toggles equipment.
+
+            if (!item.Data.IsWorldItem)
+            {
+                ContainerItem parentContainer = (ContainerItem)this.World.GetItem(item.Data.ContainerID.Value);
+                parentContainer.Items.Remove(item);
+            }
 
             item.Data.MoveTo(this.CurrentMapId, worldPosition);
             return true;
@@ -308,6 +312,9 @@ namespace Data.World
             {
                 if (!this.IsItemInInventory(item))
                     return false;
+
+                ContainerItem parentContainer = (ContainerItem)this.World.GetItem(item.Data.ContainerID.Value);
+                parentContainer.Items.Remove(item);
             }
             if (container.Data.IsWorldItem)
             {
@@ -327,6 +334,7 @@ namespace Data.World
                 }
             }
 
+            container.Items.Add(item);
             item.Data.MoveTo(container.Data);
             return true;
         }
