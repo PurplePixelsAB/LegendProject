@@ -18,6 +18,7 @@ namespace Data
             this.Health = 100;
             this.Energy = 100;
             //this.Powers = new List<CharacterPowerLearned>();
+            this.Powers = new List<int>(7);
         }            
         
         [DataMember]

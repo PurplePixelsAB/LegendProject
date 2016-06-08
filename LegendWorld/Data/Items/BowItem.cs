@@ -11,10 +11,13 @@ namespace LegendWorld.Data.Items
     {
         public BowItem()
         {
+            this.Identity = ItemIdentity.Bow;
+
             this.Power = 15;
             this.Speed = 75;
             this.Weight = 2000;
             this.IsTwoHanded = true;
+            this.Count = 1;
         }
     }
 }

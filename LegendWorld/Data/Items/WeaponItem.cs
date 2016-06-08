@@ -13,7 +13,7 @@ namespace LegendWorld.Data.Items
         public WeaponItem()
         {
             this.Category = ItemCategory.Weapon;
-            //this.Data.Count = 1;
+            this.Count = 1;
         }
 
         public byte Power { get; set; }

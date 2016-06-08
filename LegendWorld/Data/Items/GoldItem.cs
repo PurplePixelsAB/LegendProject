@@ -11,7 +11,7 @@ namespace LegendWorld.Data.Items
     {
         public GoldItem()
         {
-            //this.Identity = ItemIdentity.Gold;
+            this.Identity = ItemIdentity.Gold;
             this.Weight = 1;
         }
     }

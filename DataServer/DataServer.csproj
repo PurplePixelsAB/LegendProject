@@ -217,9 +217,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201606050519012_Initial.cs" />
-    <Compile Include="Migrations\201606050519012_Initial.Designer.cs">
-      <DependentUpon>201606050519012_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201606081459124_Initial.cs" />
+    <Compile Include="Migrations\201606081459124_Initial.Designer.cs">
+      <DependentUpon>201606081459124_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -312,8 +312,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201606050519012_Initial.resx">
-      <DependentUpon>201606050519012_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201606081459124_Initial.resx">
+      <DependentUpon>201606081459124_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

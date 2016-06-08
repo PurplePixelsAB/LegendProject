@@ -30,10 +30,10 @@ namespace DataServer.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            context.Database.ExecuteSqlCommand("DELETE FROM CharacterPowerLearneds");
-            context.Database.ExecuteSqlCommand("DELETE FROM ItemDatas");
+            context.Database.ExecuteSqlCommand("DELETE FROM CharacterPowers");
+            context.Database.ExecuteSqlCommand("DELETE FROM Items");
             context.Database.ExecuteSqlCommand("DELETE FROM PlayerSessions");
-            context.Database.ExecuteSqlCommand("DELETE FROM CharacterDatas");
+            context.Database.ExecuteSqlCommand("DELETE FROM Characters");
 
             Random rnd = new Random();
             foreach (LegendWorld.Data.CharacterPowerIdentity abilityId in Enum.GetValues(typeof(LegendWorld.Data.CharacterPowerIdentity)))
@@ -92,9 +92,12 @@ namespace DataServer.Migrations
                 Item charInventory = context.Items.Create();
                 charInventory.Identity = (int)LegendWorld.Data.ItemIdentity.Bag;
                 var inventoryAdded = context.Items.Add(charInventory);
+                context.SaveChanges();
                 character.Name = "TempCharacter" + i;
                 character.InventoryId = inventoryAdded.Id;
                 context.Characters.Add(character);
+
+                context.SaveChanges();
             }
 
             context.SaveChanges();

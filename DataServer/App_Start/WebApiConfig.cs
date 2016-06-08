@@ -31,15 +31,26 @@ namespace DataServer
             //    defaults: new { Controller = "Auth", id = RouteParameter.Optional }
             //);
 
-            config.Routes.MapHttpRoute(
-                name: "CharacterLearnPower",
-                routeTemplate: "API/Character/LearnPower/{characterId}/{power}"
-            );
+            //config.Routes.MapHttpRoute(
+            //    name: "CharacterLearnPower",
+            //    routeTemplate: "API/Character/LearnPower/{characterId}/{power}"
+            //);
 
-            config.Routes.MapHttpRoute(
-                name: "MapIdApi",
-                routeTemplate: "API/{controller}/{action}/{mapId}"
-            );
+            //config.Routes.MapHttpRoute(
+            //     name: "GetCharactersOnMap",
+            //     routeTemplate: "API/Character/GetCharactersOnMap/{mapId}",
+            //    defaults: new { mapId = -1 }
+            // );
+            //config.Routes.MapHttpRoute(
+            //      name: "CharactersLearnPower",
+            //      routeTemplate: "API/Character/LearnPower/{characterId}/{power}"
+            //  );
+
+            //config.Routes.MapHttpRoute(
+            //    name: "GetItemsMapId",
+            //    routeTemplate: "API/Item/GetItems/{mapId}",
+            //    defaults: new { mapId = -1 }
+            //);
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

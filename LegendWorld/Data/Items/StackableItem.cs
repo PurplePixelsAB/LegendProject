@@ -12,7 +12,7 @@ namespace LegendWorld.Data.Items
             this.Category = ItemCategory.Stackable;
         }
         
-        public int Count { get; set; }
+        //public int Count { get; set; }
         
         public int StackWeight { get { return this.Weight * this.Count; } }
         //public ItemModel Data { get; set; }

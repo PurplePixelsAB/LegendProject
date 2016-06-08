@@ -79,17 +79,17 @@ namespace LegendServer.Network
                 this.PostItemPosition(id, containerId.Value);
         }        
 
-        private const string postItemPositionAdress = itemsAddress + "PostPosition/";
+        //private const string postItemPositionAdress = itemsAddress + "PostPosition/";
 
         private void PostItemPosition(int id, int worldMapId, int worldX, int worldY)
         {
-            base.Post(postItemPositionAdress, new ItemWorldPositionModel() { ItemId = id, WorldMapId = worldMapId, WorldX = worldX, WorldY = worldY });
+            base.Post(itemsAddress + "PostWorldPosition/", new ItemWorldPositionModel() { ItemId = id, WorldMapId = worldMapId, WorldX = worldX, WorldY = worldY });
         }
         //private const string postItemPositionAdress = itemsAddress + "PostPosition/";
 
         private void PostItemPosition(int id, int containerId)
         {
-            base.Post(postItemPositionAdress, new ItemContainerPositionModel() { ItemId = id, ContainerId = containerId });
+            base.Post(itemsAddress + "PostContainerPosition/", new ItemContainerPositionModel() { ItemId = id, ContainerId = containerId });
         }
 
         private const string postCharacterItemsAdress = characterAddress + "PostItems/";
@@ -110,7 +110,7 @@ namespace LegendServer.Network
 
         internal void SaveCharacterPowerLearned(int id, CharacterPowerIdentity power)
         {
-            var result = base.Get<object>(characterAddress + "LearnPower/" + id + "/" + power);
+            var result = base.Get<object>(characterAddress + "LearnPower/" + id + "/" + (int)power);
         }
 
         //internal WorldState LoadWorldState()

@@ -11,6 +11,8 @@ namespace LegendWorld.Data.Items
     {
         public ClothArmorItem()
         {
+            this.Identity = ItemIdentity.ClothRobe;
+
             Armor = .05f;
             Weight = 700;
         }

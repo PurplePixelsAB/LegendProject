@@ -9,7 +9,7 @@ namespace LegendWorld.Data.Items
         public ArmorItem()
         {
             this.Category = ItemCategory.Armor;
-            //this.Data.Count = 1;
+            this.Count = 1;
         }
         public float Armor { get; set; }
         //public ItemCategory Category { get; protected set; }

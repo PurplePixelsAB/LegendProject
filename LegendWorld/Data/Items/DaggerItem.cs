@@ -11,6 +11,8 @@ namespace LegendWorld.Data.Items
     {
         public DaggerItem()
         {
+            this.Identity = ItemIdentity.Dagger;
+
             this.Weight = 1000;
             this.Power = 8;
             this.Speed = 175;

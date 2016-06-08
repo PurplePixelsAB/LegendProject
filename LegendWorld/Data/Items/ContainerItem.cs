@@ -12,6 +12,7 @@ namespace LegendWorld.Data.Items
         {
             this.Items = new List<Item>();
             this.Category = ItemCategory.Container;
+            this.Count = 1;
         }
 
         //public ItemCategory Category { get; protected set; }

@@ -14,7 +14,7 @@ namespace LegendWorld.Data.Items
     {
         public BandageItem()
         {
-            //this.Identity = ItemIdentity.AbilityScoll;
+            this.Identity = ItemIdentity.Bandage;
             this.Weight = 100;
             this.HealAmount = 10;
         }

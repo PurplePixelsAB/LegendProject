@@ -19,7 +19,7 @@ namespace DataServer.Controllers
     {
         private WorldDbContext db = new WorldDbContext();
 
-        // GET: api/Items
+        [Route("API/Item/GetItems/{mapId}")]
         public IQueryable<ItemModel> GetItems(int mapId)//(int mapID)
         {
             return db.Items.Select(i => new ItemModel() { Id = i.Id, Identity = i.Identity, SubType = i.SubType, Count = i.Count, ContainerId = i.ContainerId, WorldMapId = i.WorldMapId, WorldX = i.WorldX, WorldY = i.WorldY }); //.Where(i => i.WorldMapID == mapID);
@@ -30,7 +30,6 @@ namespace DataServer.Controllers
         //    return db.Items.Where(i => i.ContainerID == containerID);
         //}
 
-        // GET: api/Items/5
         [ResponseType(typeof(ItemModel))]
         public async Task<IHttpActionResult> GetItem(int id)
         {
@@ -43,7 +42,8 @@ namespace DataServer.Controllers
             return Ok(item);
         }   
         
-        [ResponseType(typeof(ItemModel))]
+        [HttpGet]
+        [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> Use(int id)
         {
             //ItemModel item = await db.Items.Select(i => new ItemModel() { Id = i.Id, Identity = i.Identity, SubType = i.SubType, Count = i.Count, ContainerId = i.ContainerId, WorldMapId = i.WorldMapId, WorldX = i.WorldX, WorldY = i.WorldY }).FirstOrDefaultAsync(i => i.Id == id); //.FindAsync(id);
@@ -63,7 +63,7 @@ namespace DataServer.Controllers
         }
 
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PostPosition(ItemContainerPositionModel positionModel)
+        public async Task<IHttpActionResult> PostContainerPosition(ItemContainerPositionModel positionModel)
         {
             if (!ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace DataServer.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PostPosition(ItemWorldPositionModel positionModel)
+        public async Task<IHttpActionResult> PostWorldPosition(ItemWorldPositionModel positionModel)
         {
             if (!ModelState.IsValid)
             {

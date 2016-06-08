@@ -42,28 +42,39 @@ namespace DataServer.Controllers
             return Ok(characterPowers);
         }
 
-        // GET: api/Character
+        [Route("API/Character/GetCharactersOnMap/{mapId}")]
         public IEnumerable<CharacterModel> GetCharactersOnMap(int mapId)
         {
-            return db.Characters.Where(chr => db.PlayerSessions.Any(ps => ps.CharacterId == chr.Id) && chr.MapId == mapId).Select(c =>
-                new CharacterModel() { Id = c.Id, Name = c.Name, MapId = c.MapId, WorldX = c.WorldX, WorldY = c.WorldY, InventoryId = c.InventoryId, Energy = (byte)c.Energy, Health = (byte)c.Health, ArmorId = c.ArmorId, LeftHandId = c.LeftHandId, RightHandId = c.RightHandId }); //.Include(c => c.Powers);
+            var charactersOnMap = db.Characters.Where(chr => db.PlayerSessions.Any(ps => ps.CharacterId == chr.Id) && chr.MapId == mapId).Select(c =>
+                new CharacterModel() { Id = c.Id, Name = c.Name, MapId = c.MapId, WorldX = c.WorldX, WorldY = c.WorldY, InventoryId = c.InventoryId, Energy = (byte)c.Energy, Health = (byte)c.Health, ArmorId = c.ArmorId, LeftHandId = c.LeftHandId, RightHandId = c.RightHandId, Powers = db.CharacterPowers.Where(cp => cp.CharacterId == c.Id).Select(cp => cp.Power) }).ToList(); //.Include(c => c.Powers);
+
+            //foreach (var character in charactersOnMap)
+            //{
+            //    character.Powers = db.CharacterPowers.Where(cp => cp.CharacterId == character.Id).Select(cp => cp.Power).ToList();
+            //}
+
+            return charactersOnMap;
         }
 
         // GET: api/Character/5
         [ResponseType(typeof(CharacterModel))]
-        public async Task<IHttpActionResult> GetCharacterData(int id)
+        public async Task<IHttpActionResult> GetCharacter(int id)
         {
-            CharacterModel characterData = await db.Characters.Select(c =>
-                new CharacterModel() { Id = c.Id, Name = c.Name, MapId = c.MapId, WorldX = c.WorldX, WorldY = c.WorldY, InventoryId = c.InventoryId, Energy = (byte)c.Energy, Health = (byte)c.Health, ArmorId = c.ArmorId, LeftHandId = c.LeftHandId, RightHandId = c.RightHandId }).FirstOrDefaultAsync(c => c.Id == id); //.Include(c => c.Powers)
-            if (characterData == null)
+            CharacterModel character = await db.Characters.Select(c =>
+                new CharacterModel() { Id = c.Id, Name = c.Name, MapId = c.MapId, WorldX = c.WorldX, WorldY = c.WorldY, InventoryId = c.InventoryId, Energy = (byte)c.Energy, Health = (byte)c.Health, ArmorId = c.ArmorId, LeftHandId = c.LeftHandId, RightHandId = c.RightHandId, Powers = db.CharacterPowers.Where(cp => cp.CharacterId == c.Id).Select(cp => cp.Power) }).FirstOrDefaultAsync(c => c.Id == id); //.Include(c => c.Powers)
+
+            //character.Powers = db.CharacterPowers.Where(cp => cp.CharacterId == character.Id).Select(cp => cp.Power).ToList();
+
+            if (character == null)
             {
                 return NotFound();
             }
             
-            return Ok(characterData);
+            return Ok(character);
         }
 
-
+        [HttpGet]
+        [Route("API/Character/LearnPower/{characterId}/{power}")]
         [ResponseType(typeof(bool))]
         public async Task<IHttpActionResult> LearnPower(int characterId, int power)
         {
@@ -85,6 +96,8 @@ namespace DataServer.Controllers
             newPower.Power = power;
             newPower.CharacterId = characterId;
             db.CharacterPowers.Add(newPower);
+
+            await db.SaveChangesAsync();
 
             return Ok(true);
         }

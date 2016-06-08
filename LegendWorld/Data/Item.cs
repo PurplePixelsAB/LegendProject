@@ -20,6 +20,7 @@ namespace LegendWorld.Data
         public int? SubType { get; protected set; }
 
         public int Weight { get; protected set; }
+        public int Count { get; protected set; }
 
         public int? WorldMapId { get; private set; }
         public int? WorldX { get; private set; }
@@ -35,6 +36,8 @@ namespace LegendWorld.Data
             this.WorldX = data.WorldX;
             this.WorldY = data.WorldY;
             this.ContainerId = data.ContainerId;
+            this.Count = data.Count;
+
         }
         public abstract int GetTotalWeight();        
         public bool IsWorldItem {  get { return this.WorldMapId.HasValue && this.WorldX.HasValue && this.WorldY.HasValue; } }        

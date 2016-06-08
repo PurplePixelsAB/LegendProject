@@ -11,6 +11,8 @@ namespace LegendWorld.Data.Items
     {
         public SwordItem()
         {
+            this.Identity = ItemIdentity.Sword;
+
             this.Weight = 7000;
             this.Power = 18;
             this.Speed = 125;

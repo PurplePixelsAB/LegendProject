@@ -60,7 +60,7 @@ namespace UdpServer
         
         protected override void OnPowerLearning(CharacterPowerIdentity power)
         {
-            //base.OnPowerLearning(power);
+            base.OnPowerLearning(power);
             //this.LatestData.Powers.Add(new CharacterPowerLearned() { Power = power, CharacterID = this.LatestData.Id, Character = this.LatestData });
             HasChanged = true;
         }

@@ -18,10 +18,11 @@ namespace UdpServer.Network.Packets
             AuthPacket incomingPacket = (AuthPacket)packet;
             PlayerSessionModel session = worldState.GetPlayerSession(incomingPacket.SessionId);
             //worldState.AuthenticateClient(netState, incomingPacket.SessionId, incomingPacket.CharacterId);
-            IPAddress sessionIPAddress = IPAddress.Parse(session.ClientAddress);
 
             if (session != null)
             {
+                IPAddress sessionIPAddress = IPAddress.Parse(session.ClientAddress);
+
                 if (netState.Address == sessionIPAddress || sessionIPAddress.Equals(IPAddress.IPv6Loopback) || sessionIPAddress.Equals(IPAddress.Loopback))
                 {
                     netState.Id = session.Id;

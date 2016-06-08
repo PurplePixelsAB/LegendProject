@@ -31,11 +31,11 @@ namespace DataClient
 
         public ItemModel GetItem(int itemId)
         {
-            return this.Get<ItemModel>(itemsAddress + itemId);
+            return this.Get<ItemModel>(itemsAddress + "GetItem/" + itemId);
         }
         public IEnumerable<ItemModel> GetItems(int mapId)
         {
-            return this.Get<IEnumerable<ItemModel>>(itemsAddress); // + "/all/" + mapId);
+            return this.Get<IEnumerable<ItemModel>>(itemsAddress + "GetItems/" + mapId);
         }
         //public IEnumerable<ItemData> GetGroundItems(int mapId)
         //{
@@ -76,7 +76,7 @@ namespace DataClient
         }
         public PlayerSessionModel GetSession(int sessionId)
         {
-            return this.Get<PlayerSessionModel>(sessionAddress + sessionId);
+            return this.Get<PlayerSessionModel>(sessionAddress + "GetPlayerSession/" + sessionId);
         }
 
         public int CreateSession(int characterId)
@@ -91,11 +91,11 @@ namespace DataClient
 
         public CharacterModel GetCharacter(int characterId)
         {
-            return this.Get<CharacterModel>(characterAddress + characterId);
+            return this.Get<CharacterModel>(characterAddress + "GetCharacter/" + characterId);
         }
         public IEnumerable<CharacterModel> GetCharacters(int mapId)
         {
-            return this.Get<IEnumerable<CharacterModel>>(characterAddress); // + mapId);
+            return this.Get<IEnumerable<CharacterModel>>(characterAddress + "GetCharactersOnMap/" + mapId);
         }
     }
 }

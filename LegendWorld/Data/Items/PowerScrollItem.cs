@@ -16,7 +16,7 @@ namespace LegendWorld.Data.Items
         public CharacterPowerIdentity Ability { get { return (CharacterPowerIdentity)base.SubType; } set { base.SubType = (int)value; } }
         public PowerScrollItem()
         {
-            //this.Identity = ItemIdentity.AbilityScoll;
+            this.Identity = ItemIdentity.PowerScoll;
             this.Weight = 100;
         }
         public override bool OnUse(Character usedBy, WorldState worldState)
