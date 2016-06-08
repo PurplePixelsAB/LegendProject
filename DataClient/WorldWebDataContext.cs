@@ -16,7 +16,7 @@ namespace DataClient
         protected const string itemsAddress = "API/Item/";
         protected const string characterAddress = "API/Character/";
         protected const string sessionAddress = "API/PlayerSessions/";
-        protected const string authAddress = "RCP/Auth/";
+        protected const string authAddress = "API/Auth/";
         private HttpClient httpClient;
 
         public WorldWebDataContext(string serverAdress)
@@ -29,13 +29,13 @@ namespace DataClient
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public ItemData GetItem(int itemId)
+        public ItemModel GetItem(int itemId)
         {
-            return this.Get<ItemData>(itemsAddress + itemId);
+            return this.Get<ItemModel>(itemsAddress + itemId);
         }
-        public IEnumerable<ItemData> GetItems(int mapId)
+        public IEnumerable<ItemModel> GetItems(int mapId)
         {
-            return this.Get<IEnumerable<ItemData>>(itemsAddress); // + "/all/" + mapId);
+            return this.Get<IEnumerable<ItemModel>>(itemsAddress); // + "/all/" + mapId);
         }
         //public IEnumerable<ItemData> GetGroundItems(int mapId)
         //{
@@ -74,9 +74,9 @@ namespace DataClient
 
             return objectToPost;
         }
-        public PlayerSession GetSession(int sessionId)
+        public PlayerSessionModel GetSession(int sessionId)
         {
-            return this.Get<PlayerSession>(sessionAddress + sessionId);
+            return this.Get<PlayerSessionModel>(sessionAddress + sessionId);
         }
 
         public int CreateSession(int characterId)
@@ -89,13 +89,13 @@ namespace DataClient
             return this.Get<IEnumerable<SelectableCharacter>>(authAddress + "GetCharacterList/");
         }
 
-        public CharacterData GetCharacter(int characterId)
+        public CharacterModel GetCharacter(int characterId)
         {
-            return this.Get<CharacterData>(characterAddress + characterId);
+            return this.Get<CharacterModel>(characterAddress + characterId);
         }
-        public IEnumerable<CharacterData> GetCharacters(int mapId)
+        public IEnumerable<CharacterModel> GetCharacters(int mapId)
         {
-            return this.Get<IEnumerable<CharacterData>>(characterAddress); // + mapId);
+            return this.Get<IEnumerable<CharacterModel>>(characterAddress); // + mapId);
         }
     }
 }

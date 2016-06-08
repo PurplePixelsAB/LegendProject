@@ -217,22 +217,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201605180855370_Initial.cs" />
-    <Compile Include="Migrations\201605180855370_Initial.Designer.cs">
-      <DependentUpon>201605180855370_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605181418042_CharacterInventoryFixes.cs" />
-    <Compile Include="Migrations\201605181418042_CharacterInventoryFixes.Designer.cs">
-      <DependentUpon>201605181418042_CharacterInventoryFixes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605191732576_CharacterPowers.cs" />
-    <Compile Include="Migrations\201605191732576_CharacterPowers.Designer.cs">
-      <DependentUpon>201605191732576_CharacterPowers.cs</DependentUpon>
+    <Compile Include="Migrations\201606050519012_Initial.cs" />
+    <Compile Include="Migrations\201606050519012_Initial.Designer.cs">
+      <DependentUpon>201606050519012_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CharacterEntity.cs" />
+    <Compile Include="Models\CharacterPowerEntity.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ItemEntity.cs" />
+    <Compile Include="Models\PlayerSessionEntity.cs" />
     <Compile Include="Models\WorldDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -306,9 +302,9 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj">
+    <ProjectReference Include="..\Data\DataServer.Models.csproj">
       <Project>{B3023368-0065-4EEE-ABA2-71643B1505BD}</Project>
-      <Name>Data</Name>
+      <Name>DataServer.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\LegendWorld\World.csproj">
       <Project>{3A3489CE-3B13-427F-A769-F2AE439F4C2D}</Project>
@@ -316,14 +312,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201605180855370_Initial.resx">
-      <DependentUpon>201605180855370_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605181418042_CharacterInventoryFixes.resx">
-      <DependentUpon>201605181418042_CharacterInventoryFixes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605191732576_CharacterPowers.resx">
-      <DependentUpon>201605191732576_CharacterPowers.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201606050519012_Initial.resx">
+      <DependentUpon>201606050519012_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

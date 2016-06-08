@@ -38,11 +38,11 @@ namespace DataServer.Controllers
         //    return Ok(playerSession.Id);
         //}
 
-        // GET: api/PlayerSessions
-        public IQueryable<PlayerSession> GetPlayerSessions()
-        {
-            return db.PlayerSessions;
-        }
+        //// GET: api/PlayerSessions
+        //public IQueryable<PlayerSession> GetPlayerSessions()
+        //{
+        //    return db.PlayerSessions;
+        //}
 
         // GET: api/PlayerSessions/5
         [ResponseType(typeof(PlayerSession))]
@@ -57,71 +57,71 @@ namespace DataServer.Controllers
             return Ok(playerSession);
         }
 
-        // PUT: api/PlayerSessions/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPlayerSession(int id, PlayerSession playerSession)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// PUT: api/PlayerSessions/5
+        //[ResponseType(typeof(void))]
+        //public async Task<IHttpActionResult> PutPlayerSession(int id, PlayerSession playerSession)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (id != playerSession.PlayerSessionID)
-            {
-                return BadRequest();
-            }
+        //    if (id != playerSession.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            db.Entry(playerSession).State = EntityState.Modified;
+        //    db.Entry(playerSession).State = EntityState.Modified;
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PlayerSessionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await db.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!PlayerSessionExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
+        //    return StatusCode(HttpStatusCode.NoContent);
+        //}
 
-        // POST: api/PlayerSessions
-        [ResponseType(typeof(PlayerSession))]
-        public async Task<IHttpActionResult> PostPlayerSession(PlayerSession playerSession)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST: api/PlayerSessions
+        //[ResponseType(typeof(PlayerSession))]
+        //public async Task<IHttpActionResult> PostPlayerSession(PlayerSession playerSession)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            db.PlayerSessions.Add(playerSession);
-            await db.SaveChangesAsync();
+        //    db.PlayerSessions.Add(playerSession);
+        //    await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = playerSession.PlayerSessionID }, playerSession);
-        }
+        //    return CreatedAtRoute("DefaultApi", new { id = playerSession.Id }, playerSession);
+        //}
 
-        // DELETE: api/PlayerSessions/5
-        [ResponseType(typeof(PlayerSession))]
-        public async Task<IHttpActionResult> DeletePlayerSession(int id)
-        {
-            PlayerSession playerSession = await db.PlayerSessions.FindAsync(id);
-            if (playerSession == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/PlayerSessions/5
+        //[ResponseType(typeof(PlayerSession))]
+        //public async Task<IHttpActionResult> DeletePlayerSession(int id)
+        //{
+        //    PlayerSession playerSession = await db.PlayerSessions.FindAsync(id);
+        //    if (playerSession == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            db.PlayerSessions.Remove(playerSession);
-            await db.SaveChangesAsync();
+        //    db.PlayerSessions.Remove(playerSession);
+        //    await db.SaveChangesAsync();
 
-            return Ok(playerSession);
-        }
+        //    return Ok(playerSession);
+        //}
 
         protected override void Dispose(bool disposing)
         {
@@ -134,7 +134,7 @@ namespace DataServer.Controllers
 
         private bool PlayerSessionExists(int id)
         {
-            return db.PlayerSessions.Count(e => e.PlayerSessionID == id) > 0;
+            return db.PlayerSessions.Count(e => e.Id == id) > 0;
         }
     }
 }

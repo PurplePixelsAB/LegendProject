@@ -8,7 +8,7 @@ using Data;
 
 namespace LegendWorld.Data.Items
 {
-    public abstract class WeaponItem : IItem
+    public abstract class WeaponItem : Item
     {
         public WeaponItem()
         {
@@ -19,9 +19,9 @@ namespace LegendWorld.Data.Items
         public byte Power { get; set; }
         public int Speed { get; set; }
         public bool IsTwoHanded { get; set; }
-        public ItemData Data { get; set; }
-        public ItemCategory Category { get; protected set; }
-        public int Weight { get; protected set; }
+        //public ItemModel Data { get; set; }
+        //public ItemCategory Category { get; protected set; }
+        //public int Weight { get; protected set; }
         public int SwingRange { get; protected set; }
         public int SwingFov { get; protected set; }
 
@@ -30,11 +30,11 @@ namespace LegendWorld.Data.Items
             //if (this.Data.Count > 0)
             //    return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
 
-            return string.Format("{0}", this.Data.Identity);
+            return string.Format("{0}", this.Identity);
 
         }
 
-        public int GetTotalWeight()
+        public override int GetTotalWeight()
         {
             return this.Weight;
         }

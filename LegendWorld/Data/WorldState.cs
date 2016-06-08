@@ -6,7 +6,7 @@ using LegendWorld.Data.Items;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using static Data.ItemData;
+using static Data.ItemModel;
 
 namespace Network
 {
@@ -20,8 +20,8 @@ namespace Network
         //protected TimeSpan baseEnergyTick = new TimeSpan(0, 0, 1);
         private long nextRegendTick = 0;
 
-        protected Dictionary<int, IItem> items = new Dictionary<int, IItem>();
-        public Dictionary<int, IItem>.KeyCollection Items { get { return items.Keys; } }
+        protected Dictionary<int, Item> items = new Dictionary<int, Item>();
+        public Dictionary<int,Item>.KeyCollection Items { get { return items.Keys; } }
 
         public WorldState()
         {
@@ -30,7 +30,7 @@ namespace Network
             this.Projectiles = new List<ArrowColltionArea>(30);
         }
 
-        public virtual IItem GetItem(int id)
+        public virtual Item GetItem(int id)
         {
             if (items.ContainsKey(id))
             {
@@ -39,14 +39,14 @@ namespace Network
 
             return null;
         }
-        public virtual void AddItem(IItem item)
+        public virtual void AddItem(Item item)
         {
-            if (items.ContainsKey((ushort)item.Data.ItemDataID))
+            if (items.ContainsKey(item.Id))
                 return;
 
-            if (item.Data.ContainerID.HasValue)
+            if (item.ContainerId.HasValue)
             {
-                ContainerItem container = (ContainerItem)this.GetItem(item.Data.ContainerID.Value);
+                ContainerItem container = (ContainerItem)this.GetItem(item.ContainerId.Value);
                 if (container != null)
                 {
                     if (!container.Items.Contains(item))
@@ -54,27 +54,25 @@ namespace Network
                 }
             }
 
-            items.Add((ushort)item.Data.ItemDataID, item);
+            items.Add(item.Id, item);
         }
-        public virtual void RemoveItem(IItem item)
+        public virtual void RemoveItem(Item item)
         {
-            if (!items.ContainsKey((ushort)item.Data.ItemDataID))
+            if (!items.ContainsKey((ushort)item.Id))
                 return;
 
-            items.Remove(item.Data.ItemDataID);
-            if (item.Data.ContainerID.HasValue)
+            items.Remove(item.Id);
+            if (item.ContainerId.HasValue)
             {
-                ContainerItem container = (ContainerItem)this.GetItem(item.Data.ContainerID.Value);
+                ContainerItem container = (ContainerItem)this.GetItem(item.ContainerId.Value);
                 if (container != null)
                 {
                     if (container.Items.Contains(item))
                         container.Items.Remove(item);
                 }
             }
-            item.Data.ContainerID = null;
-            item.Data.WorldMapID = null;
-            item.Data.WorldX = null;
-            item.Data.WorldY = null;
+            item.Remove();
+
             //int groundItemIdToRemove = -1;
             //foreach (var groundItem in groundItems.Values)
             //{
@@ -96,10 +94,10 @@ namespace Network
         //    this.Projectiles.Add(projectile);
         //}
 
-        public IItem CreateItem(ItemData itemData)
+        public Item CreateItem(ItemModel itemData)
         {
-            IItemFactory factory = this.GetItemFactory(itemData.Identity);
-            IItem newReturnItem = factory.CreateNew(itemData);
+            IItemFactory factory = this.GetItemFactory((ItemIdentity)itemData.Identity);
+            Item newReturnItem = factory.CreateNew(itemData);
 
             return newReturnItem;
         }

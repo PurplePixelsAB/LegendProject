@@ -65,7 +65,7 @@ namespace LegendWorld.Data
 
         public CharacterPowerIdentity Id { get { return id; } }
 
-        public ItemData.ItemIdentity? RequiredItem { get; set; }
+        public ItemIdentity? RequiredItem { get; set; }
         public byte EnergyCost { get; set; }
 
         public int PrepareTime { get; set; }

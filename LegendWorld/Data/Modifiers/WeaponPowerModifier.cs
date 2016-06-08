@@ -12,7 +12,7 @@ namespace LegendWorld.Data.Modifiers
 {
     public class WeaponPowerModifier : CharacterModifier
     {
-        public WeaponPowerModifier(float amount, ItemData.ItemIdentity weaponRequired) : base()
+        public WeaponPowerModifier(float amount, ItemIdentity weaponRequired) : base()
         {
             base.Duration = null;
             this.Amount = amount;
@@ -21,7 +21,7 @@ namespace LegendWorld.Data.Modifiers
         }
 
         public float Amount { get; private set; }
-        public ItemData.ItemIdentity WeaponRequired { get; private set; }
+        public ItemIdentity WeaponRequired { get; private set; }
 
         internal override void Register(Stats stats)
         {

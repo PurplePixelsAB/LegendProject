@@ -58,7 +58,7 @@ namespace WindowsClient.World.Mobiles
             this.AimToPosition = point;
         }
 
-        public override bool PickupItem(IItem item)
+        public override bool PickupItem(Item item)
         {
             if (base.PickupItem(item))
             {

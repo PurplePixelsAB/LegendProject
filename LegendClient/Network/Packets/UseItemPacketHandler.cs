@@ -20,7 +20,7 @@ namespace WindowsClient.Net.Packets
         {
             UseItemPacket incomingPacket = (UseItemPacket)packet;
             ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(incomingPacket.MobileId);
-            IItem itemToUse = worldState.GetItem(incomingPacket.ItemId);
+            Item itemToUse = worldState.GetItem(incomingPacket.ItemId);
 
             if (mobileToUpdate == null)
             {
@@ -29,7 +29,7 @@ namespace WindowsClient.Net.Packets
 
             if (mobileToUpdate != null && itemToUse != null)
             {
-                if (itemToUse.Data.IsWorldItem)
+                if (itemToUse.IsWorldItem)
                 {
                     if (!mobileToUpdate.PickupItem(itemToUse))
                     {

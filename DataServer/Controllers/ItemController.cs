@@ -20,9 +20,9 @@ namespace DataServer.Controllers
         private WorldDbContext db = new WorldDbContext();
 
         // GET: api/Items
-        public IQueryable<ItemData> GetItems()//(int mapID)
+        public IQueryable<ItemModel> GetItems(int mapId)//(int mapID)
         {
-            return db.Items; //.Where(i => i.WorldMapID == mapID);
+            return db.Items.Select(i => new ItemModel() { Id = i.Id, Identity = i.Identity, SubType = i.SubType, Count = i.Count, ContainerId = i.ContainerId, WorldMapId = i.WorldMapId, WorldX = i.WorldX, WorldY = i.WorldY }); //.Where(i => i.WorldMapID == mapID);
         }
 
         //public IQueryable<ItemData> GetContainerItems(int containerID)
@@ -31,83 +31,160 @@ namespace DataServer.Controllers
         //}
 
         // GET: api/Items/5
-        [ResponseType(typeof(ItemData))]
+        [ResponseType(typeof(ItemModel))]
         public async Task<IHttpActionResult> GetItem(int id)
         {
-            ItemData item = await db.Items.FindAsync(id);
+            ItemModel item = await db.Items.Select(i => new ItemModel() { Id = i.Id, Identity = i.Identity, SubType = i.SubType, Count = i.Count, ContainerId = i.ContainerId, WorldMapId = i.WorldMapId, WorldX = i.WorldX, WorldY = i.WorldY }).FirstOrDefaultAsync(i => i.Id == id); //.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
             }
 
             return Ok(item);
-        }
-
-        // PUT: api/Items/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutItem(int id, ItemData item)
+        }   
+        
+        [ResponseType(typeof(ItemModel))]
+        public async Task<IHttpActionResult> Use(int id)
         {
-            if (!ModelState.IsValid)
+            //ItemModel item = await db.Items.Select(i => new ItemModel() { Id = i.Id, Identity = i.Identity, SubType = i.SubType, Count = i.Count, ContainerId = i.ContainerId, WorldMapId = i.WorldMapId, WorldX = i.WorldX, WorldY = i.WorldY }).FirstOrDefaultAsync(i => i.Id == id); //.FindAsync(id);
+            Item item = await db.Items.FindAsync(id);
+            if (item == null)
             {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            if (id != item.ItemDataID)
-            {
-                return BadRequest();
-            }
+            item.Count--;
+            if (item.Count <= 0)
+                db.Items.Remove(item);
 
-            db.Entry(item).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            db.SaveChanges();
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Items
-        [ResponseType(typeof(ItemData))]
-        public async Task<IHttpActionResult> PostItem(ItemData item)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> PostPosition(ItemContainerPositionModel positionModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Items.Add(item);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = item.ItemDataID }, item);
-        }
-
-        // DELETE: api/Items/5
-        [ResponseType(typeof(ItemData))]
-        public async Task<IHttpActionResult> DeleteItem(int id)
-        {
-            ItemData item = await db.Items.FindAsync(id);
-            if (item == null)
+            Item itemToUpdate = await db.Items.FindAsync(positionModel.ItemId);
+            if (itemToUpdate == null)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
 
-            db.Items.Remove(item);
+            itemToUpdate.ContainerId = positionModel.ContainerId;
+            itemToUpdate.WorldMapId = itemToUpdate.WorldX = itemToUpdate.WorldY = null;
+
+            //db.Items.Add(item);
             await db.SaveChangesAsync();
 
-            return Ok(item);
+            //return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
+            return StatusCode(HttpStatusCode.NoContent);
         }
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> PostPosition(ItemWorldPositionModel positionModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Item itemToUpdate = await db.Items.FindAsync(positionModel.ItemId);
+            if (itemToUpdate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            itemToUpdate.WorldMapId = positionModel.WorldMapId;
+            itemToUpdate.WorldX = positionModel.WorldX;
+            itemToUpdate.WorldY = positionModel.WorldY;
+            itemToUpdate.ContainerId = null;
+
+            //db.Items.Add(item);
+            await db.SaveChangesAsync();
+
+            //return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+        //// PUT: api/Items/5
+        //[ResponseType(typeof(void))]
+        //public async Task<IHttpActionResult> PutItem(int id, ItemModel item)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    if (id != item.Id)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    db.Entry(item).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await db.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!ItemExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return StatusCode(HttpStatusCode.NoContent);
+        //}
+
+        // POST: api/Items
+        [ResponseType(typeof(ItemModel))]
+        public async Task<IHttpActionResult> PostItem(ItemModel itemModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Item newItem = db.Items.Create();
+            newItem.Identity = itemModel.Identity;
+            newItem.SubType = itemModel.SubType;
+            newItem.WorldMapId = itemModel.WorldMapId;
+            newItem.WorldX = itemModel.WorldX;
+            newItem.WorldY = itemModel.WorldY;
+            newItem.ContainerId = itemModel.ContainerId;
+
+            newItem = db.Items.Add(newItem);
+            await db.SaveChangesAsync();
+
+            itemModel.Id = newItem.Id;
+
+            return Ok(itemModel); //CreatedAtRoute("DefaultApi", new { id = itemModel.Id }, itemModel);
+        }
+
+        //// DELETE: api/Items/5
+        //[ResponseType(typeof(ItemModel))]
+        //public async Task<IHttpActionResult> DeleteItem(int id)
+        //{
+        //    ItemModel item = await db.Items.FindAsync(id);
+        //    if (item == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    db.Items.Remove(item);
+        //    await db.SaveChangesAsync();
+
+        //    return Ok(item);
+        //}
 
         protected override void Dispose(bool disposing)
         {
@@ -120,7 +197,7 @@ namespace DataServer.Controllers
 
         private bool ItemExists(int id)
         {
-            return db.Items.Count(e => e.ItemDataID == id) > 0;
+            return db.Items.Count(e => e.Id == id) > 0;
         }
     }
 }

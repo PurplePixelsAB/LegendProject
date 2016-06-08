@@ -117,20 +117,20 @@ namespace WindowsClient.World
             }
         }
 
-        internal List<IItem> WorldItemsInRange(int id)
+        internal List<Item> WorldItemsInRange(int id)
         {
-            List<IItem> itemsInRange = new List<IItem>(10);
+            List<Item> itemsInRange = new List<Item>(10);
             Character charToRangeCheck = this.GetCharacter(id);
             foreach (int itemId in this.Items)
             {
-                IItem clientItem = (IItem)this.GetItem(itemId);
-                if (!clientItem.Data.IsWorldItem)
+                Item clientItem = (Item)this.GetItem(itemId);
+                if (!clientItem.IsWorldItem)
                 {
                     continue;
                 }
 
                 //float distance = Vector2.Distance(positionToCheck, clientItem.Data.WorldLocation.ToVector2());
-                if (charToRangeCheck.IsPositionInRange(clientItem.Data.WorldLocation))
+                if (charToRangeCheck.IsPositionInRange(clientItem.WorldLocation))
                 {
                     itemsInRange.Add(clientItem);
                 }
@@ -139,7 +139,7 @@ namespace WindowsClient.World
             return itemsInRange;
         }
 
-        protected override IItemFactory GetItemFactory(ItemData.ItemIdentity identity)
+        protected override IItemFactory GetItemFactory(ItemIdentity identity)
         {
             return ClientItemFactory.Get(identity);
         }
@@ -150,12 +150,12 @@ namespace WindowsClient.World
             foreach (int itemId in this.Items)
             {
                 IClientItem clientItem = (IClientItem)this.GetItem(itemId);
-                if (!clientItem.Data.IsWorldItem)
+                if (!clientItem.IsWorldItem)
                 {
                     continue;
                 }
 
-                if (clientItem.Data.WorldMapID.Value == currentMapId)
+                if (clientItem.WorldMapId.Value == currentMapId)
                 {
                     itemsonGround.Add(clientItem);
                 }
@@ -164,22 +164,22 @@ namespace WindowsClient.World
             return itemsonGround;
         }
 
-        internal ClientCharacter CreateCharacter(CharacterData charData) //, ItemData inventoryData)
+        internal ClientCharacter CreateCharacter(CharacterModel charData) //, ItemData inventoryData)
         {
-            ClientCharacter character = new ClientCharacter(charData.CharacterDataID, charData.WorldLocation);
+            ClientCharacter character = new ClientCharacter(charData.Id, charData.WorldLocation);
             character.Stats.Health = charData.Health;
             character.Stats.Energy = charData.Energy;
             foreach (var power in charData.Powers)
-                character.Learn(power.Power);
+                character.Learn((CharacterPowerIdentity)power);
 
-            if (charData.RightHandID.HasValue)
-                character.RightHand = (WeaponItem)this.GetItem(charData.RightHandID.Value);
-            if (charData.LeftHandID.HasValue)
-                character.LeftHand = (WeaponItem)this.GetItem(charData.RightHandID.Value);
-            if (charData.ArmorID.HasValue)
-                character.Armor = (ArmorItem)this.GetItem(charData.ArmorID.Value);
+            if (charData.RightHandId.HasValue)
+                character.RightHand = (WeaponItem)this.GetItem(charData.RightHandId.Value);
+            if (charData.LeftHandId.HasValue)
+                character.LeftHand = (WeaponItem)this.GetItem(charData.RightHandId.Value);
+            if (charData.ArmorId.HasValue)
+                character.Armor = (ArmorItem)this.GetItem(charData.ArmorId.Value);
 
-            BagClientItem inventory = (BagClientItem)this.GetItem(charData.InventoryID);
+            BagClientItem inventory = (BagClientItem)this.GetItem(charData.InventoryId);
             character.Inventory = inventory;
 
             //character.InventoryData = inventory.Data; //inventoryData; //dataContext.GetItem(charData.InventoryID);

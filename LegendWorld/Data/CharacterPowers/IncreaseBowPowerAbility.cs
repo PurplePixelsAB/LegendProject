@@ -18,7 +18,7 @@ namespace LegendWorld.Data.Abilities
             this.Duration = 0;
             this.PrepareTime = 0;
             this.EnergyCost = 0;
-            this.RequiredItem = ItemData.ItemIdentity.Bow;
+            this.RequiredItem = ItemIdentity.Bow;
             this.Amount = 2f;
         }
 

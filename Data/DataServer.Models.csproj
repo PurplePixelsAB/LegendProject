@@ -44,10 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharacterData.cs" />
-    <Compile Include="CharacterPowerIdentity.cs" />
-    <Compile Include="ItemData.cs" />
-    <Compile Include="PlayerSession.cs" />
+    <Compile Include="CharacterItemsModel.cs" />
+    <Compile Include="CharacterModel.cs" />
+    <Compile Include="CharacterPositionModel.cs" />
+    <Compile Include="CharacterStatsModel.cs" />
+    <Compile Include="ItemContainerPositionModel.cs" />
+    <Compile Include="ItemModel.cs" />
+    <Compile Include="ItemWorldPositionModel.cs" />
+    <Compile Include="PlayerSessionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectableCharacter.cs" />
   </ItemGroup>

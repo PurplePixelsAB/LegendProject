@@ -6,20 +6,20 @@ using System.Linq;
 
 namespace LegendWorld.Data.Items
 {
-    public abstract class ContainerItem : IItem
+    public abstract class ContainerItem : Item
     {
         public ContainerItem()
         {
-            this.Items = new List<IItem>();
+            this.Items = new List<Item>();
             this.Category = ItemCategory.Container;
         }
 
-        public ItemCategory Category { get; protected set; }
-        public ItemData Data { get; set; }
-        public List<IItem> Items { get; set; }
-        public int Weight { get; protected set; }
+        //public ItemCategory Category { get; protected set; }
+        //public ItemModel Data { get; set; }
+        public List<Item> Items { get; set; }
+        //public int Weight { get; protected set; }
 
-        public int GetTotalWeight()
+        public override int GetTotalWeight()
         {
             return this.Items.Sum(i => i.GetTotalWeight()) + this.Weight;
         }
@@ -50,10 +50,10 @@ namespace LegendWorld.Data.Items
         //}
         public override string ToString()
         {
-            if (this.Data.Count > 0)
-                return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
+            //if (this.Count > 0)
+            //    return string.Format("{1} {0}", this.Identity, this.Count);
 
-            return string.Format("{0}", this.Data.Identity);
+            return string.Format("{0}", this.Identity);
 
         }
     }

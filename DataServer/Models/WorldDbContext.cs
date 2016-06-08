@@ -1,5 +1,5 @@
 ﻿using Data;
-using LegendWorld.Data;
+//using LegendWorld.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -23,13 +23,17 @@ namespace DataServer.Models
             Configuration.LazyLoadingEnabled = true;
         }
 
-        public DbSet<ItemData> Items { get; set; }
-        public DbSet<CharacterData> Characters { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<Character> Characters { get; set; }
+        public DbSet<CharacterPower> CharacterPowers { get; set; }
         public DbSet<PlayerSession> PlayerSessions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CharacterData>().HasMany(c => c.Powers);
+            //modelBuilder.Entity<CharacterModel>().HasMany(c => c.Powers);
+            //modelBuilder.Entity<CharacterModel>().HasOptional(c => c.Armor);
+            //modelBuilder.Entity<CharacterModel>().HasOptional(c => c.LeftHand);
+            //modelBuilder.Entity<CharacterModel>().HasOptional(c => c.RightHand);
             //modelBuilder.Entity<Item>()
             //            .Map<ContainerItem>(m => m.Requires("Category").HasValue(ItemCategory.Container))
             //            .Map<ArmorItem>(m => m.Requires("Category").HasValue(ItemCategory.Armor))

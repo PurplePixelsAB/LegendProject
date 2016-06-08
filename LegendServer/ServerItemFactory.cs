@@ -8,46 +8,47 @@ namespace UdpServer
 {
     internal class ServerItemFactory : IItemFactory
     {
-        private ItemData.ItemIdentity identity;
+        private ItemIdentity identity;
 
-        public ServerItemFactory(ItemData.ItemIdentity identity)
+        public ServerItemFactory(ItemIdentity identity)
         {
             this.identity = identity;
         }
 
-        public IItem CreateNew(ItemData itemData)
+        public Item CreateNew(ItemModel itemData)
         {
-            IItem newItem = this.CreateItem(itemData.Identity);
-            newItem.Data = itemData;
+            Item newItem = this.CreateItem((ItemIdentity)itemData.Identity);
+            newItem.LoadData(itemData);
+            //newItem.Data = itemData;
 
             return newItem;
         }
 
-        private IItem CreateItem(ItemData.ItemIdentity identity)
+        private Item CreateItem(ItemIdentity identity)
         {
             switch (identity)
             {
-                case ItemData.ItemIdentity.Bag:
+                case ItemIdentity.Bag:
                     return new BagItem();
-                case ItemData.ItemIdentity.Gold:
+                case ItemIdentity.Gold:
                     return new GoldItem();
-                case ItemData.ItemIdentity.LeatherArmor:
+                case ItemIdentity.LeatherArmor:
                     return new LeatherArmorItem();
-                case ItemData.ItemIdentity.PlateArmor:
+                case ItemIdentity.PlateArmor:
                     return new PlateArmorItem();
-                case ItemData.ItemIdentity.ClothRobe:
+                case ItemIdentity.ClothRobe:
                     return new ClothArmorItem();
-                case ItemData.ItemIdentity.Dagger:
+                case ItemIdentity.Dagger:
                     return new DaggerItem();
-                case ItemData.ItemIdentity.Sword:
+                case ItemIdentity.Sword:
                     return new SwordItem();
-                case ItemData.ItemIdentity.Bow:
+                case ItemIdentity.Bow:
                     return new BowItem();
-                case ItemData.ItemIdentity.PowerScoll:
+                case ItemIdentity.PowerScoll:
                     return new PowerScrollItem();
-                case ItemData.ItemIdentity.Bandage:
+                case ItemIdentity.Bandage:
                     return new BandageItem();
-                case ItemData.ItemIdentity.Corpse:
+                case ItemIdentity.Corpse:
                     return new CorpseItem();
                 default:
                     throw new Exception("Unknown ItemIdentity!");

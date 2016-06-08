@@ -114,9 +114,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj">
+    <ProjectReference Include="..\Data\DataServer.Models.csproj">
       <Project>{B3023368-0065-4EEE-ABA2-71643B1505BD}</Project>
-      <Name>Data</Name>
+      <Name>DataServer.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

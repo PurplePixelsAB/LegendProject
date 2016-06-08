@@ -10,11 +10,10 @@ using System.Web;
 namespace LegendWorld.Data
 {
     [DataContract]
-    public class PlayerSession
+    public class PlayerSessionModel
     {
-        [Key]
         [DataMember]
-        public int PlayerSessionID { get; set; }
+        public int Id { get; set; }
 
         [DataMember]
         public string ClientAddress { get; set; }
@@ -23,10 +22,6 @@ namespace LegendWorld.Data
         public DateTime Created { get; set; }
 
         [DataMember]
-        [ForeignKey("Character")]
         public int CharacterID { get; set; }
-
-        [DataMember]
-        public virtual CharacterData Character { get; set; }
     }
 }

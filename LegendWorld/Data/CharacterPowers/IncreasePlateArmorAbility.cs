@@ -18,7 +18,7 @@ namespace LegendWorld.Data.Abilities
             this.Duration = 0;
             this.PrepareTime = 0;
             this.EnergyCost = 0;
-            this.RequiredItem = ItemData.ItemIdentity.PlateArmor;
+            this.RequiredItem = ItemIdentity.PlateArmor;
             this.Amount = 2f;
         }
 

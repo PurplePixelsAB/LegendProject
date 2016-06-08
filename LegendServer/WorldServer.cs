@@ -35,77 +35,82 @@ namespace UdpServer
             }
         }
 
-        internal void SaveItem(IItem itemToUse)
+        internal void SaveItemPosition(Item item)
         {
-            dataContext.SaveItem(itemToUse.Data);
+            dataContext.SaveItemPosition(item.Id, item.WorldMapId, item.WorldX, item.WorldY, item.ContainerId);
         }
+
+        //internal void SaveItem(IItem itemToUse)
+        //{
+        //    dataContext.SaveItemCount(itemToUse.Data);
+        //}
 
         internal ServerCharacter LoadCharacter(int characterID)
         {
-            CharacterData characterData = dataContext.GetCharacter(characterID);
+            CharacterModel characterData = dataContext.GetCharacter(characterID);
             if (characterData != null)
             {
                 ServerCharacter serverCharacter = new ServerCharacter(characterData);
-                characterData.Inventory = dataContext.GetItem(characterData.InventoryID);
-                if (characterData.Inventory != null)
+                ItemModel inventory = dataContext.GetItem(characterData.InventoryId);
+                if (inventory != null)
                 {
-                    var inventoryBagItem = (ContainerItem)this.CreateItem(characterData.Inventory);
+                    var inventoryBagItem = (ContainerItem)this.CreateItem(inventory);
                     this.AddItem(inventoryBagItem);
                     serverCharacter.Inventory = inventoryBagItem; //characterData.Inventory;
                 }
                 else
                     return null;
 
-                if (characterData.RightHandID.HasValue)
+                if (characterData.RightHandId.HasValue)
                 {
-                    characterData.RightHand = dataContext.GetItem(characterData.RightHandID.Value);
-                    if (characterData.RightHand != null)
+                    ItemModel rightHand = dataContext.GetItem(characterData.RightHandId.Value);
+                    if (rightHand != null)
                     {
-                        var item = (WeaponItem)this.CreateItem(characterData.RightHand);
+                        var item = (WeaponItem)this.CreateItem(rightHand);
                         this.AddItem(item);
                         if (serverCharacter.IsItemInInventory(item))
                             serverCharacter.RightHand = item;
                         else
-                            characterData.RightHandID = null;
+                            characterData.RightHandId = null;
                     }
                     else
                     {
-                        characterData.RightHandID = null;
+                        characterData.RightHandId = null;
                     }
                           
                 }
-                if (characterData.LeftHandID.HasValue)
+                if (characterData.LeftHandId.HasValue)
                 {
-                    characterData.LeftHand = dataContext.GetItem(characterData.LeftHandID.Value);
-                    if (characterData.LeftHand != null)
+                    ItemModel leftHand = dataContext.GetItem(characterData.LeftHandId.Value);
+                    if (leftHand != null)
                     {
-                        var item = (WeaponItem)this.CreateItem(characterData.LeftHand);
+                        var item = (WeaponItem)this.CreateItem(leftHand);
                         this.AddItem(item);
                         if (serverCharacter.IsItemInInventory(item))
                             serverCharacter.LeftHand = item;
                         else
-                            characterData.LeftHandID = null;
+                            characterData.LeftHandId = null;
                     }
                     else
                     {
-                        characterData.LeftHandID = null;
+                        characterData.LeftHandId = null;
                     }
                 }
-                if (characterData.ArmorID.HasValue)
+                if (characterData.ArmorId.HasValue)
                 {
-                    characterData.Armor = dataContext.GetItem(characterData.ArmorID.Value);
-                    if (characterData.Armor != null)
+                    ItemModel armor = dataContext.GetItem(characterData.ArmorId.Value);
+                    if (armor != null)
                     {
-                        var item = (ArmorItem)this.CreateItem(characterData.Armor);
+                        var item = (ArmorItem)this.CreateItem(armor);
                         this.AddItem(item);
                         if (serverCharacter.IsItemInInventory(item))
                             serverCharacter.Armor = item;
                         else
-                            characterData.ArmorID = null;
+                            characterData.ArmorId = null;
                     }
                     else
                     {
-                        characterData.ArmorID = null;
+                        characterData.ArmorId = null;
                     }
                 }
 
@@ -115,25 +120,36 @@ namespace UdpServer
                 return null;
         }
 
-        internal void SaveCharacter(ServerCharacter serverCharacter)
+        internal void SaveCharacterItems(ServerCharacter serverCharacter)
         {
-            dataContext.SaveCharacter(serverCharacter.GetData());
+            dataContext.SaveCharacterItems(serverCharacter.Id, serverCharacter.Armor, serverCharacter.LeftHand, serverCharacter.RightHand);
         }
+
+        internal void SaveItemUse(Item itemToUse)
+        {
+            dataContext.SaveItemUse(itemToUse.Id);
+        }
+
+        //internal void SaveCharacter(ServerCharacter serverCharacter)
+        //{
+        //    dataContext.SaveCharacter(serverCharacter.GetData());
+        //}
 
         internal void LoadMapData(int mapId)
         {
-            IEnumerable<ItemData> items = dataContext.GetItems(mapId);
+            IEnumerable<ItemModel> items = dataContext.GetItems(mapId);
             if (items != null)
             {
-                foreach (ItemData itemData in items)
+                foreach (ItemModel itemData in items)
                 {
-                    IItem item = this.GetItem(itemData.ItemDataID);
+                    Item item = this.GetItem(itemData.Id);
                     if (item == null)
                     {
                         item = this.CreateItem(itemData);
                         this.AddItem(item);
                     }
-                    item.Data = itemData;
+                    item.LoadData(itemData);
+                    //item.Data = itemData;
                 }
             }
             //IEnumerable<GroundItem> groundItems = dataContext.GetGroundItems(mapId);
@@ -146,7 +162,7 @@ namespace UdpServer
             //}
         }
 
-        internal PlayerSession GetPlayerSession(int sessionId)
+        internal PlayerSessionModel GetPlayerSession(int sessionId)
         {
             return dataContext.GetSession(sessionId);
         }
@@ -163,6 +179,7 @@ namespace UdpServer
             //serverCharacter.HealthChanged += ServerCharacter_HealthChanged;
             serverCharacter.AimToChanged += ServerCharacter_AimToChanged;
             serverCharacter.MoveToChanged += ServerCharacter_MoveToChanged;
+            serverCharacter.PowerLearned += ServerCharacter_PowerLearned;
             serverCharacter.Owner.Disconnected += ServerCharacter_Disconnects;
 
             base.AddCharacter(character);
@@ -170,6 +187,11 @@ namespace UdpServer
             this.SendInitialMapStatValues(serverCharacter);
             this.SendInitialMapPositions(serverCharacter);
             this.SendStatChangeToMapCharacters(serverCharacter);
+        }
+
+        private void ServerCharacter_PowerLearned(Character character, PowerLearnedEventArgs e)
+        {
+            dataContext.SaveCharacterPowerLearned(character.Id, e.Power);
         }
 
         private void AddCharacterToMap(Character character)
@@ -217,14 +239,15 @@ namespace UdpServer
                 this.SendStatChangeToMapCharacters(servCharacter);
                 if (e.Value <= 0 && e.PreviousValue > 0)
                 {
-                    CorpseItem corpse = new CorpseItem();
-                    corpse.Data = new ItemData();
-                    corpse.Data.Identity = ItemData.ItemIdentity.Corpse;
-                    corpse.Data.MoveTo(character.CurrentMapId, servCharacter.Position);
-                    corpse.CharacterID = character.Id;
-                    corpse.Data = dataContext.SaveItem(corpse.Data);
+                    CorpseItem corpse = (CorpseItem)this.CreateNewItem(ItemIdentity.Corpse, character.CurrentMapId, servCharacter.Position, character.Id);
+                    //corpse.CharacterID = character.Id;
+                    //corpse.MoveTo(character.CurrentMapId, servCharacter.Position);
+                    //CorpseItem corpse = new CorpseItem();
+                    //corpse.Data = new ItemModel();
+                    //corpse.Data.Identity = ItemIdentity.Corpse;
+                    //corpse.Data = dataContext.SaveItem(corpse.Data);
 
-                    if (corpse.Data.ItemDataID != 0)
+                    if (corpse.Id != 0)
                     {
                         this.AddItem(corpse);
                         foreach (var item in servCharacter.Inventory.Items)
@@ -235,9 +258,9 @@ namespace UdpServer
                         foreach (int charID in this.maptoCharacterRelations[character.CurrentMapId])
                         {
                             ServerCharacter informChar = (ServerCharacter)this.GetCharacter(charID);
-                            informChar.Owner.Send(new NewItemPacket(corpse.Data.ItemDataID));
+                            informChar.Owner.Send(new NewItemPacket(corpse.Id));
                             foreach (var item in corpse.Items)
-                                informChar.Owner.Send(new MoveItemPacket(servCharacter.Inventory.Data.ItemDataID, corpse.Data.ItemDataID));
+                                informChar.Owner.Send(new MoveItemPacket(servCharacter.Inventory.Id, corpse.Id));
                         }
 
                         //servCharacter.MoveItem(servCharacter.Inventory, corpse); //                         item.Data.MoveTo(corpse.Data);
@@ -250,7 +273,7 @@ namespace UdpServer
                 //{                    
                 //    BagItem newInventory = new BagItem();
                 //    newInventory.Data = new ItemData();
-                //    newInventory.Data.Identity = ItemData.ItemIdentity.Bag;
+                //    newInventory.Data.Identity = ItemIdentity.Bag;
                 //    newInventory.Data = dataContext.SaveItem(newInventory.Data);
 
                 //    if (newInventory.Data.ItemDataID != 0)
@@ -262,6 +285,12 @@ namespace UdpServer
                 //    }
                 //}
             }
+        }
+
+        private Item CreateNewItem(ItemIdentity itemId, int mapId, Point position, int? subType)
+        {
+            ItemModel newItem = dataContext.CreateNewItem(itemId, mapId, position, subType);
+            return this.CreateItem(newItem);
         }
 
         //public override void AddItem(Item item)
@@ -285,7 +314,10 @@ namespace UdpServer
         {
             NetState dcOwner = (NetState)sender;
             ServerCharacter character = (ServerCharacter)this.GetCharacter(dcOwner.WorldId);
-            dataContext.SaveCharacter(character.GetData());
+            dataContext.SaveCharacterPosition(character.Id, character.CurrentMapId, character.Position);
+            dataContext.SaveCharacterStats(character.Id, character.Stats.Health, character.Stats.Energy);
+            dataContext.SaveCharacterItems(character.Id, character.Armor, character.LeftHand, character.RightHand);
+            //dataContext.SaveCharacter(character.GetData());
 
             if (character != null)
                 this.RemoveCharacter(character);
@@ -390,7 +422,7 @@ namespace UdpServer
             return base.PerformAbility(abilityId, character);
         }
 
-        protected override IItemFactory GetItemFactory(ItemData.ItemIdentity identity)
+        protected override IItemFactory GetItemFactory(ItemIdentity identity)
         {
             return new ServerItemFactory(identity);
         }

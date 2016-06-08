@@ -90,9 +90,9 @@
       <Project>{f048bff1-b2e4-4416-a0d4-0cd988e598d5}</Project>
       <Name>DataClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data\Data.csproj">
+    <ProjectReference Include="..\Data\DataServer.Models.csproj">
       <Project>{b3023368-0065-4eee-aba2-71643b1505bd}</Project>
-      <Name>Data</Name>
+      <Name>DataServer.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\LegendWorld\World.csproj">
       <Project>{3a3489ce-3b13-427f-a769-f2ae439f4c2d}</Project>

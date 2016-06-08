@@ -11,6 +11,6 @@ namespace LegendWorld.Data.Items
             this.Weight = 80000;
         }
 
-        public int CharacterID { get { return this.Data.SubType.HasValue ? this.Data.SubType.Value : 0; } set { this.Data.SubType = value; } }
+        public int CharacterID { get { return this.SubType.HasValue ? this.SubType.Value : 0; } set { this.SubType = value; } }
     }
 }

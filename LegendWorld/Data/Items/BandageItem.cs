@@ -21,16 +21,16 @@ namespace LegendWorld.Data.Items
         public byte HealAmount { get; protected set; }
         public override bool OnUse(Character usedBy, WorldState worldState)
         {
-            if (this.Data.Count <= 0)
+            if (this.Count <= 0)
                 return false;
 
             if (usedBy.IsBusy)
                 return false;
 
             usedBy.Stats.Health += this.HealAmount;
-            this.Data.Count--;
+            this.Count--;
 
-            if (this.Data.Count <= 0)
+            if (this.Count <= 0)
             {
                 worldState.RemoveItem(this);
             }

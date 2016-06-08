@@ -4,7 +4,7 @@ using Data;
 
 namespace LegendWorld.Data.Items
 {
-    public abstract class ArmorItem : IItem
+    public abstract class ArmorItem : Item
     {
         public ArmorItem()
         {
@@ -12,11 +12,16 @@ namespace LegendWorld.Data.Items
             //this.Data.Count = 1;
         }
         public float Armor { get; set; }
-        public ItemCategory Category { get; protected set; }
-        public ItemData Data { get; set; }
-        public int Weight { get; protected set; }
+        //public ItemCategory Category { get; protected set; }
+        //public ItemModel Data { get; set; }
+        //public int Id { get; }
+        //public ItemIdentity Identity { get; }
+        //public int Weight { get; protected set; }
+        //public int? WorldMapId { get; protected set; }
+        //public int? WorldX { get; protected set; }
+        //public int? WorldY { get; protected set; }
 
-        public int GetTotalWeight()
+        public override int GetTotalWeight()
         {
             return this.Weight;
         }
@@ -25,7 +30,7 @@ namespace LegendWorld.Data.Items
             //if (this.Data.Count > 0)
             //    return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
 
-            return string.Format("{0}", this.Data.Identity);
+            return string.Format("{0}", this.Identity);
 
         }
     }

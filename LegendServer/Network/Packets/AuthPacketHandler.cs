@@ -16,7 +16,7 @@ namespace UdpServer.Network.Packets
         protected override void OnHandle(IPacket packet, NetState netState, ServerWorldState worldState)
         {
             AuthPacket incomingPacket = (AuthPacket)packet;
-            PlayerSession session = worldState.GetPlayerSession(incomingPacket.SessionId);
+            PlayerSessionModel session = worldState.GetPlayerSession(incomingPacket.SessionId);
             //worldState.AuthenticateClient(netState, incomingPacket.SessionId, incomingPacket.CharacterId);
             IPAddress sessionIPAddress = IPAddress.Parse(session.ClientAddress);
 
@@ -24,7 +24,7 @@ namespace UdpServer.Network.Packets
             {
                 if (netState.Address == sessionIPAddress || sessionIPAddress.Equals(IPAddress.IPv6Loopback) || sessionIPAddress.Equals(IPAddress.Loopback))
                 {
-                    netState.Id = session.PlayerSessionID;
+                    netState.Id = session.Id;
                     ServerCharacter selectedChar = worldState.LoadCharacter(session.CharacterID);
                     if (selectedChar != null)
                     {

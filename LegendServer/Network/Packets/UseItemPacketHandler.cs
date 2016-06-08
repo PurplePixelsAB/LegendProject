@@ -24,14 +24,14 @@ namespace UdpServer.Network.Packets
             //}
 
             ServerCharacter serverCharacter = (ServerCharacter)worldState.GetCharacter(netState.WorldId);
-            IItem itemToUse = (IItem)worldState.GetItem(incomingPacket.ItemId);
+            Item itemToUse = worldState.GetItem(incomingPacket.ItemId);
             if (serverCharacter != null && itemToUse != null)
             {
-                if (itemToUse.Data.IsWorldItem)
+                if (itemToUse.IsWorldItem)
                 {
                     if (serverCharacter.PickupItem(itemToUse))
                     {
-                        worldState.SaveItem(itemToUse);
+                        worldState.SaveItemPosition(itemToUse);
                         this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);
                     }
                 }
@@ -42,7 +42,7 @@ namespace UdpServer.Network.Packets
                         ConsumableItem consumable = (ConsumableItem)itemToUse;
                         if (consumable.Use(serverCharacter, worldState))
                         {
-                            worldState.SaveItem(itemToUse);
+                            worldState.SaveItemUse(itemToUse);
                             this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);
                         }
                     }
@@ -50,12 +50,12 @@ namespace UdpServer.Network.Packets
                     {
                         if (serverCharacter.Equip(itemToUse))
                         {
+                            worldState.SaveCharacterItems(serverCharacter);
                             this.OnSuccessfulUse(serverCharacter.CurrentMapId, incomingPacket.MobileId, incomingPacket.ItemId, worldState);
                         }
                     }
                 }
 
-                worldState.SaveCharacter(serverCharacter);
             }
         }
 

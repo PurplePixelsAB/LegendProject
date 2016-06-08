@@ -14,6 +14,8 @@ using System.Text;
 
 namespace Data.World
 {
+    public delegate void PowerLearnedEventHandler(Character character, PowerLearnedEventArgs e);
+
     public class Character : ICanMove //IDamagable
     {
         public static readonly int MaxWeight = 100000;
@@ -168,7 +170,7 @@ namespace Data.World
                 this.AimToChanged(this, new EventArgs());
         }
 
-        //public event EventHandler AbilityLearning;
+        public event PowerLearnedEventHandler PowerLearned;
         public bool Learn(CharacterPowerIdentity power)
         {
             if (power == CharacterPowerIdentity.DefaultAttack)
@@ -186,15 +188,15 @@ namespace Data.World
         }
         protected virtual void OnPowerLearning(CharacterPowerIdentity power)
         {
-            //if (this.AbilityLearning != null)
-            //    this.AbilityLearning(this, new EventArgs());
+            if (this.PowerLearned != null)
+                this.PowerLearned(this, new PowerLearnedEventArgs() { Power = power });
         }
 
-        internal bool HasItemEquiped(ItemData.ItemIdentity requiredItem)
+        internal bool HasItemEquiped(ItemIdentity requiredItem)
         {
             if (this.Armor != null)
             {
-                if (this.Armor.Data.Identity == requiredItem)
+                if (this.Armor.Identity == requiredItem)
                     return true;
             }
 
@@ -203,12 +205,12 @@ namespace Data.World
 
             if (this.RightHand != null)
             {
-                if (this.RightHand.Data.Identity == requiredItem)
+                if (this.RightHand.Identity == requiredItem)
                     return true;
             }
             if (this.LeftHand != null)
             {
-                if (this.LeftHand.Data.Identity == requiredItem)
+                if (this.LeftHand.Identity == requiredItem)
                     return true;
             }
 
@@ -276,39 +278,39 @@ namespace Data.World
         }
 
 
-        public virtual bool PickupItem(IItem item)
+        public virtual bool PickupItem(Item item)
         {
             if (this.IsDead)
                 return false;
 
             return this.MoveItem(item, this.Inventory);
         }
-        public virtual bool DropItem(IItem item)
+        public virtual bool DropItem(Item item)
         {
             return this.MoveItem(item, this.Position);
         }
-        public virtual bool MoveItem(IItem item, Point worldPosition)
+        public virtual bool MoveItem(Item item, Point worldPosition)
         {
             if (this.IsEquiped(item))
                 this.Equip(item); //Equip toggles equipment.
 
-            if (!item.Data.IsWorldItem)
+            if (!item.IsWorldItem)
             {
-                ContainerItem parentContainer = (ContainerItem)this.World.GetItem(item.Data.ContainerID.Value);
+                ContainerItem parentContainer = (ContainerItem)this.World.GetItem(item.ContainerId.Value);
                 parentContainer.Items.Remove(item);
             }
 
-            item.Data.MoveTo(this.CurrentMapId, worldPosition);
+            item.MoveTo(this.CurrentMapId, worldPosition);
             return true;
         }
-        public virtual bool MoveItem(IItem item, ContainerItem container)
+        public virtual bool MoveItem(Item item, ContainerItem container)
         {
-            if (item.Data.ItemDataID == container.Data.ItemDataID)
+            if (item.Id == container.Id)
                 return false;
 
-            if (item.Data.IsWorldItem)
+            if (item.IsWorldItem)
             {
-                if (!this.IsPositionInRange(item.Data.WorldLocation))
+                if (!this.IsPositionInRange(item.WorldLocation))
                     return false;
             }
             else
@@ -316,12 +318,12 @@ namespace Data.World
                 if (!this.IsItemInInventory(item))
                     return false;
 
-                ContainerItem parentContainer = (ContainerItem)this.World.GetItem(item.Data.ContainerID.Value);
+                ContainerItem parentContainer = (ContainerItem)this.World.GetItem(item.ContainerId.Value);
                 parentContainer.Items.Remove(item);
             }
-            if (container.Data.IsWorldItem)
+            if (container.IsWorldItem)
             {
-                if (!this.IsPositionInRange(container.Data.WorldLocation))
+                if (!this.IsPositionInRange(container.WorldLocation))
                     return false;
             }
             else
@@ -338,7 +340,7 @@ namespace Data.World
             }
 
             container.Items.Add(item);
-            item.Data.MoveTo(container.Data);
+            item.MoveTo(container);
             return true;
         }
 
@@ -347,7 +349,7 @@ namespace Data.World
             if (this.Inventory == null)
                 return false;
 
-            if (this.Inventory.Data.ItemDataID == item.Data.ItemDataID)
+            if (this.Inventory.Id == item.Id)
                 return true;
 
             if (this.Inventory.Items.Count <= 0)
@@ -360,7 +362,7 @@ namespace Data.World
         {
             foreach (IItem item in containerToCheck.Items)
             {
-                if (item.Data.ItemDataID == itemToLookFor.Data.ItemDataID)
+                if (item.Id == itemToLookFor.Id)
                     return true;
 
                 if (item.Category == ItemCategory.Container)
@@ -407,23 +409,23 @@ namespace Data.World
         {
             return this.Armor == itemToCheck || this.RightHand == itemToCheck || this.LeftHand == itemToCheck;
         }
-        public bool IsEquiped(ItemData.ItemIdentity itemIdentity)
+        public bool IsEquiped(ItemIdentity itemIdentity)
         {
             if (this.RightHand != null)
             {
-                if (this.RightHand.Data.Identity == itemIdentity)
+                if (this.RightHand.Identity == itemIdentity)
                     return true;
             }
 
             if (this.LeftHand != null)
             {
-                if (this.LeftHand.Data.Identity == itemIdentity)
+                if (this.LeftHand.Identity == itemIdentity)
                     return true;
             }
 
             if (this.Armor != null)
             {
-                if (this.Armor.Data.Identity == itemIdentity)
+                if (this.Armor.Identity == itemIdentity)
                     return true;
             }
 

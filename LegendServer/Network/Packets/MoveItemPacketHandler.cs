@@ -24,7 +24,7 @@ namespace UdpServer.Network.Packets
             //}
 
             ServerCharacter serverCharacter = (ServerCharacter)worldState.GetCharacter(netState.WorldId);
-            IItem item = (IItem)worldState.GetItem(incomingPacket.ItemID);
+            Item item = (Item)worldState.GetItem(incomingPacket.ItemID);
             if (serverCharacter != null && item != null)
             {
                 if (incomingPacket.MoveToID.HasValue) //item.Data.IsWorldItem && 
@@ -35,7 +35,7 @@ namespace UdpServer.Network.Packets
                     {
                         if (serverCharacter.MoveItem(item, moveTo))
                         {
-                            worldState.SaveItem(item);
+                            worldState.SaveItemPosition(item);
                             this.OnSuccessfulChange(serverCharacter.CurrentMapId, serverCharacter.Id, containerID, incomingPacket.ItemID, worldState);
                         }
                     }
@@ -45,7 +45,7 @@ namespace UdpServer.Network.Packets
                     Point moveToPostion = incomingPacket.MoveToPosition.Value;
                     if (serverCharacter.MoveItem(item, moveToPostion))
                     {
-                        worldState.SaveItem(item);
+                        worldState.SaveItemPosition(item);
                         this.OnSuccessfulChange(serverCharacter.CurrentMapId, serverCharacter.Id, moveToPostion, incomingPacket.ItemID, worldState);
                     }
                 }

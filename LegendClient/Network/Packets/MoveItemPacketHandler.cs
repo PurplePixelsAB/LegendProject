@@ -20,7 +20,7 @@ namespace WindowsClient.Net.Packets
         {
             MoveItemServerPacket incomingPacket = (MoveItemServerPacket)packet;
             ClientCharacter mobileToUpdate = (ClientCharacter)worldState.GetCharacter(incomingPacket.CharacterID);
-            IItem item = worldState.GetItem(incomingPacket.ItemID);
+            Item item = (Item)worldState.GetItem(incomingPacket.ItemID);
 
             if (mobileToUpdate == null)
             {

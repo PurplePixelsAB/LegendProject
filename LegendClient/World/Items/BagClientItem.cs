@@ -11,11 +11,9 @@ namespace LegendClient.Screens
 {
     public class BagClientItem : BagItem, IClientItem
     {
-        private List<IItem> worldItems;
-
         public BagClientItem() : base()
         { }
-        public BagClientItem(List<IItem> worldItems) : base()
+        public BagClientItem(List<Item> worldItems) : base()
         {
             this.Items = worldItems;
         }

@@ -95,30 +95,30 @@ namespace WindowsClient
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.PowerScoll,
+            ClientItemFactory.Load(ItemIdentity.PowerScoll,
                 new ClientItemFactory<PowerScrollClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Scroll") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Gold,
+            ClientItemFactory.Load(ItemIdentity.Gold,
                 new ClientItemFactory<GoldClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Gold") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bandage,
+            ClientItemFactory.Load(ItemIdentity.Bandage,
                 new ClientItemFactory<BandageClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bandage") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bag,
+            ClientItemFactory.Load(ItemIdentity.Bag,
                 new ClientItemFactory<BagClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bag") });
 
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Bow,
+            ClientItemFactory.Load(ItemIdentity.Bow,
     new ClientItemFactory<BowClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Bow") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Sword,
+            ClientItemFactory.Load(ItemIdentity.Sword,
                 new ClientItemFactory<SwordClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Sword") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Dagger,
+            ClientItemFactory.Load(ItemIdentity.Dagger,
                 new ClientItemFactory<DaggerClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/Dagger") });
 
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.LeatherArmor,
+            ClientItemFactory.Load(ItemIdentity.LeatherArmor,
                 new ArmorClientItemFactory<LeatherArmorClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/LeatherArmor"), HeadTexture = Game.Content.Load<Texture2D>("Items/LeatherHead") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.PlateArmor,
+            ClientItemFactory.Load(ItemIdentity.PlateArmor,
                 new ArmorClientItemFactory<PlateArmorClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/PlateArmor"), HeadTexture = Game.Content.Load<Texture2D>("Items/PlateHead") });
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.ClothRobe,
+            ClientItemFactory.Load(ItemIdentity.ClothRobe,
                 new ArmorClientItemFactory<ClothClientItem>() { Texture = Game.Content.Load<Texture2D>("Items/ClothArmor"), HeadTexture = Game.Content.Load<Texture2D>("Items/ClothHead") });
 
-            ClientItemFactory.Load(Data.ItemData.ItemIdentity.Corpse,
+            ClientItemFactory.Load(ItemIdentity.Corpse,
             new ClientItemFactory<CorpseClientItem>() { Texture = Game.Content.Load<Texture2D>("DeadHead") });
 
             if (!network.LoadContent(world))
@@ -287,7 +287,7 @@ namespace WindowsClient
             if (world.PlayerCharacter.IsDead)
                 return;
 
-            List<IItem> worldItems = world.WorldItemsInRange(world.PlayerCharacter.Id);
+            List<Item> worldItems = world.WorldItemsInRange(world.PlayerCharacter.Id);
             ContainerItem worldItemsTempContainer = new BagClientItem(worldItems);
             ContainerItem playerContainer = (BagClientItem)world.PlayerCharacter.Inventory;
 
@@ -366,10 +366,10 @@ namespace WindowsClient
             switch (power.Id)
             {
                 case CharacterPowerIdentity.DefaultAttack:
-                    effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemData.ItemIdentity.Bow)));
+                    effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemIdentity.Bow)));
                     break;
                 case CharacterPowerIdentity.HardAttack:
-                    effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemData.ItemIdentity.Bow)));
+                    effectManager.AddEffect(new SwingEffect(this.GetScreenPostion(character.DrawPosition), this.GetScreenPostion(character.AimToPosition), character.IsEquiped(ItemIdentity.Bow)));
                     break;
                 case CharacterPowerIdentity.CriticalAttack:
                     break;
@@ -610,7 +610,7 @@ namespace WindowsClient
                 //ToDo: ClientItem clientItem = (ClientItem)item;
                 // clientItem.WorldDrawPosition ...
                 // clientItem.Texture ...
-                Point drawPosition = this.GetScreenPostion(item.Data.WorldLocation - item.Texture.Bounds.Center);
+                Point drawPosition = this.GetScreenPostion(item.WorldLocation - item.Texture.Bounds.Center);
                 //groundItem.Position.ToVector2() - (world.PlayerCharacter.OldDrawPosition * -1f) - itemScrollTexture.Bounds.Center.ToVector2(); 
                 //CenterScreen - (world.PlayerCharacter.Position - groundItem.Position).ToVector2();
                 spriteBatch.Draw(item.Texture, new Rectangle(drawPosition, item.Texture.Bounds.Size), Color.White);

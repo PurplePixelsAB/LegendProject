@@ -29,8 +29,8 @@ namespace LegendWorld.Data.Items
             bool result = this.OnUse(character, worldState);
             if (result)
             {
-                this.Data.Count--;
-                if (this.Data.Count <= 0)
+                this.Count--;
+                if (this.Count <= 0)
                 {
                     worldState.RemoveItem(this);
                 }
@@ -40,10 +40,10 @@ namespace LegendWorld.Data.Items
         }
         public override string ToString()
         {
-            if (this.Data.Count > 0)
-                return string.Format("{1} {0}", this.Data.Identity, this.Data.Count);
+            if (this.Count > 0)
+                return string.Format("{1} {0}", this.Identity, this.Count);
 
-            return string.Format("{0}", this.Data.Identity);
+            return string.Format("{0}", this.Identity);
 
         }
     }

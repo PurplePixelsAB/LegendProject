@@ -22,10 +22,10 @@ namespace WindowsClient.Net.Packets
             if (incomingPacket.ItemId == 0)
                 return;
 
-            IItem item = worldState.GetItem(incomingPacket.ItemId);
+            Item item = worldState.GetItem(incomingPacket.ItemId);
             if (item == null)
             {
-                ItemData itemData = NetworkEngine.Instance.LoadItem(incomingPacket.ItemId);
+                ItemModel itemData = NetworkEngine.Instance.LoadItem(incomingPacket.ItemId);
                 item = worldState.CreateItem(itemData);
                 worldState.AddItem(item);
             }

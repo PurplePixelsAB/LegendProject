@@ -5,6 +5,6 @@ namespace Network
 {
     public interface IItemFactory
     {
-        IItem CreateNew(ItemData itemData);
+        Item CreateNew(ItemModel itemData);
     }
 }

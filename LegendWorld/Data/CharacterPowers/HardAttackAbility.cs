@@ -39,7 +39,7 @@ namespace LegendWorld.Data.Abilities
         {
             if (performedBy.RightHand == null && performedBy.LeftHand == null)
                 return new ConeCollitionArea() { Range = 20, Fov = 90 };
-            else if (performedBy.RightHand.Data.Identity == ItemData.ItemIdentity.Bow)
+            else if (performedBy.RightHand.Identity == ItemIdentity.Bow)
             {
                 ArrowColltionArea arrowColltionArea = new ArrowColltionArea(this, performedBy);
                 worldState.Projectiles.Add(arrowColltionArea);

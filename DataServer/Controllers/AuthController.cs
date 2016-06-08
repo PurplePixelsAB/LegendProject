@@ -22,7 +22,7 @@ namespace DataServer.Controllers
         public async Task<IHttpActionResult> CreateSession(int id) //Could be moved to PlayerSessionsPost, just ignore all incoming fields except CharacterId.
         {
             string clientAddress = HttpContext.Current.Request.UserHostAddress.Trim();
-            PlayerSession playerSession = await db.PlayerSessions.Where(ps => ps.CharacterID == id).FirstOrDefaultAsync();
+            PlayerSession playerSession = await db.PlayerSessions.Where(ps => ps.CharacterId == id).FirstOrDefaultAsync();
             if (playerSession == null)
             {
                 playerSession = db.PlayerSessions.Create();
@@ -33,10 +33,10 @@ namespace DataServer.Controllers
             if (playerSession.ClientAddress != clientAddress)
                 return BadRequest();
 
-            playerSession.CharacterID = id;
+            playerSession.CharacterId = id;
             int result = await db.SaveChangesAsync();
 
-            return Ok(playerSession.PlayerSessionID);
+            return Ok(playerSession.Id);
         }
 
         [HttpGet]
@@ -74,26 +74,26 @@ namespace DataServer.Controllers
         {
             //Random rnd = new Random(); //ToDo, Create a character table and connect it to authentication.
 
-            List<CharacterData> characterList = await this.GetTempCharacter();
+            List<Character> characterList = await this.GetTempCharacter();
 
-            return Ok(characterList.Select(characterData => new SelectableCharacter() { CharacterId = characterData.CharacterDataID, Name = characterData.Name, MapId = characterData.MapID }));
+            return Ok(characterList.Select(character => new SelectableCharacter() { CharacterId = character.Id, Name = character.Name, MapId = character.MapId }));
 
             //return Ok(new SelectableCharacter[] {
             //    new SelectableCharacter() { CharacterId = characterData.CharacterDataID, Name = characterData.Name, MapId = characterData.MapID } }.ToList());
         }
 
-        private async Task<List<CharacterData>> GetTempCharacter()
+        private async Task<List<Character>> GetTempCharacter()
         {
-            List<CharacterData> returnCharacter = db.Characters.Where(c => !db.PlayerSessions.Any(ps => ps.CharacterID == c.CharacterDataID)).Take(3).ToList();
+            List<Character> returnCharacter = db.Characters.Where(c => !db.PlayerSessions.Any(ps => ps.CharacterId == c.Id)).Take(3).ToList();
             while (returnCharacter.Count < 3)
             {
-                CharacterData addCharacter = db.Characters.Create();
+                Character addCharacter = db.Characters.Create();
                 addCharacter.Name = "TempCharacter" + await db.Characters.CountAsync();
 
                 addCharacter = db.Characters.Add(addCharacter);
                 int result = await db.SaveChangesAsync();
-                returnCharacter.Add(addCharacter);
-            }
+                returnCharacter.Add(addCharacter);            }
+            
 
             return returnCharacter;
         }

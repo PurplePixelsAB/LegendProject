@@ -29,7 +29,7 @@ namespace WindowsClient.Net
 
         Queue<ServerMessage> serverMessages = new Queue<ServerMessage>(10);
 
-        internal ItemData LoadItem(int itemId)
+        internal ItemModel LoadItem(int itemId)
         {
             return dataContext.GetItem(itemId);
         }
@@ -113,15 +113,15 @@ namespace WindowsClient.Net
                 return false;
             }
             //CharacterData playerCharData = dataContext.GetCharacter(playerSelectableCharacter);
-            IEnumerable<ItemData> items = dataContext.GetItems(playerSelectableCharacter.MapId);
+            IEnumerable<ItemModel> items = dataContext.GetItems(playerSelectableCharacter.MapId);
             if (items != null)
             {
-                List<IItem> hasContainerItem = new List<IItem>();
-                foreach (ItemData itemData in items)
+                List<Item> hasContainerItem = new List<Item>();
+                foreach (ItemModel itemData in items)
                 {
-                    IItem item = world.CreateItem(itemData);
+                    Item item = world.CreateItem(itemData);
 
-                    if (item.Data.ContainerID.HasValue)
+                    if (item.ContainerId.HasValue)
                     {
                         hasContainerItem.Add(item);
                     }
@@ -129,9 +129,9 @@ namespace WindowsClient.Net
                     world.AddItem(item);
                 }
 
-                foreach (IItem item in hasContainerItem)
+                foreach (Item item in hasContainerItem)
                 {
-                    ContainerItem containerItem = (ContainerItem)world.GetItem(item.Data.ContainerID.Value);
+                    ContainerItem containerItem = (ContainerItem)world.GetItem(item.ContainerId.Value);
                     if (containerItem != null)
                         containerItem.Items.Add(item);
                 }
@@ -149,10 +149,10 @@ namespace WindowsClient.Net
             //world.AddCharacter(world.PlayerCharacter);
             //world.AddItem(world.PlayerCharacter.Inventory);
 
-            IEnumerable<CharacterData> onlineCharacters = dataContext.GetCharacters(playerSelectableCharacter.MapId);
+            IEnumerable<CharacterModel> onlineCharacters = dataContext.GetCharacters(playerSelectableCharacter.MapId);
             if (onlineCharacters != null)
             {
-                foreach (CharacterData charData in onlineCharacters)
+                foreach (CharacterModel charData in onlineCharacters)
                 {
                     ClientCharacter character = world.CreateCharacter(charData); //, dataContext.GetItem(charData.InventoryID)); //new ClientCharacter(charData.CharacterDataID, charData.WorldLocation);
                     ////world.PlayerCharacter.Id = playerCharacterId;
@@ -232,7 +232,7 @@ namespace WindowsClient.Net
 
                 foreach (int charID in charIdToCheck)
                 {
-                    CharacterData charData = dataContext.GetCharacter(charID);
+                    CharacterModel charData = dataContext.GetCharacter(charID);
                     ClientCharacter character = WorldState.CreateCharacter(charData); //, dataContext.GetItem(charData.InventoryID));
                     WorldState.AddCharacter(character);
                 }
@@ -241,7 +241,7 @@ namespace WindowsClient.Net
 
         internal void DropItem(ClientCharacter playerCharacter, IItem item)
         {
-            MoveItemPacket packet = new MoveItemPacket(item.Data.ItemDataID, playerCharacter.Position);
+            MoveItemPacket packet = new MoveItemPacket(item.Id, playerCharacter.Position);
             worldServerClient.Send(packet);
         }
 
@@ -259,12 +259,12 @@ namespace WindowsClient.Net
 
         internal void MoveItem(IItem itemToMove, IItem toContainer)
         {
-            MoveItemPacket useItemPacket = new MoveItemPacket(itemToMove.Data.ItemDataID, toContainer.Data.ItemDataID);
+            MoveItemPacket useItemPacket = new MoveItemPacket(itemToMove.Id, toContainer.Id);
             worldServerClient.Send(useItemPacket);
         }
         internal void MoveItem(IItem itemToMove, Point worldPosition)
         {
-            MoveItemPacket useItemPacket = new MoveItemPacket(itemToMove.Data.ItemDataID, worldPosition);
+            MoveItemPacket useItemPacket = new MoveItemPacket(itemToMove.Id, worldPosition);
             worldServerClient.Send(useItemPacket);
         }
 
@@ -293,7 +293,7 @@ namespace WindowsClient.Net
 
         internal void UseItem(int characterId, IItem itemToUse)
         {
-            UseItemPacket useItemPacket = new UseItemPacket(itemToUse.Data.ItemDataID, characterId);
+            UseItemPacket useItemPacket = new UseItemPacket(itemToUse.Id, characterId);
             worldServerClient.Send(useItemPacket);
         }
 

@@ -165,7 +165,7 @@ namespace LegendClient.Screens
                 }
                 else
                 {
-                    if (this.ParentContainer.Data == null)
+                    if (this.ParentContainer.Id == 0)
                     {
                         spriteBatch.DrawString(itemSpriteFont, "No Items close by.", drawPosition, Color.White);
                     }
@@ -301,12 +301,12 @@ namespace LegendClient.Screens
             //}
         }
 
-        private void MoveToBaseContainer(IItem item)
+        private void MoveToBaseContainer(Item item)
         {
             if (world.PlayerCharacter.MoveItem(item, this.BaseContainer))
             {
                 NetworkEngine.Instance.MoveItem(item, this.BaseContainer);
-                if (this.ParentContainer.Data == null)
+                if (this.ParentContainer.Id == 0)
                     this.ParentContainer.Items.Remove(item);
                 //this.BaseContainer.Items.Add(item);
             }
@@ -321,7 +321,7 @@ namespace LegendClient.Screens
                     var item = this.BaseContainer.Items[currentItemIndex];
                     if (item != null)
                     {
-                        if (this.ParentContainer.Data == null)
+                        if (this.ParentContainer.Id == 0)
                         {
                             if (world.PlayerCharacter.MoveItem(item, world.PlayerCharacter.Position))
                             {

@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Data\AffectedByPowerEventArgs.cs" />
+    <Compile Include="Data\CharacterPowerIdentity.cs" />
     <Compile Include="Data\CharacterPowers\ResurrectAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseDaggerPowerAbility.cs" />
     <Compile Include="Data\CharacterPowers\IncreaseLeatherArmorAbility.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Data\CollitionArea.cs" />
     <Compile Include="Data\IItemFactory.cs" />
     <Compile Include="Data\Item.cs" />
+    <Compile Include="Data\ItemIdentity.cs" />
     <Compile Include="Data\Items\CorpseItem.cs" />
     <Compile Include="Data\Items\BandageItem.cs" />
     <Compile Include="Data\Items\PowerScrollItem.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="Data\Modifiers\DoublePowerModifier.cs" />
     <Compile Include="Data\PerformsPowerEventArgs.cs" />
     <Compile Include="Data\CharacterStat.cs" />
+    <Compile Include="Data\PowerLearnedEventArgs.cs" />
     <Compile Include="Data\StatIdentifier.cs" />
     <Compile Include="Data\Stats.cs" />
     <Compile Include="Network\IPacket.cs" />
@@ -174,9 +177,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj">
+    <ProjectReference Include="..\Data\DataServer.Models.csproj">
       <Project>{b3023368-0065-4eee-aba2-71643b1505bd}</Project>
-      <Name>Data</Name>
+      <Name>DataServer.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

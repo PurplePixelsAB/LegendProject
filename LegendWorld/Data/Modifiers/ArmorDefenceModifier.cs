@@ -12,7 +12,7 @@ namespace LegendWorld.Data.Modifiers
 {
     public class ArmorDefenceModifier : CharacterModifier
     {
-        public ArmorDefenceModifier(float amount, ItemData.ItemIdentity armorRequired) : base()
+        public ArmorDefenceModifier(float amount, ItemIdentity armorRequired) : base()
         {
             base.Duration = null;
             this.Amount = amount;
@@ -21,7 +21,7 @@ namespace LegendWorld.Data.Modifiers
         }
 
         public float Amount { get; private set; }
-        public ItemData.ItemIdentity Required { get; private set; }
+        public ItemIdentity Required { get; private set; }
 
         internal override void Register(Stats stats)
         {
